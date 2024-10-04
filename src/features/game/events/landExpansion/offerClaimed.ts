@@ -4,6 +4,7 @@ import { ITEM_NAMES } from "features/game/types/bumpkin";
 import { GameState } from "features/game/types/game";
 import { getOfferItem } from "features/marketplace/lib/offers";
 import { produce } from "immer";
+import { addTradePoints } from "./addTradePoints";
 
 export type ClaimOfferAction = {
   type: "offer.claimed";
@@ -33,6 +34,7 @@ export function claimOffer({ state, action, createdAt = Date.now() }: Options) {
 
     // On chain trade = do not add items since they have already been sent
     if (offer.signature) {
+      game = addTradePoints({ state: game, points: 10, sfl: offer.sfl });
       return game;
     }
 
@@ -46,6 +48,8 @@ export function claimOffer({ state, action, createdAt = Date.now() }: Options) {
       const name = ITEM_NAMES[id];
       game.wardrobe[name] = (game.wardrobe[name] ?? 0) + 1;
     }
+
+    game = addTradePoints({ state: game, points: 2, sfl: offer.sfl });
 
     return game;
   });
