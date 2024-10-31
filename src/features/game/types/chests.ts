@@ -12,68 +12,7 @@ export type ChestReward = {
 const multiplier = 900;
 
 const SEASONAL_REWARDS: (weight: number) => ChestReward[] = (weight) => {
-  const isPharaohSeason =
-    Date.now() >= SEASONS["Pharaoh's Treasure"].startDate.getTime() &&
-    Date.now() < SEASONS["Pharaoh's Treasure"].endDate.getTime();
-
-  if (isPharaohSeason) {
-    return [
-      { items: { "Paper Reed": 1 }, weighting: weight * multiplier },
-      { items: { "Hapy Jar": 1 }, weighting: weight * multiplier },
-      { items: { "Imsety Jar": 1 }, weighting: weight * multiplier },
-      { items: { "Duamutef Jar": 1 }, weighting: weight * multiplier },
-      { items: { "Qebehsenuef Jar": 1 }, weighting: weight * multiplier },
-      { items: { Cannonball: 1 }, weighting: weight * (multiplier / 10) },
-      { items: { Sarcophagus: 1 }, weighting: weight * (multiplier / 3) },
-      { items: { "Clay Tablet": 1 }, weighting: weight * multiplier },
-      { items: { "Snake in Jar": 1 }, weighting: weight * (multiplier / 5) },
-      { items: { "Reveling Lemon": 1 }, weighting: weight * (multiplier / 10) },
-      { items: { "Anubis Jackal": 1 }, weighting: weight * (multiplier / 3) },
-      { items: { Sundial: 1 }, weighting: weight * (multiplier / 2) },
-      { items: { "Sand Golem": 1 }, weighting: weight * (multiplier / 4) },
-      { items: { "Cactus King": 1 }, weighting: weight * (multiplier / 5) },
-      { items: { "Lemon Frog": 1 }, weighting: weight * (multiplier / 10) },
-      { items: { "Scarab Beetle": 1 }, weighting: weight * (multiplier / 3) },
-      { items: { "Golden Garrison": 1 }, weighting: weight * multiplier },
-      { items: { "Rookie Rook": 1 }, weighting: weight * multiplier },
-      { items: { "Silver Sentinel": 1 }, weighting: weight * multiplier },
-      { items: { "Sunlit Citadel": 1 }, weighting: weight * (multiplier / 25) },
-      { items: { Camel: 1 }, weighting: weight * (multiplier / 60) },
-      { items: { "Baobab Tree": 1 }, weighting: weight * (multiplier / 10) },
-      { wearables: { "Grape Pants": 1 }, weighting: weight * (multiplier / 2) },
-      {
-        wearables: { "Amber Amulet": 1 },
-        weighting: weight * (multiplier / 2),
-      },
-      {
-        wearables: { "Explorer Shirt": 1 },
-        weighting: weight * (multiplier / 4),
-      },
-      { wearables: { "Crab Trap": 1 }, weighting: weight * (multiplier / 10) },
-      { wearables: { "Water Gourd": 1 }, weighting: weight * (multiplier / 3) },
-      { wearables: { "Ankh Shirt": 1 }, weighting: weight * (multiplier / 2) },
-      {
-        wearables: { "Explorer Shorts": 1 },
-        weighting: weight * (multiplier / 3),
-      },
-      {
-        wearables: { "Explorer Hat": 1 },
-        weighting: weight * (multiplier / 4),
-      },
-      {
-        wearables: { "Desert Camel Background": 1 },
-        weighting: weight * multiplier,
-      },
-      { wearables: { "Rock Hammer": 1 }, weighting: weight * (multiplier / 3) },
-      { wearables: { "Elf Potion": 1 }, weighting: weight * multiplier },
-      {
-        wearables: { "Scarab Wings": 1 },
-        weighting: weight * (multiplier / 45),
-      },
-    ];
-  } else {
-    return [];
-  }
+  return [];
 };
 
 export const BASIC_REWARDS: () => ChestReward[] = () => [
