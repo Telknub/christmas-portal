@@ -33,7 +33,7 @@ import { CraftingRequirements } from "components/ui/layouts/CraftingRequirements
 import { getFruitPatchTime } from "features/game/events/landExpansion/fruitPlanted";
 import { gameAnalytics } from "lib/gameAnalytics";
 import { Label } from "components/ui/Label";
-import { CROP_LIFECYCLE } from "features/island/plots/lib/plant";
+import { PLOT_CROP_LIFECYCLE } from "features/island/plots/lib/plant";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { FLOWER_SEEDS, FlowerSeedName } from "features/game/types/flowers";
@@ -290,7 +290,7 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
       content={
         <div className="pl-1">
           <Label
-            icon={CROP_LIFECYCLE.Sunflower.crop}
+            icon={PLOT_CROP_LIFECYCLE.Sunflower.crop}
             type="default"
             className="ml-2 mb-1"
           >
@@ -319,7 +319,7 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
               ))}
           </div>
           <Label
-            icon={CROP_LIFECYCLE.Carrot.crop}
+            icon={PLOT_CROP_LIFECYCLE.Carrot.crop}
             type="default"
             className="ml-2 mb-1"
           >
@@ -344,7 +344,7 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
               ))}
           </div>
           <Label
-            icon={CROP_LIFECYCLE.Kale.crop}
+            icon={PLOT_CROP_LIFECYCLE.Kale.crop}
             type="default"
             className="ml-2 mb-1"
           >
