@@ -7,7 +7,7 @@ import {
   PlacedItem,
   InventoryItemName,
 } from "features/game/types/game";
-import { CROPS, CROP_SEEDS } from "features/game/types/crops";
+import { PLOT_CROP_SEEDS, PLOT_CROPS } from "features/game/types/crops";
 import { PIXEL_SCALE, TEST_FARM } from "features/game/lib/constants";
 import { harvestAudio, plantAudio } from "lib/utils/sfx";
 import {
@@ -57,7 +57,7 @@ const selectLevel = (state: MachineState) =>
   getBumpkinLevel(state.context.state.bumpkin?.experience ?? 0);
 
 const selectHarvests = (state: MachineState) => {
-  return getKeys(CROPS).reduce(
+  return getKeys(PLOT_CROPS).reduce(
     (total, crop) =>
       total +
       (state.context.state.bumpkin?.activity?.[`${crop} Harvested`] ?? 0),
@@ -66,7 +66,7 @@ const selectHarvests = (state: MachineState) => {
 };
 
 const selectPlants = (state: MachineState) =>
-  getKeys(CROPS).reduce(
+  getKeys(PLOT_CROPS).reduce(
     (total, crop) =>
       total + (state.context.state.bumpkin?.activity?.[`${crop} Planted`] ?? 0),
     0,
@@ -218,7 +218,7 @@ export const Plot: React.FC<Props> = ({ id, index }) => {
 
     // increase touch count if there is a reward
     const readyToHarvest =
-      !!crop && isReadyToHarvest(now, crop, CROPS[crop.name]);
+      !!crop && isReadyToHarvest(now, crop, PLOT_CROPS[crop.name]);
 
     if (crop?.reward && readyToHarvest) {
       if (!isSeasoned && touchCount < 1) {
@@ -260,7 +260,7 @@ export const Plot: React.FC<Props> = ({ id, index }) => {
     if (!crop) {
       if (
         hasFeatureAccess(state, "CROP_QUICK_SELECT") &&
-        (!seed || !(seed in CROP_SEEDS) || !inventory[seed]?.gte(1))
+        (!seed || !(seed in PLOT_CROP_SEEDS) || !inventory[seed]?.gte(1))
       ) {
         setShowQuickSelect(true);
         return;
@@ -326,9 +326,9 @@ export const Plot: React.FC<Props> = ({ id, index }) => {
         className="flex top-[-255%] left-[50%] absolute z-40"
       >
         <QuickSelect
-          options={getKeys(CROP_SEEDS).map((seed) => ({
+          options={getKeys(PLOT_CROP_SEEDS).map((seed) => ({
             name: seed as InventoryItemName,
-            icon: CROP_SEEDS[seed].yield as InventoryItemName,
+            icon: PLOT_CROP_SEEDS[seed].yield as InventoryItemName,
             showSecondaryImage: true,
           }))}
           onClose={() => setShowQuickSelect(false)}

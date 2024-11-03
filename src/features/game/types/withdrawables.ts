@@ -1,8 +1,8 @@
 import {
-  CropName,
-  CropSeedName,
   GreenHouseCropName,
   GreenHouseCropSeedName,
+  PlotCropName,
+  PlotCropSeedName,
 } from "./crops";
 import {
   GreenHouseFruitName,
@@ -112,7 +112,7 @@ const animalTools: Record<LoveAnimalItem, () => boolean> = {
   "Music Box": () => false,
 };
 
-const cropSeeds: Record<CropSeedName, () => boolean> = {
+const cropSeeds: Record<PlotCropSeedName, () => boolean> = {
   "Beetroot Seed": () => false,
   "Cabbage Seed": () => false,
   "Carrot Seed": () => false,
@@ -145,7 +145,7 @@ const flowerSeed: Record<FlowerSeedName, () => boolean> = {
   "Lily Seed": () => false,
 };
 
-const crops: Record<CropName, () => boolean> = {
+const crops: Record<PlotCropName, () => boolean> = {
   Beetroot: () => true,
   Cabbage: () => true,
   Carrot: () => true,

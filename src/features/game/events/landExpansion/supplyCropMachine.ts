@@ -1,5 +1,9 @@
 import Decimal from "decimal.js-light";
-import { CROPS, CropName, CropSeedName } from "features/game/types/crops";
+import {
+  PLOT_CROPS,
+  PlotCropName,
+  PlotCropSeedName,
+} from "features/game/types/crops";
 import {
   CropMachineBuilding,
   CropMachineQueueItem,
@@ -9,7 +13,7 @@ import { getCropYieldAmount } from "./plant";
 import { isBasicCrop } from "./harvest";
 import cloneDeep from "lodash.clonedeep";
 
-export type AddSeedsInput = { type: CropSeedName; amount: number };
+export type AddSeedsInput = { type: PlotCropSeedName; amount: number };
 
 export type SupplyCropMachineAction = {
   type: "cropMachine.supplied";
@@ -96,7 +100,7 @@ export function getTotalOilMillisInMachine(
 
 export function calculateCropTime(
   seeds: {
-    type: CropSeedName;
+    type: PlotCropSeedName;
     amount: number;
   },
   state: GameState,
@@ -105,9 +109,9 @@ export function calculateCropTime(
     return 0; // Or some default value if state or bumpkin is undefined
   }
 
-  const cropName = seeds.type.split(" ")[0] as CropName;
+  const cropName = seeds.type.split(" ")[0] as PlotCropName;
 
-  let milliSeconds = CROPS[cropName].harvestSeconds * 1000;
+  let milliSeconds = PLOT_CROPS[cropName].harvestSeconds * 1000;
 
   if (state.bumpkin.skills?.["Crop Processor Unit"]) {
     milliSeconds = milliSeconds * 0.95;
@@ -127,7 +131,7 @@ export function getOilTimeInMillis(oil: number, state: GameState) {
 
 export function getPackYieldAmount(
   amount: number,
-  crop: CropName,
+  crop: PlotCropName,
   state: GameState,
 ): number {
   if (!state.bumpkin) {
@@ -311,7 +315,7 @@ export function supplyCropMachine({
     throw new Error("Crop Machine does not exist");
   }
 
-  const cropName = seedsAdded.type.split(" ")[0] as CropName;
+  const cropName = seedsAdded.type.split(" ")[0] as PlotCropName;
 
   if (
     !state.bumpkin.skills["Crop Extension Module"] &&
@@ -374,7 +378,7 @@ export function supplyCropMachine({
       getOilTimeInMillis(oilAdded, state);
   }
 
-  const crop = seedsAdded.type.split(" ")[0] as CropName;
+  const crop = seedsAdded.type.split(" ")[0] as PlotCropName;
 
   if (seedsAdded.amount > 0) {
     queue.push({

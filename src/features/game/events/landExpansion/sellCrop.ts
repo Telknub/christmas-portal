@@ -1,10 +1,10 @@
 import Decimal from "decimal.js-light";
 import {
-  Crop,
-  CropName,
-  CROPS,
   GREENHOUSE_CROPS,
   GreenHouseCrop,
+  PLOT_CROPS,
+  PlotCrop,
+  PlotCropName,
 } from "../../types/crops";
 import { GameState } from "../../types/game";
 import { getSellPrice } from "features/game/expansion/lib/boosts";
@@ -20,9 +20,9 @@ import {
 import { produce } from "immer";
 import { ExoticCrop } from "features/game/types/beans";
 
-export type SellableName = CropName | PatchFruitName;
+export type SellableName = PlotCropName | PatchFruitName;
 export type SellableItem =
-  | Crop
+  | PlotCrop
   | PatchFruit
   | ExoticCrop
   | GreenHouseFruit
@@ -35,7 +35,7 @@ export type SellCropAction = {
 };
 
 export const SELLABLE = {
-  ...CROPS,
+  ...PLOT_CROPS,
   ...PATCH_FRUIT(),
   ...GREENHOUSE_CROPS,
   ...GREENHOUSE_FRUIT(),

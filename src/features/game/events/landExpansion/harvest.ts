@@ -1,10 +1,10 @@
 import { GameState, PlantedCrop } from "../../types/game";
 import {
-  Crop,
-  CropName,
-  CROPS,
   GREENHOUSE_CROPS,
   GreenHouseCropName,
+  PLOT_CROPS,
+  PlotCrop,
+  PlotCropName,
 } from "../../types/crops";
 import Decimal from "decimal.js-light";
 import {
@@ -25,31 +25,35 @@ type Options = {
   createdAt?: number;
 };
 
-export const isBasicCrop = (cropName: CropName | GreenHouseCropName) => {
-  if (!isCrop(cropName)) return false;
-  const cropDetails = CROPS[cropName];
-  return cropDetails.harvestSeconds <= CROPS["Pumpkin"].harvestSeconds;
+export const isBasicCrop = (cropName: PlotCropName | GreenHouseCropName) => {
+  if (!isPlotCrop(cropName)) return false;
+  const cropDetails = PLOT_CROPS[cropName];
+  return cropDetails.harvestSeconds <= PLOT_CROPS["Pumpkin"].harvestSeconds;
 };
 
-export const isMediumCrop = (cropName: CropName | GreenHouseCropName) => {
-  if (!isCrop(cropName)) return false;
+export const isMediumCrop = (cropName: PlotCropName | GreenHouseCropName) => {
+  if (!isPlotCrop(cropName)) return false;
   return !(isBasicCrop(cropName) || isAdvancedCrop(cropName));
 };
 
-export const isAdvancedCrop = (cropName: CropName | GreenHouseCropName) => {
-  if (!isCrop(cropName)) return false;
-  const cropDetails = CROPS[cropName];
-  return cropDetails.harvestSeconds >= CROPS["Eggplant"].harvestSeconds;
+export const isAdvancedCrop = (cropName: PlotCropName | GreenHouseCropName) => {
+  if (!isPlotCrop(cropName)) return false;
+  const cropDetails = PLOT_CROPS[cropName];
+  return cropDetails.harvestSeconds >= PLOT_CROPS["Eggplant"].harvestSeconds;
 };
 
-function isCrop(plant: GreenHouseCropName | CropName): plant is CropName {
-  return (plant as CropName) in CROPS;
+function isPlotCrop(
+  plant: GreenHouseCropName | PlotCropName,
+): plant is PlotCropName {
+  return (plant as PlotCropName) in PLOT_CROPS;
 }
 
-export const isOvernightCrop = (cropName: CropName | GreenHouseCropName) => {
-  if (isCrop(cropName)) {
-    const cropDetails = CROPS[cropName];
-    return cropDetails.harvestSeconds >= CROPS["Radish"].harvestSeconds;
+export const isOvernightCrop = (
+  cropName: PlotCropName | GreenHouseCropName,
+) => {
+  if (isPlotCrop(cropName)) {
+    const cropDetails = PLOT_CROPS[cropName];
+    return cropDetails.harvestSeconds >= PLOT_CROPS["Radish"].harvestSeconds;
   }
 
   const details = GREENHOUSE_CROPS[cropName];
@@ -62,7 +66,7 @@ export const isOvernightCrop = (cropName: CropName | GreenHouseCropName) => {
 export const isReadyToHarvest = (
   createdAt: number,
   plantedCrop: PlantedCrop,
-  cropDetails: Crop,
+  cropDetails: PlotCrop,
 ) => {
   return createdAt - plantedCrop.plantedAt >= cropDetails.harvestSeconds * 1000;
 };
@@ -71,7 +75,7 @@ export function isCropGrowing(plot: CropPlot) {
   const crop = plot.crop;
   if (!crop) return false;
 
-  const cropDetails = CROPS[crop.name];
+  const cropDetails = PLOT_CROPS[crop.name];
   return !isReadyToHarvest(Date.now(), crop, cropDetails);
 }
 
@@ -99,7 +103,7 @@ export function harvest({
 
     const { name: cropName, plantedAt, amount = 1, reward } = plot.crop;
 
-    const { harvestSeconds } = CROPS[cropName];
+    const { harvestSeconds } = PLOT_CROPS[cropName];
 
     if (createdAt - plantedAt < harvestSeconds * 1000) {
       throw new Error("Not ready");

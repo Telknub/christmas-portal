@@ -1,6 +1,10 @@
 import Decimal from "decimal.js-light";
 
-import { CropName, CROPS, GreenHouseCropName } from "../../types/crops";
+import {
+  GreenHouseCropName,
+  PLOT_CROPS,
+  PlotCropName,
+} from "../../types/crops";
 import {
   Bumpkin,
   CropPlot,
@@ -125,7 +129,7 @@ export function getCropTime({
   crop,
 }: {
   game: GameState;
-  crop: CropName | GreenHouseCropName;
+  crop: PlotCropName | GreenHouseCropName;
 }) {
   let seconds = 1;
 
@@ -196,14 +200,14 @@ export const getCropPlotTime = ({
   plot,
   fertiliser,
 }: {
-  crop: CropName;
+  crop: PlotCropName;
   inventory: Inventory;
   game: GameState;
   buds: NonNullable<GameState["buds"]>;
   plot?: CropPlot;
   fertiliser?: CropCompostName;
 }) => {
-  let seconds = CROPS[crop]?.harvestSeconds ?? 0;
+  let seconds = PLOT_CROPS[crop]?.harvestSeconds ?? 0;
 
   if (game.bumpkin === undefined) return seconds;
 
@@ -291,7 +295,7 @@ export const getCropPlotTime = ({
 };
 
 type GetPlantedAtArgs = {
-  crop: CropName;
+  crop: PlotCropName;
   inventory: Inventory;
   game: GameState;
   createdAt: number;
@@ -314,7 +318,7 @@ export function getPlantedAt({
 }: GetPlantedAtArgs): number {
   if (!crop) return 0;
 
-  const cropTime = CROPS[crop].harvestSeconds;
+  const cropTime = PLOT_CROPS[crop].harvestSeconds;
   const boostedTime = getCropPlotTime({
     crop,
     inventory,
@@ -329,8 +333,10 @@ export function getPlantedAt({
   return createdAt - offset * 1000;
 }
 
-function isPlotCrop(plant: GreenHouseCropName | CropName): plant is CropName {
-  return (plant as CropName) in CROPS;
+function isPlotCrop(
+  plant: GreenHouseCropName | PlotCropName,
+): plant is PlotCropName {
+  return (plant as PlotCropName) in PLOT_CROPS;
 }
 
 /**
@@ -342,7 +348,7 @@ export function getCropYieldAmount({
   game,
   fertiliser,
 }: {
-  crop: CropName | GreenHouseCropName;
+  crop: PlotCropName | GreenHouseCropName;
   plot?: CropPlot;
   game: GameState;
   fertiliser?: CropCompostName;
@@ -747,7 +753,7 @@ export function plant({
       throw new Error("Not enough seeds");
     }
 
-    const cropName = action.item.split(" ")[0] as CropName;
+    const cropName = action.item.split(" ")[0] as PlotCropName;
 
     const activityName: BumpkinActivityName = `${cropName} Planted`;
 

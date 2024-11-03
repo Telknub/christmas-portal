@@ -10,9 +10,9 @@ import {
   EASTER_EGG,
 } from "features/game/types/game";
 import {
-  CROP_SEEDS,
-  CropName,
-  CROPS,
+  PLOT_CROP_SEEDS,
+  PLOT_CROPS,
+  PlotCropName,
   GREENHOUSE_CROPS,
   GREENHOUSE_SEEDS,
   GreenHouseCropSeedName,
@@ -106,7 +106,7 @@ export const Basket: React.FC<Prop> = ({ gameState, selected, onSelect }) => {
   ): selected is PatchFruitSeedName => selected in PATCH_FRUIT_SEEDS();
   const isSeed = (selected: InventoryItemName): selected is SeedName =>
     isPatchFruitSeed(selected) ||
-    selected in CROP_SEEDS ||
+    selected in PLOT_CROP_SEEDS ||
     selected in FLOWER_SEEDS() ||
     selected in GREENHOUSE_SEEDS ||
     selected in GREENHOUSE_FRUIT_SEEDS();
@@ -133,7 +133,7 @@ export const Basket: React.FC<Prop> = ({ gameState, selected, onSelect }) => {
       return seconds;
     }
 
-    const crop = SEEDS()[seedName].yield as CropName;
+    const crop = SEEDS()[seedName].yield as PlotCropName;
     return getCropPlotTime({
       crop,
       inventory,
@@ -154,14 +154,14 @@ export const Basket: React.FC<Prop> = ({ gameState, selected, onSelect }) => {
     return getKeys(items).filter((item) => item in basketMap);
   };
 
-  const seeds = getItems(CROP_SEEDS);
+  const seeds = getItems(PLOT_CROP_SEEDS);
   const fruitSeeds = getItems(PATCH_FRUIT_SEEDS());
   const greenhouseSeeds = [
     ...getItems(GREENHOUSE_FRUIT_SEEDS()),
     ...getItems(GREENHOUSE_SEEDS),
   ];
   const flowerSeeds = getItems(FLOWER_SEEDS());
-  const crops = [...getItems(CROPS), ...getItems(GREENHOUSE_CROPS)];
+  const crops = [...getItems(PLOT_CROPS), ...getItems(GREENHOUSE_CROPS)];
   const fruits = [...getItems(PATCH_FRUIT()), ...getItems(GREENHOUSE_FRUIT())];
   const flowers = getItems(FLOWERS);
   const workbenchTools = getItems(WORKBENCH_TOOLS);

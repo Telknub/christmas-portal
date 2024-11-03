@@ -16,9 +16,9 @@ import {
   InventoryItemName,
 } from "features/game/types/game";
 import {
-  CropName,
   GREENHOUSE_CROPS,
   GreenHouseCropName,
+  PlotCropName,
 } from "features/game/types/crops";
 import { canMine } from "../expansion/lib/utils";
 import { areUnsupportedChickensBrewing } from "features/game/events/landExpansion/removeBuilding";
@@ -44,7 +44,7 @@ export type Restriction = [boolean, string];
 type RemoveCondition = (gameState: GameState) => Restriction;
 
 type CanRemoveArgs = {
-  item: CropName;
+  item: PlotCropName;
   game: GameState;
 };
 

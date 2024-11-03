@@ -4,11 +4,11 @@ import { Box } from "components/ui/Box";
 import { Button } from "components/ui/Button";
 import { Context } from "features/game/GameProvider";
 import {
-  Crop,
-  CropName,
-  CROPS,
+  PlotCropName,
   GREENHOUSE_CROPS,
   GreenHouseCrop,
+  PLOT_CROPS,
+  PlotCrop,
 } from "features/game/types/crops";
 import { useActor } from "@xstate/react";
 import { ITEM_DETAILS } from "features/game/types/images";
@@ -32,7 +32,7 @@ import {
 import { getKeys } from "features/game/types/craftables";
 import { gameAnalytics } from "lib/gameAnalytics";
 import { Label } from "components/ui/Label";
-import { CROP_LIFECYCLE } from "features/island/plots/lib/plant";
+import { PLOT_CROP_LIFECYCLE } from "features/island/plots/lib/plant";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { ConfirmationModal } from "components/ui/ConfirmationModal";
 import { NPC_WEARABLES } from "lib/npcs";
@@ -46,15 +46,15 @@ import {
 } from "features/game/events/landExpansion/harvest";
 
 export const isExoticCrop = (
-  item: Crop | PatchFruit | ExoticCrop | GreenHouseFruit | GreenHouseCrop,
+  item: PlotCrop | PatchFruit | ExoticCrop | GreenHouseFruit | GreenHouseCrop,
 ): item is ExoticCrop => {
   return item.name in EXOTIC_CROPS;
 };
 
 export const Crops: React.FC = () => {
   const [selected, setSelected] = useState<
-    Crop | PatchFruit | ExoticCrop | GreenHouseFruit | GreenHouseCrop
-  >(CROPS.Sunflower);
+    PlotCrop | PatchFruit | ExoticCrop | GreenHouseFruit | GreenHouseCrop
+  >(PLOT_CROPS.Sunflower);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const [customAmount, setCustomAmount] = useState(new Decimal(0));
@@ -93,7 +93,7 @@ export const Crops: React.FC = () => {
   };
 
   const displaySellPrice = (
-    crop: Crop | PatchFruit | ExoticCrop | GreenHouseFruit | GreenHouseCrop,
+    crop: PlotCrop | PatchFruit | ExoticCrop | GreenHouseFruit | GreenHouseCrop,
   ) =>
     isExoticCrop(crop)
       ? crop.sellPrice
@@ -142,7 +142,7 @@ export const Crops: React.FC = () => {
     );
 
   const cropsAndFruits = Object.values({
-    ...CROPS,
+    ...PLOT_CROPS,
     ...PATCH_FRUIT(),
     ...exotics,
     ...GREENHOUSE_FRUIT(),
@@ -223,7 +223,7 @@ export const Crops: React.FC = () => {
             <div className="flex">
               <Label
                 className="mr-3 ml-2 mb-1"
-                icon={CROP_LIFECYCLE.Sunflower.crop}
+                icon={PLOT_CROP_LIFECYCLE.Sunflower.crop}
                 type="default"
               >
                 {`Basic Crops`}
@@ -231,8 +231,8 @@ export const Crops: React.FC = () => {
             </div>
             <div className="flex flex-wrap mb-2">
               {cropsAndFruits
-                .filter((crop) => !!crop.sellPrice && crop.name in CROPS)
-                .filter((crop) => isBasicCrop(crop.name as CropName))
+                .filter((crop) => !!crop.sellPrice && crop.name in PLOT_CROPS)
+                .filter((crop) => isBasicCrop(crop.name as PlotCropName))
                 .map((item) => (
                   <Box
                     isSelected={selected.name === item.name}
@@ -247,7 +247,7 @@ export const Crops: React.FC = () => {
             <div className="flex">
               <Label
                 className="mr-3 ml-2 mb-1"
-                icon={CROP_LIFECYCLE.Carrot.crop}
+                icon={PLOT_CROP_LIFECYCLE.Carrot.crop}
                 type="default"
               >
                 {`Medium Crops`}
@@ -255,8 +255,8 @@ export const Crops: React.FC = () => {
             </div>
             <div className="flex flex-wrap mb-2">
               {cropsAndFruits
-                .filter((crop) => !!crop.sellPrice && crop.name in CROPS)
-                .filter((crop) => isMediumCrop(crop.name as CropName))
+                .filter((crop) => !!crop.sellPrice && crop.name in PLOT_CROPS)
+                .filter((crop) => isMediumCrop(crop.name as PlotCropName))
                 .map((item) => (
                   <Box
                     isSelected={selected.name === item.name}
@@ -271,7 +271,7 @@ export const Crops: React.FC = () => {
             <div className="flex">
               <Label
                 className="mr-3 ml-2 mb-1"
-                icon={CROP_LIFECYCLE.Kale.crop}
+                icon={PLOT_CROP_LIFECYCLE.Kale.crop}
                 type="default"
               >
                 {`Advanced Crops`}
@@ -279,8 +279,8 @@ export const Crops: React.FC = () => {
             </div>
             <div className="flex flex-wrap mb-2">
               {cropsAndFruits
-                .filter((crop) => !!crop.sellPrice && crop.name in CROPS)
-                .filter((crop) => isAdvancedCrop(crop.name as CropName))
+                .filter((crop) => !!crop.sellPrice && crop.name in PLOT_CROPS)
+                .filter((crop) => isAdvancedCrop(crop.name as PlotCropName))
                 .filter(
                   (crop) =>
                     crop.name !== "Barley" || hasFeatureAccess(state, "BARLEY"),

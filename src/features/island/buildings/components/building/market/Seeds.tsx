@@ -6,10 +6,10 @@ import { Button } from "components/ui/Button";
 import { Context } from "features/game/GameProvider";
 import { getKeys } from "features/game/types/craftables";
 import {
-  CROP_SEEDS,
-  CropName,
   GREENHOUSE_SEEDS,
   GreenHouseCropSeedName,
+  PLOT_CROP_SEEDS,
+  PlotCropName,
 } from "features/game/types/crops";
 import { ITEM_DETAILS } from "features/game/types/images";
 import { Decimal } from "decimal.js-light";
@@ -33,7 +33,7 @@ import { CraftingRequirements } from "components/ui/layouts/CraftingRequirements
 import { getFruitPatchTime } from "features/game/events/landExpansion/fruitPlanted";
 import { gameAnalytics } from "lib/gameAnalytics";
 import { Label } from "components/ui/Label";
-import { CROP_LIFECYCLE } from "features/island/plots/lib/plant";
+import { PLOT_CROP_LIFECYCLE } from "features/island/plots/lib/plant";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { FLOWER_SEEDS, FlowerSeedName } from "features/game/types/flowers";
@@ -242,7 +242,7 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
     }
 
     return getCropPlotTime({
-      crop: yields as CropName,
+      crop: yields as PlotCropName,
       inventory,
       game: state,
       buds: state.buds ?? {},
@@ -290,7 +290,7 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
       content={
         <div className="pl-1">
           <Label
-            icon={CROP_LIFECYCLE.Sunflower.crop}
+            icon={PLOT_CROP_LIFECYCLE.Sunflower.crop}
             type="default"
             className="ml-2 mb-1"
           >
@@ -298,8 +298,8 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
           </Label>
           <div className="flex flex-wrap mb-2">
             {seeds
-              .filter((name) => name in CROP_SEEDS)
-              .filter((name) => isBasicCrop(name.split(" ")[0] as CropName))
+              .filter((name) => name in PLOT_CROP_SEEDS)
+              .filter((name) => isBasicCrop(name.split(" ")[0] as PlotCropName))
               .filter(
                 (name) =>
                   name !== "Barley Seed" || hasFeatureAccess(state, "BARLEY"),
@@ -319,7 +319,7 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
               ))}
           </div>
           <Label
-            icon={CROP_LIFECYCLE.Carrot.crop}
+            icon={PLOT_CROP_LIFECYCLE.Carrot.crop}
             type="default"
             className="ml-2 mb-1"
           >
@@ -327,8 +327,10 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
           </Label>
           <div className="flex flex-wrap mb-2">
             {seeds
-              .filter((name) => name in CROP_SEEDS)
-              .filter((name) => isMediumCrop(name.split(" ")[0] as CropName))
+              .filter((name) => name in PLOT_CROP_SEEDS)
+              .filter((name) =>
+                isMediumCrop(name.split(" ")[0] as PlotCropName),
+              )
               .map((name: SeedName) => (
                 <Box
                   isSelected={selectedName === name}
@@ -344,7 +346,7 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
               ))}
           </div>
           <Label
-            icon={CROP_LIFECYCLE.Kale.crop}
+            icon={PLOT_CROP_LIFECYCLE.Kale.crop}
             type="default"
             className="ml-2 mb-1"
           >
@@ -352,8 +354,10 @@ export const Seeds: React.FC<Props> = ({ onClose }) => {
           </Label>
           <div className="flex flex-wrap mb-2">
             {seeds
-              .filter((name) => name in CROP_SEEDS)
-              .filter((name) => isAdvancedCrop(name.split(" ")[0] as CropName))
+              .filter((name) => name in PLOT_CROP_SEEDS)
+              .filter((name) =>
+                isAdvancedCrop(name.split(" ")[0] as PlotCropName),
+              )
               .filter(
                 (name) =>
                   name !== "Barley Seed" || hasFeatureAccess(state, "BARLEY"),

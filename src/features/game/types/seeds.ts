@@ -1,10 +1,10 @@
 import {
-  CROP_SEEDS,
-  CropName,
-  CropSeedName,
   GREENHOUSE_SEEDS,
   GreenHouseCropName,
   GreenHouseCropSeedName,
+  PLOT_CROP_SEEDS,
+  PlotCropName,
+  PlotCropSeedName,
 } from "./crops";
 import {
   GREENHOUSE_FRUIT_SEEDS,
@@ -18,7 +18,7 @@ import { FLOWER_SEEDS, FlowerSeedName } from "./flowers";
 import { ResourceName } from "./resources";
 
 export type SeedName =
-  | CropSeedName
+  | PlotCropSeedName
   | PatchFruitSeedName
   | FlowerSeedName
   | GreenHouseCropSeedName
@@ -31,7 +31,7 @@ export type Seed = {
   bumpkinLevel: number;
   plantingSpot: ResourceName | "Greenhouse";
   yield?:
-    | CropName
+    | PlotCropName
     | PatchFruitName
     | FlowerSeedName
     | GreenHouseCropName
@@ -40,7 +40,7 @@ export type Seed = {
 };
 
 export const SEEDS: () => Record<SeedName, Seed> = () => ({
-  ...CROP_SEEDS,
+  ...PLOT_CROP_SEEDS,
   ...PATCH_FRUIT_SEEDS(),
   ...FLOWER_SEEDS(),
   ...GREENHOUSE_FRUIT_SEEDS(),

@@ -1,7 +1,7 @@
 import { translate } from "lib/i18n/translate";
 import { Seed } from "./seeds";
 
-export type CropName =
+export type PlotCropName =
   | "Sunflower"
   | "Potato"
   | "Pumpkin"
@@ -18,10 +18,10 @@ export type CropName =
   | "Kale"
   | "Barley";
 
-export type Crop = {
+export type PlotCrop = {
   sellPrice: number;
   harvestSeconds: number;
-  name: CropName;
+  name: PlotCropName;
   description: string;
   disabled?: boolean;
 };
@@ -73,9 +73,9 @@ export const GREENHOUSE_SEEDS: Record<GreenHouseCropSeedName, Seed> = {
 export type GreenHouseCropSeedName = `${GreenHouseCropName} Seed`;
 
 /**
- * Crops and their original prices
+ * Plot crops and their original prices
  */
-export const CROPS: Record<CropName, Crop> = {
+export const PLOT_CROPS: Record<PlotCropName, PlotCrop> = {
   Sunflower: {
     name: "Sunflower",
     description: translate("description.sunflower"),
@@ -168,9 +168,9 @@ export const CROPS: Record<CropName, Crop> = {
   },
 };
 
-export type CropSeedName = `${CropName} Seed`;
+export type PlotCropSeedName = `${PlotCropName} Seed`;
 
-export const CROP_SEEDS: Record<CropSeedName, Seed> = {
+export const PLOT_CROP_SEEDS: Record<PlotCropSeedName, Seed> = {
   "Sunflower Seed": {
     description: translate("description.sunflower"),
     price: 0.01,
