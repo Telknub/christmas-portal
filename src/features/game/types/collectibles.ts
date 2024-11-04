@@ -1,7 +1,6 @@
 import Decimal from "decimal.js-light";
 import { GameState, Inventory, Keys } from "./game";
 import { translate } from "lib/i18n/translate";
-import { SEASONS } from "./seasons";
 
 export type PlaceableLocation = "farm" | "home" | "henHouse" | "barn";
 
@@ -45,10 +44,7 @@ export type HeliosBlacksmithItem =
 export type TreasureCollectibleItem =
   | "Treasure Map"
   | "Adrift Ark"
-  | "Castellan"
-  | "Sunlit Citadel"
-  | "Baobab Tree"
-  | "Camel";
+  | "Castellan";
 
 export type SoldOutCollectibleName =
   | "Sir Goldensnout"
@@ -97,6 +93,9 @@ export type SoldOutCollectibleName =
   | "Tomato Clown"
   | "Pyramid"
   | "Oasis"
+  | "Sunlit Citadel"
+  | "Baobab Tree"
+  | "Camel"
   | "Moo-ver"
   | "Swiss Whiskers"
   | "Cluckulator"
@@ -350,31 +349,6 @@ export const TREASURE_COLLECTIBLE_ITEM: Record<
       Sand: new Decimal(750),
     },
     description: translate("description.castellan"),
-  },
-  "Sunlit Citadel": {
-    ingredients: {
-      Sand: new Decimal(1500),
-      Scarab: new Decimal(40),
-    },
-    description: translate("description.sunlit.citadel"),
-    from: SEASONS["Pharaoh's Treasure"].startDate,
-    to: SEASONS["Pharaoh's Treasure"].endDate,
-  },
-  "Baobab Tree": {
-    ingredients: {
-      Scarab: new Decimal(35),
-    },
-    description: translate("description.baobab.tree"),
-    from: SEASONS["Pharaoh's Treasure"].startDate,
-    to: SEASONS["Pharaoh's Treasure"].endDate,
-  },
-  Camel: {
-    ingredients: {
-      Scarab: new Decimal(200),
-    },
-    description: translate("description.camel"),
-    from: SEASONS["Pharaoh's Treasure"].startDate,
-    to: SEASONS["Pharaoh's Treasure"].endDate,
   },
   ...ARTEFACT_SHOP_KEYS,
 };
