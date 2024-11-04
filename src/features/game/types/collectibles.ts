@@ -1,7 +1,6 @@
 import Decimal from "decimal.js-light";
 import { GameState, Inventory, Keys } from "./game";
 import { translate } from "lib/i18n/translate";
-import { SEASONS } from "./seasons";
 
 export type PlaceableLocation = "farm" | "home" | "henHouse" | "barn";
 
@@ -100,7 +99,8 @@ export type SoldOutCollectibleName =
   | "Moo-ver"
   | "Swiss Whiskers"
   | "Cluckulator"
-  | "UFO";
+  | "UFO"
+  | "Black Sheep";
 
 export type MegaStoreCollectibleName =
   | "Flower Cart"

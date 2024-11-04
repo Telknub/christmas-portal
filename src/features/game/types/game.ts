@@ -188,7 +188,14 @@ export type MutantChicken =
   | "Banana Chicken"
   | "Crim Peckster"
   | "Knight Chicken"
-  | "Pharaoh Chicken";
+  | "Pharaoh Chicken"
+  | "Alien Chicken";
+
+export type MutantCow = "Mootant";
+
+export type MutantSheep = "Toxic Tuft";
+
+export type MutantAnimal = MutantChicken | MutantCow | MutantSheep;
 
 export const BB_TO_GEM_RATIO = 20;
 
@@ -416,7 +423,7 @@ export type InventoryItemName =
   | EasterEventItemName
   | Food
   | MOMEventItem
-  | MutantChicken
+  | MutantAnimal
   | Coupons
   | Points
   | WarItems
@@ -774,7 +781,8 @@ export type AnimalFoodName =
   | "Hay"
   | "Kernel Blend"
   | "NutriBarley"
-  | "Mixed Grain";
+  | "Mixed Grain"
+  | "Omnifeed";
 
 export type AnimalMedicineName = "Barn Delight";
 

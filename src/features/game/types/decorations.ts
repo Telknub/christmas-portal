@@ -120,7 +120,16 @@ export type PotionHouseDecorationName =
 
 export type InteriorDecorationName = "Rug" | "Wardrobe";
 
+export type AnimalDecorationName = "Wagon";
+
 export const DECORATION_TEMPLATES = {
+  "Crop Circle": {
+    dimensions: {
+      width: 2,
+      height: 2,
+    },
+    isWithdrawable: () => false,
+  },
   "King of Bears": {
     dimensions: {
       width: 3,
@@ -253,7 +262,8 @@ export type DecorationName =
   | SeasonalDecorationName
   | PotionHouseDecorationName
   | InteriorDecorationName
-  | TemplateDecorationName;
+  | TemplateDecorationName
+  | AnimalDecorationName;
 
 export const DECORATION_DIMENSIONS: Record<DecorationName, Dimensions> = {
   "Jelly Lamp": {
@@ -699,6 +709,10 @@ export const DECORATION_DIMENSIONS: Record<DecorationName, Dimensions> = {
   },
   "Paper Reed": {
     height: 2,
+    width: 1,
+  },
+  Wagon: {
+    height: 1,
     width: 1,
   },
 };

@@ -335,8 +335,13 @@ import { BattleFish } from "./components/BattleFish";
 import { TomatoBombard } from "./components/TomatoBombard";
 import { BullRunBanner } from "./components/BullRunBanner";
 import { Bed } from "./components/Bed";
+import { Wagon } from "./components/Wagon";
 import { hasFeatureAccess } from "lib/flags";
 import { Chicory } from "./components/Chicory";
+import { LonghornCowfish } from "./components/LonghornCownfish";
+import { AlienChicken } from "./components/AlienChicken";
+import { ToxicTuft } from "./components/ToxicTuft";
+import { Mootant } from "./components/Mootants";
 
 export const COLLECTIBLE_COMPONENTS: Record<
   CollectibleName | "Bud",
@@ -485,6 +490,7 @@ export const COLLECTIBLE_COMPONENTS: Record<
   "Radiance Lantern": RadianceLantern,
   "Ocean Lantern": OceanLantern,
   "Solar Lantern": SolarLantern,
+  Wagon: Wagon,
 
   "Magic Bean": Bean,
 
@@ -608,6 +614,7 @@ export const COLLECTIBLE_COMPONENTS: Record<
   "Crimson Carp": CrimsonCarp,
   "Battle Fish": BattleFish,
   "Lemon Shark": LemonShark,
+  "Longhorn Cowfish": LonghornCowfish,
 
   "Kraken Tentacle": KrakenTentacle,
 
@@ -741,6 +748,9 @@ export const COLLECTIBLE_COMPONENTS: Record<
   "Goblin Faction Rug": GoblinFactionRug,
   "Bumpkin Faction Rug": BumpkinFactionRug,
   "Desert Rose": DesertRose,
+  "Alien Chicken": AlienChicken,
+  "Toxic Tuft": ToxicTuft,
+  Mootant: Mootant,
   Chicory: Chicory,
   "Adrift Ark": (props: CollectibleProps) => (
     <ImageStyle
@@ -1396,6 +1406,21 @@ export const COLLECTIBLE_COMPONENTS: Record<
         width: `${PIXEL_SCALE * 36}px`,
       }}
       image={ITEM_DETAILS["UFO"].image}
+      alt="UFO"
+    />
+  ),
+  "Black Sheep": (props: CollectibleProps) => (
+    <ImageStyle
+      {...props}
+      divStyle={{
+        width: `${PIXEL_SCALE * 25}px`,
+        bottom: `${PIXEL_SCALE * 4}px`,
+        left: `${PIXEL_SCALE * -3}px`,
+      }}
+      imgStyle={{
+        width: `${PIXEL_SCALE * 25}px`,
+      }}
+      image={ITEM_DETAILS["Black Sheep"].image}
       alt="UFO"
     />
   ),
