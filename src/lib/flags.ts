@@ -35,8 +35,7 @@ export type ExperimentName = "ONBOARDING_CHALLENGES" | "GEM_BOOSTS";
  *
  * Do not delete JEST_TEST.
  */
-const featureFlags: Record<string, FeatureFlag> = {
-  CHORE_BOARD: betaTimeBasedFeatureFlag(new Date("2024-11-01T00:00:00Z")),
+const featureFlags = {
   ONBOARDING_REWARDS: (game: GameState) =>
     game.experiments.includes("ONBOARDING_CHALLENGES"),
   SEASONAL_TIERS: timeBasedFeatureFlag(new Date("2024-11-01T00:00:00Z")),
@@ -57,7 +56,7 @@ const featureFlags: Record<string, FeatureFlag> = {
   BEDS: timeBasedFeatureFlag(new Date("2024-11-04T00:00:00Z")),
   BULL_RUN_PLAZA: betaTimeBasedFeatureFlag(new Date("2024-11-01T00:00:00Z")),
   BALE_AOE_END: betaTimeBasedFeatureFlag(new Date("2024-11-04T00:00:00Z")),
-};
+} satisfies Record<string, FeatureFlag>;
 
 export type FeatureName = keyof typeof featureFlags;
 
