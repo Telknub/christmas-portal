@@ -6,11 +6,6 @@ import { MachineState } from "features/game/lib/gameMachine";
 import { Context } from "features/game/GameProvider";
 import { useSelector } from "@xstate/react";
 import { useRandomItem } from "lib/utils/hooks/useRandomItem";
-import { SUNNYSIDE } from "assets/sunnyside";
-import { CloseButtonPanel } from "features/game/components/CloseablePanel";
-import { FlowerTrade } from "./FlowerTrade";
-import Decimal from "decimal.js-light";
-import { hasFeatureAccess } from "lib/flags";
 import { FlowerBounties } from "./FlowerBounties";
 
 const desiredFlowerDialogues = (desiredFlowerName: string) => [
@@ -29,7 +24,6 @@ const desiredFlowerDialogues = (desiredFlowerName: string) => [
 ];
 
 const _flowerShop = (state: MachineState) => state.context.state.flowerShop;
-const _inventory = (state: MachineState) => state.context.state.inventory;
 
 interface Props {
   onClose: () => void;
@@ -37,19 +31,12 @@ interface Props {
 export const FlowerShop: React.FC<Props> = ({ onClose }) => {
   const { gameService } = useContext(Context);
   const flowerShop = useSelector(gameService, _flowerShop);
-  const inventory = useSelector(gameService, _inventory);
 
   const desiredFlowerDialogue = useRandomItem(
     desiredFlowerDialogues(flowerShop?.weeklyFlower ?? "Flower"),
   );
 
-  const [tab, setTab] = useState(0);
-
   const [confirmAction, setConfirmAction] = useState(false);
-
-  if (hasFeatureAccess(gameService.state.context.state, "FLOWER_BOUNTIES")) {
-    return <FlowerBounties onClose={onClose} />;
-  }
 
   if (flowerShop === undefined) {
     return (
@@ -100,23 +87,5 @@ export const FlowerShop: React.FC<Props> = ({ onClose }) => {
       />
     );
   }
-
-  return (
-    <CloseButtonPanel
-      bumpkinParts={NPC_WEARABLES.poppy}
-      tabs={[{ icon: SUNNYSIDE.icons.seedling, name: "Flower Trade" }]}
-      onClose={onClose}
-      currentTab={tab}
-      setCurrentTab={setTab}
-    >
-      {tab === 0 && (
-        <FlowerTrade
-          flowerShop={flowerShop}
-          flowerCount={(
-            inventory[flowerShop.weeklyFlower] ?? new Decimal(0)
-          ).toNumber()}
-        />
-      )}
-    </CloseButtonPanel>
-  );
+  return <FlowerBounties onClose={onClose} />;
 };
