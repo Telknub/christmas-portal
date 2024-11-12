@@ -138,9 +138,11 @@ export type BumpkinRevampSkillName =
   | "Crop Processor Unit"
   | "Oil Gadget"
   | "Oil Extraction"
+  | "Leak-Proof Tank"
   | "Crop Extension Module"
   | "Rapid Rig"
   | "Oil Be Back"
+  | "Field Expansion Module"
   | "Field Extension Module"
   | "Efficiency Extension Module"
   | "Grease Lightning";
@@ -421,7 +423,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "5% reduced crop growth duration",
+    boosts: translate("skill.greenThumb"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Young Farmer": {
@@ -431,7 +433,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "+0.1 Basic Crop Yield (Sunflowers, Potatoes, Pumpkins)",
+    boosts: translate("skill.youngFarmer"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Experienced Farmer": {
@@ -441,8 +443,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts:
-      "+0.1 Medium Crop Yield (Carrots, Cabbages, Soybeans, Beetroots, Cauliflowers, Parsnips)",
+    boosts: translate("skill.experiencedFarmer"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Betty's Friend": {
@@ -452,7 +453,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "Betty Coin delivery revenue increased by 30%",
+    boosts: translate("skill.bettysFriend"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Efficient Bin": {
@@ -462,17 +463,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "+3 Sprout Mix when collecting from Compost Bin",
-    image: SUNNYSIDE?.skills?.green_thumb_LE,
-  },
-  "Turbo Charged": {
-    name: "Turbo Charged",
-    tree: "Crops",
-    requirements: {
-      points: 1,
-      skill: 0,
-    },
-    boosts: "+5 Fruitful Blend when collecting from Turbo Composter",
+    boosts: translate("skill.efficientBin"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Old Farmer": {
@@ -482,7 +473,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "+0.1 Advanded Crop Yield (Eggplants, Corn, Radish, Wheat, Kale)",
+    boosts: translate("skill.oldFarmer"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   // Crops - Tier 2
@@ -493,7 +484,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "Radish, Wheat, Kale grow 10% faster",
+    boosts: translate("skill.strongRoots"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Coin Swindler": {
@@ -503,7 +494,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "+10% coins to base value of plot crops in Betty's Market",
+    boosts: translate("skill.coinSwindler"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Golden Sunflower": {
@@ -513,8 +504,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts:
-      "Chance of getting +0.35 gold when manually harvesting sunflowers (0.15%)",
+    boosts: translate("skill.goldenSunflower"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Chonky Scarecrow": {
@@ -524,7 +514,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "Basic Scarecrow AOE increase size to 7x7",
+    boosts: translate("skill.chonkyScarecrow"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Horror Mike": {
@@ -534,7 +524,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "Scary Mike AOE increase size to 7x7",
+    boosts: translate("skill.horrorMike"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   // Crops - Tier 3
@@ -545,8 +535,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 3,
       skill: 5,
     },
-    boosts:
-      "Ability to make all crops currently growing ready to be harvested (1/72h)",
+    boosts: translate("skill.instantGrowth"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
     power: true,
   },
@@ -557,7 +546,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 3,
       skill: 5,
     },
-    boosts: "+1 Advanced crop yeild, -0.5 Basic and Medium crop yield",
+    boosts: translate("skill.acreFarm"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Hectare Farm": {
@@ -567,7 +556,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 3,
       skill: 5,
     },
-    boosts: "+1 Basic and Medium crop yield, -0.5 Advanced crop yield",
+    boosts: translate("skill.hectareFarm"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Premium Worms": {
@@ -577,7 +566,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 3,
       skill: 5,
     },
-    boosts: "+10 Rapid Root when collecting from Premium Composter",
+    boosts: translate("skill.premiumWorms"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Laurie's Gains": {
@@ -587,7 +576,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 3,
       skill: 5,
     },
-    boosts: "Laurie Crow AOE increase size to 7x7",
+    boosts: translate("skill.lauriesGains"),
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
 
@@ -622,6 +611,16 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
     boosts: "+0.1 Advanced Fruit Yield (Apples, Bananas)",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
+  "Turbo Charged": {
+    name: "Turbo Charged",
+    tree: "Crops",
+    requirements: {
+      points: 1,
+      skill: 0,
+    },
+    boosts: translate("skill.turboCharged"),
+    image: SUNNYSIDE?.skills?.green_thumb_LE,
+  },
   // Fruit - Tier 2
   Catchup: {
     name: "Catchup",
@@ -640,7 +639,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "Basic Fruit grows 10% faster (Blueberries, Oranges)",
+    boosts: "Blueberries & Oranges grows 10% faster",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Prime Produce": {
@@ -650,7 +649,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "Advanced Fruit grows 10% faster (Apples, Bananas)",
+    boosts: "Apples & Bananas grows 10% faster",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   // Fruit - Tier 3
@@ -661,7 +660,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 3,
       skill: 5,
     },
-    boosts: "Tango Coin delivery revenue +50%",
+    boosts: "Tango Coins revenue doubled",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Fruity Rush Hour": {
@@ -705,7 +704,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "Increased axe quantites per BB (?%)",
+    boosts: "Increase stock of axes by 50",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Insta-Chop": {
@@ -715,7 +714,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "1 Tap Tree Chop",
+    boosts: "1 Tap Trees",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   // Trees - Tier 2
@@ -726,7 +725,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "Fruit Trees and Bushes drop +1 wood when chopped",
+    boosts: "Fruit plants drop +1 wood when chopped",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Tough Tree": {
@@ -746,7 +745,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "Axes cost 10% less coins",
+    boosts: "Axes cost 20% less coins",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Money Tree": {
@@ -820,7 +819,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "10% chance of +1 fish when fishing",
+    boosts: "10% chance of +1 fish",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   // Fishing - Tier 2
@@ -851,7 +850,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "+50% Fish deliveries SFL profit",
+    boosts: "Corale deliveries coin revenue increased by 50%",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Big Catch": {
@@ -882,7 +881,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 3,
       skill: 5,
     },
-    boosts: "+1 Yield furing fish frenzy",
+    boosts: "+1 Yield during fish frenzy",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Composting Overhaul": {
@@ -1012,7 +1011,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "20% faster Olive growth",
+    boosts: "10% faster Olive growth",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Rice Rocket": {
@@ -1022,7 +1021,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "20% faster Rice growth",
+    boosts: "10% faster Rice growth",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Vine Velocity": {
@@ -1032,7 +1031,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "20% faster Grape growth",
+    boosts: "10% faster Grape growth",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   // Greenhouse - Tier 3
@@ -1097,7 +1096,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "Stone recovers 10% faster",
+    boosts: "Stone recovers 20% faster",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Iron Hustle": {
@@ -1273,8 +1272,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts:
-      "x1.5% more experience from eating food but requires 2x the ingredients",
+    boosts: "50% chance of +1 food but requires 2x the ingredients",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Turbo Fry": {
@@ -1339,7 +1337,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "+10% Honey on claim",
+    boosts: "+0.1 Honey on claim",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Hyper Bees": {
@@ -1443,7 +1441,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "Crop grow 10% faster",
+    boosts: "Crop Machine grow time reduced by 5% but consumes 10% more oil",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Oil Gadget": {
@@ -1463,7 +1461,17 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 1,
       skill: 0,
     },
-    boosts: "+1 Oil",
+    boosts: "+1 Oil when collecting from reserves",
+    image: SUNNYSIDE?.skills?.green_thumb_LE,
+  },
+  "Leak-Proof Tank": {
+    name: "Leak-Proof Tank",
+    tree: "Machinery",
+    requirements: {
+      points: 1,
+      skill: 0,
+    },
+    boosts: "Triple oil tank capacity",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   // Machinery - Tier 2
@@ -1484,7 +1492,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 2,
       skill: 2,
     },
-    boosts: "Crops grow 20% faster",
+    boosts: "Crops grow 20% faster but consumes 40% more oil",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Oil Be Back": {
@@ -1498,6 +1506,16 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   // Machinery - Tier 3
+  "Field Expansion Module": {
+    name: "Field Expansion Module",
+    tree: "Machinery",
+    requirements: {
+      points: 3,
+      skill: 5,
+    },
+    boosts: "+5 packs added to machine",
+    image: SUNNYSIDE?.skills?.green_thumb_LE,
+  },
   "Field Extension Module": {
     name: "Field Extension Module",
     tree: "Machinery",
@@ -1515,7 +1533,7 @@ export const BUMPKIN_REVAMP_SKILL_TREE: Record<
       points: 3,
       skill: 5,
     },
-    boosts: "Machine uses 15% less oil",
+    boosts: "Machine uses 30% less oil",
     image: SUNNYSIDE?.skills?.green_thumb_LE,
   },
   "Grease Lightning": {
