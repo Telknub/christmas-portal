@@ -11,6 +11,7 @@ import { Moderation } from "features/game/lib/gameMachine";
 import { MAX_PLAYERS } from "./lib/availableRooms";
 
 export type Scenes = {
+  phaser_preloader_scene: Room<PlazaRoomState> | undefined;
   plaza: Room<PlazaRoomState> | undefined;
   auction_house: Room<PlazaRoomState> | undefined;
   clothes_shop: Room<PlazaRoomState> | undefined;
@@ -28,6 +29,9 @@ export type Scenes = {
   nightshade_house: Room<PlazaRoomState> | undefined;
   bumpkin_house: Room<PlazaRoomState> | undefined;
   portal_example: Room<PlazaRoomState> | undefined;
+  halloween_island: Room<PlazaRoomState> | undefined;
+  examples_animations: Room<PlazaRoomState> | undefined;
+  examples_rpg: Room<PlazaRoomState> | undefined;
 };
 
 export type SceneId = keyof Scenes;
@@ -65,7 +69,8 @@ export type ServerId =
   | "sunflorea_dream"
   | "sunflorea_oasis"
   | "sunflorea_brazil"
-  | "sunflorea_magic";
+  | "sunflorea_magic"
+  | "testroom";
 
 export type ServerName =
   | "Bliss"
@@ -73,8 +78,9 @@ export type ServerName =
   | "Oasis"
   | "Brazil"
   | "Magic"
-  | "Bumpkin Bazaar";
-export type ServerPurpose = "Chill & Chat" | "Trading";
+  | "Bumpkin Bazaar"
+  | "Test Room";
+export type ServerPurpose = "Chill & Chat" | "Trading" | "Testing";
 
 export type Server = {
   name: ServerName;
@@ -107,7 +113,12 @@ const SERVERS: Server[] = [
     population: 0,
     purpose: "Chill & Chat",
   },
-  // { name: "Magic", id: "sunflorea_magic", population: 0 },
+  {
+    name: "Test Room",
+    id: "testroom",
+    population: 0,
+    purpose: "Testing",
+  },
 ];
 
 export interface MMOContext {
@@ -124,7 +135,7 @@ export interface MMOContext {
   previousSceneId: SceneId | null;
   experience: number;
   isCommunity?: boolean;
-  moderation: Moderation;
+  moderation: Moderation[];
 }
 
 export type MMOState = {
@@ -193,10 +204,7 @@ export const mmoMachine = createMachine<MMOContext, MMOEvent, MMOState>({
     previousSceneId: null,
     experience: 0,
     isCommunity: false,
-    moderation: {
-      kicked: [],
-      muted: [],
-    },
+    moderation: [],
   },
   exit: (context) => context.server?.leave(),
   states: {
@@ -421,7 +429,10 @@ export const mmoMachine = createMachine<MMOContext, MMOEvent, MMOState>({
         assign({
           sceneId: (_, event) => event.sceneId,
         }),
-        (context, event) => context.server?.send(0, { sceneId: event.sceneId }),
+        (context, event) =>
+          context.server?.send("player:scene:switch", {
+            sceneId: event.sceneId,
+          }),
       ],
     },
     UPDATE_PREVIOUS_SCENE: {
@@ -452,17 +463,23 @@ export async function fetchAvailableServers(): Promise<Server[]> {
 
 /**
  * Simple bus to send MMO events from game
+ * @class MMOBus
+ * @param {string} type - Event type
+ * @param {any} message - Event message
+ * @export MMOBus
+ * @function send
+ * @function listen
  */
 class MMOBus {
-  private listener?: (message: any) => void;
+  private listener?: (type: string, message: any) => void;
 
-  public send(message: any) {
+  public send(type: string, message: any) {
     if (this.listener) {
-      this.listener(message);
+      this.listener(type, message);
     }
   }
 
-  public listen(cb: (message: any) => void) {
+  public listen(cb: (type: string, message: any) => void) {
     this.listener = cb;
   }
 }
