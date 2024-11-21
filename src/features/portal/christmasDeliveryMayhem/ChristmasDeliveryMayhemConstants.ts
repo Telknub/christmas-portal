@@ -14,9 +14,10 @@ export const COAL_RESPAWN = 10000; // Individual coal respawn
 export const COAL_BATCH_SPAWN = 10000; // Delay between each batch spawn
 
 //SnowStorm
-export const SPAWN_SNOWSTORM = 15000; // Snowstorm gap effect
-export const DURATION_SNOWSTORM = 5000; // Snowstorm duration effect
-export const SLOWDOWN_SPEED = 0.5; // Slowdown player
+export const SNOWSTORM_DELAY = 15000; // Snowstorm delay effect
+export const DURATION_SNOWSTORM = 10000; // Snowstorm duration effect
+export const SLOWDOWN_SPEED = 25; // Slowdown player
+export const SPEEDUP = 25; // Speed up player
 
 // Coal spawn by batch
 export const COAL_BATCH_SIZES = [

@@ -6,6 +6,7 @@ import { MachineInterpreter } from "./lib/christmasDeliveryMayhemMachine";
 import { coalsAnim } from "./containers/CoalsContainer";
 import { CoalBatchSpawner } from "./containers/CoalBatchSpawner";
 import { COALS_CONFIGURATION } from "./ChristmasDeliveryMayhemConstants";
+import { SnowStorm } from "./containers/SnowStormContainer";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -18,6 +19,7 @@ import { COALS_CONFIGURATION } from "./ChristmasDeliveryMayhemConstants";
 
 export class ChristmasDeliveryMayhemScene extends BaseScene {
   sceneId: SceneId = "christmas_delivery_mayhem";
+  private snowStorm!: SnowStorm;
   private coalsArray: (Phaser.Physics.Arcade.Sprite & {
     respawnTimer?: Phaser.Time.TimerEvent;
   })[] = [];
@@ -52,6 +54,20 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       frameWidth: 14,
       frameHeight: 10,
     });
+
+     // subject to change
+     this.load.spritesheet("corn_maze_clouds", "world/corn_maze_clouds.png", {
+      frameWidth: 640,
+      frameHeight: 640,
+    });
+
+    this.snowStorm = new SnowStorm(
+      this,
+      // subject to change
+      "corn_maze_clouds",
+      "corn_maze_clouds_anim",
+    );
+
   }
 
   async create() {
@@ -63,6 +79,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     this.physics.world.drawDebug = false;
     this.initializeCoals(COALS_CONFIGURATION);
+    this.snowStorm.createSnowStorm();
 
     // this.initialiseNPCs(NPCS);
   }
@@ -73,7 +90,11 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
   update() {
     super.update();
-    
+
+    if (this.snowStorm?.isActive) {
+      this.snowStorm.speedDirection();
+    }  
+
     // Player current position
     // console.log({y: this.currentPlayer?.y, x: this.currentPlayer?.x})
   }
