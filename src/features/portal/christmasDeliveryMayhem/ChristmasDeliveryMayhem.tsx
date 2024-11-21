@@ -1,52 +1,67 @@
 import React, { useContext, useEffect } from "react";
 
-import { useActor, useSelector } from "@xstate/react";
+import { useSelector } from "@xstate/react";
 import { Modal } from "components/ui/Modal";
 import { Panel } from "components/ui/Panel";
 import { Button } from "components/ui/Button";
 
 import { PortalContext } from "./lib/PortalProvider";
-import { Label } from "components/ui/Label";
-
-import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { ChristmasDeliveryMayhemPhaser } from "./ChristmasDeliveryMayhemPhaser";
-
-import { authorisePortal } from "../lib/portalUtil";
+import { Label } from "components/ui/Label";
+import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { PortalMachineState } from "./lib/christmasDeliveryMayhemMachine";
 import { Loading } from "features/auth/components";
 import { CONFIG } from "lib/config";
-import { getFont, getLanguage } from "../actions/loadPortal";
-import i18n from "lib/i18n";
-import { changeFont } from "lib/utils/fonts";
+import { authorisePortal, claimPrize } from "../lib/portalUtil";
+import { ChristmasDeliveryMayhemRulesPanel } from "./components/panels/ChristmasDeliveryMayhemRulesPanel";
+import { ChristmasDeliveryMayhemNoAttemptsPanel } from "./components/panels/ChristmasDeliveryMayhemNoAttemptsPanel";
+import AchievementToastProvider from "./providers/AchievementToastProvider";
 
-const _gameState = (state: PortalMachineState) => state.context.state;
+const _sflBalance = (state: PortalMachineState) => state.context.state?.balance;
+const _isError = (state: PortalMachineState) => state.matches("error");
+const _isUnauthorised = (state: PortalMachineState) =>
+  state.matches("unauthorised");
+const _isLoading = (state: PortalMachineState) => state.matches("loading");
+const _isNoAttempts = (state: PortalMachineState) =>
+  state.matches("noAttempts");
+const _isIntroduction = (state: PortalMachineState) =>
+  state.matches("introduction");
+const _isLoser = (state: PortalMachineState) => state.matches("loser");
+const _isWinner = (state: PortalMachineState) => state.matches("winner");
+const _isComplete = (state: PortalMachineState) => state.matches("complete");
 
 /**
  * A Portal Example which demonstrates basic state management
  */
 export const ChristmasDeliveryMayhem: React.FC = () => {
   const { portalService } = useContext(PortalContext);
-  const [portalState] = useActor(portalService);
   const { t } = useAppTranslation();
 
-  const gameState = useSelector(portalService, _gameState);
+  const sflBalance = useSelector(portalService, _sflBalance);
+  const isError = useSelector(portalService, _isError);
+  const isUnauthorised = useSelector(portalService, _isUnauthorised);
+  const isLoading = useSelector(portalService, _isLoading);
+  const isNoAttempts = useSelector(portalService, _isNoAttempts);
+  const isIntroduction = useSelector(portalService, _isIntroduction);
+  const isWinner = useSelector(portalService, _isWinner);
+  const isLoser = useSelector(portalService, _isLoser);
+  const isComplete = useSelector(portalService, _isComplete);
 
   useEffect(() => {
-    // load language from query params
-    const parentLanguage = getLanguage();
-    const appLanguage = localStorage.getItem("language") || "en";
+    // If a player tries to quit while playing, mark it as an attempt
+    const handleBeforeUnload = () => {
+      portalService.send("GAME_OVER");
+    };
 
-    if (appLanguage !== parentLanguage) {
-      localStorage.setItem("language", parentLanguage);
-      i18n.changeLanguage(parentLanguage);
-    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // load font from query params
-    const font = getFont();
-    changeFont(font);
+    // clean up the event listener when component unmounts
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
-  if (portalState.matches("error")) {
+  if (isError) {
     return (
       <Modal show>
         <Panel>
@@ -62,7 +77,7 @@ export const ChristmasDeliveryMayhem: React.FC = () => {
     );
   }
 
-  if (portalState.matches("unauthorised")) {
+  if (isUnauthorised) {
     return (
       <Modal show>
         <Panel>
@@ -76,7 +91,7 @@ export const ChristmasDeliveryMayhem: React.FC = () => {
     );
   }
 
-  if (portalState.matches("loading")) {
+  if (isLoading) {
     return (
       <Modal show>
         <Panel>
@@ -91,11 +106,65 @@ export const ChristmasDeliveryMayhem: React.FC = () => {
 
   return (
     <div>
-      {gameState && (
-        <>
-          {/* <ChristmasDeliveryMayhemHUD /> */}
+      {isNoAttempts && (
+        <Modal show>
+          <ChristmasDeliveryMayhemNoAttemptsPanel />
+        </Modal>
+      )}
+
+      {isIntroduction && (
+        <Modal show>
+          <ChristmasDeliveryMayhemRulesPanel
+            mode={"introduction"}
+            showScore={false}
+            showExitButton={true}
+            confirmButtonText={t("start")}
+            onConfirm={() => portalService.send("CONTINUE")}
+          />
+        </Modal>
+      )}
+
+      {isLoser && (
+        <Modal show>
+          <ChristmasDeliveryMayhemRulesPanel
+            mode={"failed"}
+            showScore={true}
+            showExitButton={true}
+            confirmButtonText={t("play.again")}
+            onConfirm={() => portalService.send("RETRY")}
+          />
+        </Modal>
+      )}
+
+      {isWinner && (
+        <Modal show>
+          <ChristmasDeliveryMayhemRulesPanel
+            mode={"success"}
+            showScore={true}
+            showExitButton={false}
+            confirmButtonText={t("claim")}
+            onConfirm={claimPrize}
+          />
+        </Modal>
+      )}
+
+      {isComplete && (
+        <Modal show>
+          <ChristmasDeliveryMayhemRulesPanel
+            mode={"introduction"}
+            showScore={true}
+            showExitButton={true}
+            confirmButtonText={t("play.again")}
+            onConfirm={() => portalService.send("RETRY")}
+          />
+        </Modal>
+      )}
+
+      {sflBalance && (
+        <AchievementToastProvider>
+          {/* <ChristmasDeliveryMayhemHud /> */}
           <ChristmasDeliveryMayhemPhaser />
-        </>
+        </AchievementToastProvider>
       )}
     </div>
   );

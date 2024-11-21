@@ -6,9 +6,9 @@ import { SquareIcon } from "components/ui/SquareIcon";
 import { ITEM_DETAILS } from "features/game/types/images";
 import { Label } from "components/ui/Label";
 import {
-  ENEMIES_TABLE,
   RESOURCES_TABLE,
-  SIGNS_TABLE,
+  ELVES_TABLE,
+  EVENTS_TABLE,
 } from "../../ChristmasDeliveryMayhemConstants";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { useSound } from "lib/utils/hooks/useSound";
@@ -17,7 +17,7 @@ type Props = {
   onBack: () => void;
 };
 
-export const HalloweenGuide: React.FC<Props> = ({ onBack }) => {
+export const ChristmasDeliveryMayhemGuide: React.FC<Props> = ({ onBack }) => {
   const { t } = useAppTranslation();
 
   const button = useSound("button");
@@ -46,7 +46,9 @@ export const HalloweenGuide: React.FC<Props> = ({ onBack }) => {
               }}
             />
           </div>
-          <div className="grow mb-3 text-lg">{t("halloween.guide")}</div>
+          <div className="grow mb-3 text-lg">
+            {t("christmas-delivery-mayhem.guide")}
+          </div>
           <div className="flex-none">
             <div
               style={{
@@ -61,76 +63,56 @@ export const HalloweenGuide: React.FC<Props> = ({ onBack }) => {
       {/* content */}
       <div className="flex flex-col gap-1 overflow-y-auto scrollable pr-1">
         {/* instructions */}
-        <Label type="default">{t("halloween.instructions")}</Label>
+        <Label type="default">
+          {t("christmas-delivery-mayhem.instructions")}
+        </Label>
         <div>
           <div className="flex items-center mb-3 mx-2">
-            <SquareIcon icon={ITEM_DETAILS["Lamp Front"].image} width={7} />
+            <SquareIcon
+              icon={ITEM_DETAILS["Abandoned Bear"].image}
+              width={10}
+            />
             <p className="text-xs ml-3 flex-1">
-              {t("halloween.instructions1")}
+              {t("christmas-delivery-mayhem.instructions1")}
             </p>
           </div>
 
           <div className="flex items-center mb-3 mx-2">
-            <SquareIcon icon={SUNNYSIDE.icons.stopwatch} width={7} />
+            <SquareIcon icon={SUNNYSIDE.icons.stopwatch} width={10} />
             <p className="text-xs ml-3 flex-1">
-              {t("halloween.instructions2")}
+              {t("christmas-delivery-mayhem.instructions2")}
             </p>
           </div>
 
           <div className="flex items-center mb-3 mx-2">
-            <SquareIcon icon={ITEM_DETAILS["Zombie"].image} width={7} />
+            <SquareIcon
+              icon={ITEM_DETAILS["Abandoned Bear"].image}
+              width={10}
+            />
             <p className="text-xs ml-3 flex-1">
-              {t("halloween.instructions3")}
+              {t("christmas-delivery-mayhem.instructions3")}
             </p>
           </div>
 
           <div className="flex items-center mb-3 mx-2">
-            <SquareIcon icon={SUNNYSIDE.icons.stopwatch} width={7} />
+            <SquareIcon icon={SUNNYSIDE.icons.stopwatch} width={10} />
             <p className="text-xs ml-3 flex-1">
-              {t("halloween.instructions4")}
+              {t("christmas-delivery-mayhem.instructions4")}
             </p>
           </div>
 
           <div className="flex items-center mb-3 mx-2">
-            <SquareIcon icon={SUNNYSIDE.decorations.skull} width={7} />
+            <SquareIcon icon={SUNNYSIDE.decorations.skull} width={10} />
             <p className="text-xs ml-3 flex-1">
-              {t("halloween.instructions5")}
+              {t("christmas-delivery-mayhem.instructions5")}
             </p>
           </div>
         </div>
         {/* resources */}
-        <Label type="default">{t("halloween.resources")}</Label>
+        <Label type="default">{t("christmas-delivery-mayhem.resources")}</Label>
         <table className="w-full text-xs table-fixed border-collapse">
           <tbody>
             {Object.values(RESOURCES_TABLE).map(
-              ({ item, description }, index) => (
-                <tr key={index}>
-                  <td
-                    style={{ border: "1px solid #b96f50" }}
-                    className="p-1.5 w-1/6"
-                  >
-                    <div className="flex items-center justify-center">
-                      {<SquareIcon icon={item} width={15} />}
-                    </div>
-                  </td>
-                  <td
-                    style={{ border: "1px solid #b96f50" }}
-                    className="p-1.5 w-5/6"
-                  >
-                    {t("halloween.scoreDescription", {
-                      description: description,
-                    })}
-                  </td>
-                </tr>
-              ),
-            )}
-          </tbody>
-        </table>
-        {/* enemies */}
-        <Label type="default">{t("halloween.enemies")}</Label>
-        <table className="w-full text-xs table-fixed border-collapse">
-          <tbody>
-            {Object.values(ENEMIES_TABLE).map(
               ({ item, description }, index) => (
                 <tr key={index}>
                   <td
@@ -145,7 +127,7 @@ export const HalloweenGuide: React.FC<Props> = ({ onBack }) => {
                     style={{ border: "1px solid #b96f50" }}
                     className="p-1.5 w-5/6"
                   >
-                    {t("halloween.scoreDescription", {
+                    {t("christmas-delivery-mayhem.scoreDescription", {
                       description: description,
                     })}
                   </td>
@@ -154,25 +136,51 @@ export const HalloweenGuide: React.FC<Props> = ({ onBack }) => {
             )}
           </tbody>
         </table>
-        {/* signs */}
-        <Label type="default">{t("halloween.signs")}</Label>
+        {/* enemies */}
+        <Label type="default">{t("christmas-delivery-mayhem.enemies")}</Label>
         <table className="w-full text-xs table-fixed border-collapse">
           <tbody>
-            {Object.values(SIGNS_TABLE).map(({ item, description }, index) => (
+            {Object.values(ELVES_TABLE).map(({ item, description }, index) => (
               <tr key={index}>
                 <td
                   style={{ border: "1px solid #b96f50" }}
                   className="p-1.5 w-1/6"
                 >
                   <div className="flex items-center justify-center">
-                    {<SquareIcon icon={item} width={30} />}
+                    {<SquareIcon icon={item} width={13} />}
                   </div>
                 </td>
                 <td
                   style={{ border: "1px solid #b96f50" }}
                   className="p-1.5 w-5/6"
                 >
-                  {t("halloween.scoreDescription", {
+                  {t("christmas-delivery-mayhem.scoreDescription", {
+                    description: description,
+                  })}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {/* signs */}
+        <Label type="default">{t("christmas-delivery-mayhem.signs")}</Label>
+        <table className="w-full text-xs table-fixed border-collapse">
+          <tbody>
+            {Object.values(EVENTS_TABLE).map(({ item, description }, index) => (
+              <tr key={index}>
+                <td
+                  style={{ border: "1px solid #b96f50" }}
+                  className="p-1.5 w-1/6"
+                >
+                  <div className="flex items-center justify-center">
+                    {<SquareIcon icon={item} width={13} />}
+                  </div>
+                </td>
+                <td
+                  style={{ border: "1px solid #b96f50" }}
+                  className="p-1.5 w-5/6"
+                >
+                  {t("christmas-delivery-mayhem.scoreDescription", {
                     description: description,
                   })}
                 </td>

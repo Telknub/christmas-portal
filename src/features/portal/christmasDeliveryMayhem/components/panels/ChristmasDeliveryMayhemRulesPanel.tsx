@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { CloseButtonPanel } from "features/game/components/CloseablePanel";
-import { HalloweenMission } from "./HalloweenMission";
-import { HALLOWEEN_NPC_WEARABLES } from "../../ChristmasDeliveryMayhemConstants";
+import { ChristmasDeliveryMayhemMission } from "./ChristmasDeliveryMayhemMission";
+import { CHRITSMAS_NPC_WEARABLES } from "../../ChristmasDeliveryMayhemConstants";
 
 interface Props {
   mode: "introduction" | "success" | "failed";
@@ -13,7 +13,7 @@ interface Props {
   confirmButtonText: string;
   onConfirm: () => void;
 }
-export const HalloweenRulesPanel: React.FC<Props> = ({
+export const ChristmasDeliveryMayhemRulesPanel: React.FC<Props> = ({
   mode,
   showScore,
   showExitButton,
@@ -26,19 +26,19 @@ export const HalloweenRulesPanel: React.FC<Props> = ({
   return (
     <CloseButtonPanel
       className="overflow-y-hidden"
-      bumpkinParts={HALLOWEEN_NPC_WEARABLES}
+      bumpkinParts={CHRITSMAS_NPC_WEARABLES}
       currentTab={tab}
       setCurrentTab={setTab}
       tabs={[
         {
           icon: SUNNYSIDE.icons.plant,
-          name: t("halloween.mission"),
+          name: t("christmas-delivery-mayhem.mission"),
         },
       ]}
     >
       <>
         {tab === 0 && (
-          <HalloweenMission
+          <ChristmasDeliveryMayhemMission
             mode={mode}
             showScore={showScore}
             showExitButton={showExitButton}

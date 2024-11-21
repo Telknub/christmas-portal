@@ -5,17 +5,19 @@ import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { useSelector } from "@xstate/react";
 import { PortalContext } from "../../lib/PortalProvider";
 import { Label } from "components/ui/Label";
-import { HalloweenAttempts } from "./HalloweenAttempts";
+import { ChristmasDeliveryMayhemAttempts } from "./ChristmasDeliveryMayhemAttempts";
 import factions from "assets/icons/factions.webp";
 import { getAttemptsLeft } from "../../lib/ChristmasDeliveryMayhemUtils";
 import { goHome } from "features/portal/lib/portalUtil";
 import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 import { SUNNYSIDE } from "assets/sunnyside";
-import { HalloweenGuide } from "./HalloweenGuide";
+import { ChristmasDeliveryMayhemGuide } from "./ChristmasDeliveryMayhemGuide";
 import { SquareIcon } from "components/ui/SquareIcon";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { hasFeatureAccess } from "lib/flags";
 import { millisecondsToString } from "lib/utils/time";
+// import { ChristmasDeliveryMayhemPrize } from "./ChristmasDeliveryMayhemPrize";
+// import { ChristmasDeliveryMayhemAchievementsList } from "./ChristmasDeliveryMayhemAchievementsList";
 
 interface Props {
   mode: "introduction" | "success" | "failed";
@@ -26,11 +28,11 @@ interface Props {
 }
 
 const _minigame = (state: PortalMachineState) =>
-  state.context.state?.minigames.games["halloween"];
+  state.context.state?.minigames.games["christmas-delivery-mayhem"];
 const _lastScore = (state: PortalMachineState) => state.context.lastScore;
 const _state = (state: PortalMachineState) => state.context.state;
 
-export const HalloweenMission: React.FC<Props> = ({
+export const ChristmasDeliveryMayhemMission: React.FC<Props> = ({
   mode,
   showScore,
   showExitButton,
@@ -46,7 +48,9 @@ export const HalloweenMission: React.FC<Props> = ({
   const lastScore = useSelector(portalService, _lastScore);
   const state = useSelector(portalService, _state);
 
-  const hasBetaAccess = state ? hasFeatureAccess(state, "HALLOWEEN") : false;
+  const hasBetaAccess = state
+    ? hasFeatureAccess(state, "CHRISTMANS_DELIVERY_MAYHEM")
+    : false;
 
   const dateKey = new Date().toISOString().slice(0, 10);
 
@@ -61,9 +65,9 @@ export const HalloweenMission: React.FC<Props> = ({
           <div>
             <div className="w-full relative flex justify-between gap-1 items-center mb-1 py-1 pl-2">
               <Label type="default" icon={factions}>
-                {t("halloween.portal.title")}
+                {t("christmas-delivery-mayhem.portal.title")}
               </Label>
-              <HalloweenAttempts attemptsLeft={attemptsLeft} />
+              <ChristmasDeliveryMayhemAttempts attemptsLeft={attemptsLeft} />
             </div>
 
             <div
@@ -75,7 +79,7 @@ export const HalloweenMission: React.FC<Props> = ({
               <div className="flex justify-between flex-col space-y-1 px-1 mb-3 text-sm flex-grow">
                 {showScore && (
                   <span>
-                    {t("halloween.score", {
+                    {t("christmas-delivery-mayhem.score", {
                       score: millisecondsToString(lastScore, {
                         length: "full",
                       }),
@@ -83,7 +87,7 @@ export const HalloweenMission: React.FC<Props> = ({
                   </span>
                 )}
                 <span>
-                  {t("halloween.bestToday", {
+                  {t("christmas-delivery-mayhem.bestToday", {
                     score: minigame?.history[dateKey]?.highscore
                       ? millisecondsToString(
                           minigame?.history[dateKey]?.highscore,
@@ -95,7 +99,7 @@ export const HalloweenMission: React.FC<Props> = ({
                   })}
                 </span>
                 <span>
-                  {t("halloween.bestAllTime", {
+                  {t("christmas-delivery-mayhem.bestAllTime", {
                     score: millisecondsToString(
                       Object.values(minigame?.history ?? {}).reduce(
                         (acc, { highscore }) => Math.max(acc, highscore),
@@ -133,7 +137,7 @@ export const HalloweenMission: React.FC<Props> = ({
               </div>
             </div>
 
-            {/* <HalloweenPrize /> */}
+            {/* <ChristmasDeliveryMayhemPrize /> */}
           </div>
 
           <div className="flex mt-1 space-x-1">
@@ -152,9 +156,11 @@ export const HalloweenMission: React.FC<Props> = ({
         </>
       )}
       {/* {page === "achievements" && (
-        <HalloweenAchievementsList onBack={() => setPage("main")} />
+        <ChristmasDeliveryMayhemAchievementsList onBack={() => setPage("main")} />
       )} */}
-      {page === "guide" && <HalloweenGuide onBack={() => setPage("main")} />}
+      {page === "guide" && (
+        <ChristmasDeliveryMayhemGuide onBack={() => setPage("main")} />
+      )}
     </>
   );
 };

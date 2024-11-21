@@ -12,7 +12,7 @@ import { donate } from "features/portal/lib/portalUtil";
 
 const CONTRIBUTORS = [""];
 
-export const HalloweenDonations: React.FC = () => {
+export const ChristmasDeliveryMayhemDonations: React.FC = () => {
   const { t } = useAppTranslation();
 
   const [donation, setDonation] = useState(new Decimal(1));
@@ -42,7 +42,9 @@ export const HalloweenDonations: React.FC = () => {
 
   return (
     <div className="flex flex-col mb-1 p-2 text-sm">
-      <p className="mb-2 text-center">{t("halloween.donationDescription")}</p>
+      <p className="mb-2 text-center">
+        {t("christmas-delivery-mayhem.donationDescription")}
+      </p>
 
       <div className="flex flex-wrap mt-1 mb-4 gap-x-3 gap-y-1 justify-center">
         {CONTRIBUTORS.map((name) => (

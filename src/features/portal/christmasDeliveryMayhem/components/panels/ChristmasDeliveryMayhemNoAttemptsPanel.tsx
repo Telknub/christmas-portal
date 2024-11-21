@@ -10,7 +10,7 @@ import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 import sfl from "assets/icons/sfl.webp";
 import { CloseButtonPanel } from "features/game/components/CloseablePanel";
 import {
-  HALLOWEEN_NPC_WEARABLES,
+  CHRITSMAS_NPC_WEARABLES,
   RESTOCK_ATTEMPTS,
   RESTOCK_ATTEMPTS_SFL,
   UNLIMITED_ATTEMPTS_SFL,
@@ -25,29 +25,33 @@ import { PIXEL_SCALE } from "features/game/lib/constants";
 const _sflBalance = (state: PortalMachineState) =>
   state.context.state?.balance ?? new Decimal(0);
 
-export const HalloweenNoAttemptsPanel: React.FC = () => {
+export const ChristmasDeliveryMayhemNoAttemptsPanel: React.FC = () => {
   const { portalService } = useContext(PortalContext);
   const { t } = useAppTranslation();
 
   const sflBalance = useSelector(portalService, _sflBalance);
 
   return (
-    <CloseButtonPanel bumpkinParts={HALLOWEEN_NPC_WEARABLES}>
+    <CloseButtonPanel bumpkinParts={CHRITSMAS_NPC_WEARABLES}>
       <div className="p-2">
         <div className="flex gap-1 justify-between items-center mb-2">
           <Label icon={SUNNYSIDE.icons.lock} type="danger">
-            {t("halloween.noAttemptsRemaining")}
+            {t("christmas-delivery-mayhem.noAttemptsRemaining")}
           </Label>
           <Label
             icon={sfl}
             type={sflBalance.lt(RESTOCK_ATTEMPTS_SFL) ? "danger" : "default"}
           >
-            {t("halloween.sflRequired")}
+            {t("christmas-delivery-mayhem.sflRequired")}
           </Label>
         </div>
 
-        <p className="text-sm mb-2">{t("halloween.youHaveRunOutOfAttempts")}</p>
-        <p className="text-sm mb-2">{t("halloween.wouldYouLikeToUnlock")}</p>
+        <p className="text-sm mb-2">
+          {t("christmas-delivery-mayhem.youHaveRunOutOfAttempts")}
+        </p>
+        <p className="text-sm mb-2">
+          {t("christmas-delivery-mayhem.wouldYouLikeToUnlock")}
+        </p>
 
         <div className="flex items-center space-x-1 relative">
           <p className="balance-text">{setPrecision(sflBalance).toString()}</p>
@@ -73,7 +77,7 @@ export const HalloweenNoAttemptsPanel: React.FC = () => {
             })
           }
         >
-          {t("halloween.buyAttempts", {
+          {t("christmas-delivery-mayhem.buyAttempts", {
             attempts: RESTOCK_ATTEMPTS,
             sfl: RESTOCK_ATTEMPTS_SFL,
           })}
@@ -87,7 +91,7 @@ export const HalloweenNoAttemptsPanel: React.FC = () => {
             })
           }
         >
-          {t("halloween.unlockAttempts", {
+          {t("christmas-delivery-mayhem.unlockAttempts", {
             sfl: UNLIMITED_ATTEMPTS_SFL,
           })}
         </Button>

@@ -5,8 +5,8 @@ import { PortalContext } from "../../lib/PortalProvider";
 import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 import {
   AVAILABLE_ACHIEVEMENTS,
-  HalloweenAchievementsName,
-} from "../../HalloweenAchievements";
+  ChristmasDeliveryMayhemAchievementsName,
+} from "../../ChristmasDeliveryMayhemAchievements";
 import { SquareIcon } from "components/ui/SquareIcon";
 import { InnerPanel, OuterPanel } from "components/ui/Panel";
 import { SUNNYSIDE } from "assets/sunnyside";
@@ -16,13 +16,16 @@ import { Label } from "components/ui/Label";
 import { useSound } from "lib/utils/hooks/useSound";
 
 const _achievements = (state: PortalMachineState) =>
-  state.context.state?.minigames.games["halloween"]?.achievements ?? {};
+  state.context.state?.minigames.games["christmas-delivery-mayhem"]
+    ?.achievements ?? {};
 
 type Props = {
   onBack: () => void;
 };
 
-export const HalloweenAchievementsList: React.FC<Props> = ({ onBack }) => {
+export const ChristmasDeliveryMayhemAchievementsList: React.FC<Props> = ({
+  onBack,
+}) => {
   const { t } = useAppTranslation();
   const { portalService } = useContext(PortalContext);
 
@@ -30,10 +33,14 @@ export const HalloweenAchievementsList: React.FC<Props> = ({ onBack }) => {
 
   const achievements = useSelector(portalService, _achievements);
   const inProgressAchievementNames = (
-    Object.keys(AVAILABLE_ACHIEVEMENTS) as HalloweenAchievementsName[]
+    Object.keys(
+      AVAILABLE_ACHIEVEMENTS,
+    ) as ChristmasDeliveryMayhemAchievementsName[]
   ).filter((achievementName) => !achievements[achievementName]);
   const completedAchievementNames = (
-    Object.keys(AVAILABLE_ACHIEVEMENTS) as HalloweenAchievementsName[]
+    Object.keys(
+      AVAILABLE_ACHIEVEMENTS,
+    ) as ChristmasDeliveryMayhemAchievementsName[]
   ).filter((achievementName) => achievements[achievementName]);
 
   return (
@@ -129,7 +136,7 @@ export const HalloweenAchievementsList: React.FC<Props> = ({ onBack }) => {
                       </div>
                     </div>
                     <Label type="success" className="text-xs">
-                      {t("halloween.achievementUnlockedAt", {
+                      {t("christmas-delivery-mayhem.achievementUnlockedAt", {
                         time: new Date(unlockedAt).toLocaleString(),
                       })}
                     </Label>

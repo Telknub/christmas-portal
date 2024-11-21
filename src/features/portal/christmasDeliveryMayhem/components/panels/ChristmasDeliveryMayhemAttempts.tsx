@@ -7,17 +7,23 @@ interface Props {
   attemptsLeft: number;
 }
 
-export const HalloweenAttempts: React.FC<Props> = ({ attemptsLeft }) => {
+export const ChristmasDeliveryMayhemAttempts: React.FC<Props> = ({
+  attemptsLeft,
+}) => {
   const { t } = useAppTranslation();
 
   if (attemptsLeft === Infinity) {
-    return <Label type="success">{t("halloween.unlimitedAttempts")}</Label>;
+    return (
+      <Label type="success">
+        {t("christmas-delivery-mayhem.unlimitedAttempts")}
+      </Label>
+    );
   }
 
   if (attemptsLeft > 0 && attemptsLeft !== 1) {
     return (
       <Label type="vibrant">
-        {t("halloween.attemptsRemainingPlural", {
+        {t("christmas-delivery-mayhem.attemptsRemainingPlural", {
           attempts: attemptsLeft,
         })}
       </Label>
@@ -27,12 +33,16 @@ export const HalloweenAttempts: React.FC<Props> = ({ attemptsLeft }) => {
   if (attemptsLeft === 1) {
     return (
       <Label type="vibrant">
-        {t("halloween.attemptsRemainingSingular", {
+        {t("christmas-delivery-mayhem.attemptsRemainingSingular", {
           attempts: attemptsLeft,
         })}
       </Label>
     );
   }
 
-  return <Label type="danger">{t("halloween.noAttemptsRemaining")}</Label>;
+  return (
+    <Label type="danger">
+      {t("christmas-delivery-mayhem.noAttemptsRemaining")}
+    </Label>
+  );
 };

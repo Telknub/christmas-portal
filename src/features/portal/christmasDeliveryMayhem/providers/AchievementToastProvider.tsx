@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import {
   AVAILABLE_ACHIEVEMENTS,
-  HalloweenAchievementsName,
-} from "../HalloweenAchievements";
+  ChristmasDeliveryMayhemAchievementsName,
+} from "../ChristmasDeliveryMayhemAchievements";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { InnerPanel } from "components/ui/Panel";
@@ -32,13 +32,13 @@ const AchievementToastProvider: React.FC = ({ children }) => {
   const { t } = useAppTranslation();
 
   const [achievementNames, setAchievementNames] = useState<
-    HalloweenAchievementsName[]
+    ChristmasDeliveryMayhemAchievementsName[]
   >([]);
 
   const showAchievementToasts = (achievementNames: string[]) => {
     const validAchievementNames = achievementNames.filter((name) =>
       Object.keys(AVAILABLE_ACHIEVEMENTS).includes(name),
-    ) as HalloweenAchievementsName[];
+    ) as ChristmasDeliveryMayhemAchievementsName[];
     setAchievementNames(validAchievementNames);
   };
 
