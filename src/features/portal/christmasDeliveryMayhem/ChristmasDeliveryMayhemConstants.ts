@@ -2,11 +2,17 @@ import { Equipped } from "features/game/types/bumpkin";
 import { ITEM_DETAILS } from "features/game/types/images";
 import { translate } from "lib/i18n/translate";
 import { NPC_WEARABLES } from "lib/npcs";
+import { SQUARE_WIDTH } from "features/game/lib/constants";
 
 export const UNLIMITED_ATTEMPTS_SFL = 25;
 export const RESTOCK_ATTEMPTS_SFL = 10;
 export const DAILY_ATTEMPTS = 1;
 export const RESTOCK_ATTEMPTS = 3;
+
+export const MAX_PLAYER_GIFTS = 3;
+
+// Gifts
+export const GIFT_RESPAWN = 3000;
 
 //Krampus Coals
 export const KRAMPUS_DURATION = 1000; // Krampus spawn duration
@@ -18,6 +24,23 @@ export const SNOWSTORM_DELAY = 15000; // Snowstorm delay effect
 export const DURATION_SNOWSTORM = 10000; // Snowstorm duration effect
 export const SLOWDOWN_SPEED = 25; // Slowdown player
 export const SPEEDUP = 25; // Speed up player
+
+// Gift coordinates
+export const GIFT_CONFIGURATION = [
+  // Left
+  { name: "gift_1", x: SQUARE_WIDTH * 8, y: SQUARE_WIDTH * 2 },
+  { name: "gift_2", x: SQUARE_WIDTH * 10, y: SQUARE_WIDTH * 2 },
+  { name: "gift_3", x: SQUARE_WIDTH * 12, y: SQUARE_WIDTH * 2 },
+  // Right
+  { name: "gift_4", x: SQUARE_WIDTH * 18, y: SQUARE_WIDTH * 2 },
+  { name: "gift_5", x: SQUARE_WIDTH * 20, y: SQUARE_WIDTH * 2 },
+  { name: "gift_6", x: SQUARE_WIDTH * 22, y: SQUARE_WIDTH * 2 },
+];
+
+// Trash can coordinates
+export const TRASH_CAN_CONFIGURATION = [
+  { x: SQUARE_WIDTH * 15, y: SQUARE_WIDTH * 2 },
+];
 
 // Coal spawn by batch
 export const COAL_BATCH_SIZES = [
@@ -73,6 +96,14 @@ export const COALS_CONFIGURATION: { x: number; y: number }[] = [
   { x: 72, y: 305 },
   { x: 365, y: 220 },
 ];
+
+export const DROP_ANIMATION_GIFT_CONFIGURATION: {
+  [key: number]: { x: number; y: number };
+} = {
+  0: { x: 15, y: 5 },
+  1: { x: -15, y: 5 },
+  2: { x: 28, y: 5 },
+};
 
 export const RESOURCES_TABLE: {
   [key: number]: {

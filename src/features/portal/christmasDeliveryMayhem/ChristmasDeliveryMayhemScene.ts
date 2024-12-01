@@ -5,8 +5,14 @@ import { SQUARE_WIDTH } from "features/game/lib/constants";
 import { MachineInterpreter } from "./lib/christmasDeliveryMayhemMachine";
 import { coalsAnim } from "./containers/CoalsContainer";
 import { CoalBatchSpawner } from "./containers/CoalBatchSpawner";
-import { COALS_CONFIGURATION } from "./ChristmasDeliveryMayhemConstants";
+import {
+  COALS_CONFIGURATION,
+  GIFT_CONFIGURATION,
+  TRASH_CAN_CONFIGURATION,
+} from "./ChristmasDeliveryMayhemConstants";
 import { SnowStorm } from "./containers/SnowStormContainer";
+import { GiftContainer } from "./containers/GiftContainer";
+import { TrashCanContainer } from "./containers/TrashCanContainer";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -48,26 +54,50 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    
+
     // subject to change
     this.load.spritesheet("sand", "world/sand.webp", {
       frameWidth: 14,
       frameHeight: 10,
     });
 
-     // subject to change
-     this.load.spritesheet("corn_maze_clouds", "world/corn_maze_clouds.png", {
+    // subject to change
+    this.load.spritesheet("corn_maze_clouds", "world/corn_maze_clouds.png", {
       frameWidth: 640,
       frameHeight: 640,
     });
 
-    this.snowStorm = new SnowStorm(
-      this,
-      // subject to change
-      "corn_maze_clouds",
-      "corn_maze_clouds_anim",
-    );
+    // Gifts
+    this.load.spritesheet("gift_1", "world/page.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+    this.load.spritesheet("gift_2", "world/camel_bone.webp", {
+      frameWidth: 13,
+      frameHeight: 16,
+    });
+    this.load.spritesheet("gift_3", "world/candy_icon.png", {
+      frameWidth: 14,
+      frameHeight: 14,
+    });
+    this.load.spritesheet("gift_4", "world/exchange_disc.png", {
+      frameWidth: 18,
+      frameHeight: 19,
+    });
+    this.load.spritesheet("gift_5", "world/hieroglyph.webp", {
+      frameWidth: 16,
+      frameHeight: 13,
+    });
+    this.load.spritesheet("gift_6", "world/rabbit_3.png", {
+      frameWidth: 17,
+      frameHeight: 18,
+    });
 
+    // Trash Can
+    this.load.spritesheet("trash_can", "world/red_chest.png", {
+      frameWidth: 16,
+      frameHeight: 20,
+    });
   }
 
   async create() {
@@ -77,11 +107,26 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     super.create();
 
+    this.createGifts();
+    this.createTrashCans();
+
     this.physics.world.drawDebug = false;
     this.initializeCoals(COALS_CONFIGURATION);
+
+    this.snowStorm = new SnowStorm(
+      this,
+      // subject to change
+      "corn_maze_clouds",
+      "corn_maze_clouds_anim",
+    );
+
     this.snowStorm.createSnowStorm();
 
     // this.initialiseNPCs(NPCS);
+  }
+
+  private get isGameReady() {
+    return this.portalService?.state.matches("ready") === true;
   }
 
   public get portalService() {
@@ -93,10 +138,14 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     if (this.snowStorm?.isActive) {
       this.snowStorm.speedDirection();
-    }  
+    }
 
     // Player current position
     // console.log({y: this.currentPlayer?.y, x: this.currentPlayer?.x})
+
+    if (this.isGameReady) {
+      this.portalService?.send("START");
+    }
   }
 
   // Initialize Coals
@@ -125,18 +174,37 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       this.physics.add.overlap(
         coal,
         this.currentPlayer,
-        () =>
-          coalsAnim(
-            coal,
-            this,
-            this.coalsArray,
-          ),
+        () => coalsAnim(coal, this, this.coalsArray),
         undefined,
         this,
       );
     }
   }
 
-  private setDefaultState() {
+  private createGifts() {
+    GIFT_CONFIGURATION.forEach(
+      (config) =>
+        new GiftContainer({
+          x: config.x,
+          y: config.y,
+          scene: this,
+          name: config.name,
+          player: this.currentPlayer,
+        }),
+    );
   }
+
+  private createTrashCans() {
+    TRASH_CAN_CONFIGURATION.forEach(
+      (config) =>
+        new TrashCanContainer({
+          x: config.x,
+          y: config.y,
+          scene: this,
+          player: this.currentPlayer,
+        }),
+    );
+  }
+
+  private setDefaultState() {}
 }

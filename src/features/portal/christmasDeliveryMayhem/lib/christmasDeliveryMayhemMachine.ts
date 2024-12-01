@@ -55,7 +55,7 @@ type SetJoystickActiveEvent = {
 
 type CollectGiftEvent = {
   type: "COLLECT_GIFT";
-  gifts: string;
+  gift: string;
 };
 
 type ClearInventoryEvent = {
@@ -74,7 +74,6 @@ export type PortalEvent =
   | { type: "END_GAME_EARLY" }
   | { type: "GAME_OVER" }
   | GainPointsEvent
-  | { type: "COLLECT_LAMP" }
   | CollectGiftEvent
   | ClearInventoryEvent
   | UnlockAchievementsEvent;
@@ -317,20 +316,21 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
         //     };
         //   }),
         // },
-        // COLLECT_LAMP: {
-        //   actions: assign<Context, any>({
-        //     gifts: (context: Context) => {
-        //       return context.gifts + 1;
-        //     },
-        //   }),
-        // },
-        // DEAD_LAMP: {
-        //   actions: assign<Context, any>({
-        //     lamps: (context: Context, event: DeadLampEvent) => {
-        //       return context.lamps - event.lamps;
-        //     },
-        //   }),
-        // },
+        COLLECT_GIFT: {
+          actions: assign<Context, any>({
+            gifts: (context: Context, event: CollectGiftEvent) => {
+              const gifts = [...context.gifts, event.gift];
+              return gifts;
+            },
+          }),
+        },
+        CLEAR_INVENTORY: {
+          actions: assign<Context, any>({
+            gifts: () => {
+              return [];
+            },
+          }),
+        },
         END_GAME_EARLY: {
           actions: assign<Context, any>({
             startedAt: () => 0,

@@ -24,7 +24,7 @@ export class SnowStorm {
   private slowDown: number;
   private speedUp: number;
   private randomDirection!: string; // Store the random direction
-  public isActive: boolean = false; // Flag to track active snowstorm
+  public isActive = false; // Flag to track active snowstorm
 
   constructor(
     scene: BaseScene,
@@ -50,15 +50,15 @@ export class SnowStorm {
         start: 0,
         end: 7,
       }),
-      frameRate: 8, 
-      repeat: -1, 
+      frameRate: 8,
+      repeat: -1,
     });
 
-    this.scene.time.addEvent({
-      delay: this.spawnDelay,
-      loop: true,
-      callback: () => this.spawnSnowStorm(),
-    });
+    // this.scene.time.addEvent({
+    //   delay: this.spawnDelay,
+    //   loop: true,
+    //   callback: () => this.spawnSnowStorm(),
+    // });
   }
 
   spawnSnowStorm() {
@@ -66,6 +66,7 @@ export class SnowStorm {
     const y = 20;
 
     const snowstorm = this.scene.add.sprite(x, y, this.snowStormKey);
+    snowstorm.setDepth(100000000000);
     snowstorm.play(this.animationKey, true);
 
     this.isActive = true; // Snowstorm starts

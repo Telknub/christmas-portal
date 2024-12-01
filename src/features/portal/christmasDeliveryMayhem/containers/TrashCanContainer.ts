@@ -1,0 +1,95 @@
+import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
+import { BaseScene } from "features/world/scenes/BaseScene";
+import { GIFT_RESPAWN } from "../ChristmasDeliveryMayhemConstants";
+import { GiftContainer } from "./GiftContainer";
+import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
+
+interface Props {
+  x: number;
+  y: number;
+  scene: BaseScene;
+  player?: BumpkinContainer;
+}
+
+export class TrashCanContainer extends Phaser.GameObjects.Container {
+  private player?: BumpkinContainer;
+  private sprite: Phaser.GameObjects.Sprite;
+  private hasOverlapped = false;
+
+  scene: BaseScene;
+
+  constructor({ x, y, scene, player }: Props) {
+    super(scene, x, y);
+    this.scene = scene;
+    this.player = player;
+
+    // Trash Can Sprite
+    const spriteName = "trash_can";
+    this.sprite = scene.add.sprite(0, 0, spriteName).setOrigin(0);
+
+    // Action - Overlap
+    this.handleOverlap();
+
+    this.setSize(this.sprite.width, this.sprite.height);
+    this.add(this.sprite);
+
+    scene.add.existing(this);
+  }
+
+  public get portalService() {
+    return this.scene.registry.get("portalService") as
+      | MachineInterpreter
+      | undefined;
+  }
+
+  private handleOverlap() {
+    if (!this.player) return;
+
+    this.scene.physics.world.enable(this);
+
+    (this.body as Phaser.Physics.Arcade.Body)
+      .setSize(this.sprite.width, this.sprite.height)
+      .setOffset(this.sprite.width / 2, this.sprite.height / 2)
+      .setImmovable(true)
+      .setCollideWorldBounds(true);
+
+    this.scene.physics.add.overlap(
+      this.player as Phaser.GameObjects.GameObject,
+      this as Phaser.GameObjects.GameObject,
+      () => {
+        if (!this.hasOverlapped) {
+          this.hasOverlapped = true;
+          this.animateRemoval();
+          this.portalService?.send("CLEAR_INVENTORY");
+        }
+      },
+    );
+
+    this.scene.events.on("update", () => {
+      if (
+        !this.scene.physics.world.overlap(
+          this.player as BumpkinContainer,
+          this,
+        ) &&
+        this.hasOverlapped
+      ) {
+        this.hasOverlapped = false;
+      }
+    });
+  }
+
+  private animateRemoval() {
+    const removedGifts = this.portalService?.state.context.gifts as string[];
+
+    removedGifts.forEach((giftName, index) => {
+      const gift = new GiftContainer({
+        x: this.player?.x || 0,
+        y: this.player?.y || 0,
+        name: giftName,
+        scene: this.scene,
+        removedAnim: true,
+      });
+      gift.playRemovalAnimation(index);
+    });
+  }
+}

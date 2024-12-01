@@ -1,14 +1,18 @@
 import Phaser from "phaser";
 import { SQUARE_WIDTH } from "features/game/lib/constants";
-import { KRAMPUS_DURATION, COAL_RESPAWN } from "../ChristmasDeliveryMayhemConstants";
+import {
+  KRAMPUS_DURATION,
+  COAL_RESPAWN,
+} from "../ChristmasDeliveryMayhemConstants";
 
 export function coalsAnim(
-  coal: Phaser.Physics.Arcade.Sprite & { respawnTimer?: Phaser.Time.TimerEvent },
+  coal: Phaser.Physics.Arcade.Sprite & {
+    respawnTimer?: Phaser.Time.TimerEvent;
+  },
   scene: Phaser.Scene,
   coalsArray: Phaser.Physics.Arcade.Sprite[],
   krampusDuration: number = KRAMPUS_DURATION,
   coalRespawn: number = COAL_RESPAWN,
-
 ) {
   const { x, y } = coal;
 
@@ -39,8 +43,11 @@ export function coalsAnim(
     if (!scene.anims.exists("castle_bud_1_anim")) {
       scene.anims.create({
         key: "castle_bud_1_anim",
-        frames: scene.anims.generateFrameNumbers("castle_bud_1", { start: 0, end: 7 }),
-        repeat: -1, 
+        frames: scene.anims.generateFrameNumbers("castle_bud_1", {
+          start: 0,
+          end: 7,
+        }),
+        repeat: -1,
         frameRate: 5,
       });
     }
@@ -64,10 +71,14 @@ export function coalsAnim(
   coalsArray = coalsArray.filter((sprite) => sprite !== coal);
 
   coal.respawnTimer = scene.time.delayedCall(
-    coalRespawn, 
+    coalRespawn,
     () => {
       // subject to change "sand"
-      const newCoal = scene.physics.add.sprite(x, y, "sand") as Phaser.Physics.Arcade.Sprite & {
+      const newCoal = scene.physics.add.sprite(
+        x,
+        y,
+        "sand",
+      ) as Phaser.Physics.Arcade.Sprite & {
         respawnTimer?: Phaser.Time.TimerEvent;
       };
       newCoal.setSize(SQUARE_WIDTH, SQUARE_WIDTH);
@@ -83,11 +94,11 @@ export function coalsAnim(
           currentPlayer,
           () => coalsAnim(newCoal, scene, coalsArray),
           undefined,
-          scene
+          scene,
         );
       }
     },
     undefined,
-    scene
+    scene,
   );
 }
