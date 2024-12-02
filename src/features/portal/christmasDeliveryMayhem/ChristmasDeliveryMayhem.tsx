@@ -16,6 +16,7 @@ import { authorisePortal, claimPrize } from "../lib/portalUtil";
 import { ChristmasDeliveryMayhemRulesPanel } from "./components/panels/ChristmasDeliveryMayhemRulesPanel";
 import { ChristmasDeliveryMayhemNoAttemptsPanel } from "./components/panels/ChristmasDeliveryMayhemNoAttemptsPanel";
 import AchievementToastProvider from "./providers/AchievementToastProvider";
+import { ChristmasDeliveryMayhemHud } from "./components/hud/ChristmasDeliveryMayhemHud";
 
 const _sflBalance = (state: PortalMachineState) => state.context.state?.balance;
 const _isError = (state: PortalMachineState) => state.matches("error");
@@ -162,7 +163,7 @@ export const ChristmasDeliveryMayhem: React.FC = () => {
 
       {sflBalance && (
         <AchievementToastProvider>
-          {/* <ChristmasDeliveryMayhemHud /> */}
+          <ChristmasDeliveryMayhemHud />
           <ChristmasDeliveryMayhemPhaser />
         </AchievementToastProvider>
       )}

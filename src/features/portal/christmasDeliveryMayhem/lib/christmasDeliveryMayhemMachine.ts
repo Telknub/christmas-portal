@@ -6,6 +6,8 @@ import {
   RESTOCK_ATTEMPTS_SFL,
   UNLIMITED_ATTEMPTS_SFL,
   DAILY_ATTEMPTS,
+  GAME_SECONDS,
+  GAME_LIVES,
 } from "../ChristmasDeliveryMayhemConstants";
 import { GameState } from "features/game/types/game";
 import { purchaseMinigameItem } from "features/game/events/minigames/purchaseMinigameItem";
@@ -34,7 +36,8 @@ export interface Context {
   score: number;
   lastScore: number;
   gifts: string[];
-  startedAt: number;
+  lives: number;
+  endAt: number;
   attemptsLeft: number;
 }
 
@@ -62,6 +65,10 @@ type ClearInventoryEvent = {
   type: "CLEAR_INVENTORY";
 };
 
+type LoseLifeEvent = {
+  type: "LOSE_LIFE";
+};
+
 export type PortalEvent =
   | SetJoystickActiveEvent
   | { type: "START" }
@@ -76,6 +83,7 @@ export type PortalEvent =
   | GainPointsEvent
   | CollectGiftEvent
   | ClearInventoryEvent
+  | LoseLifeEvent
   | UnlockAchievementsEvent;
 
 export type PortalState = {
@@ -111,7 +119,8 @@ const resetGameTransition = {
     actions: assign({
       score: () => 0,
       gifts: () => [],
-      startedAt: () => 0,
+      lives: () => 0,
+      endAt: () => 0,
     }) as any,
   },
 };
@@ -130,8 +139,9 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
     score: 0,
     lastScore: 0,
     gifts: [],
+    lives: 0,
     attemptsLeft: 0,
-    startedAt: 0,
+    endAt: 0,
   },
   on: {
     SET_JOYSTICK_ACTIVE: {
@@ -275,9 +285,10 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
         START: {
           target: "playing",
           actions: assign<Context>({
-            startedAt: () => Date.now(),
+            endAt: () => Date.now() + GAME_SECONDS * 1000,
             score: 0,
             gifts: [],
+            lives: GAME_LIVES,
             state: (context: any) => {
               startAttempt();
               return startMinigameAttempt({
@@ -297,25 +308,20 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
     playing: {
       on: {
         // GAIN_POINTS: {
-        //   actions: assign<Context, any>((context) => {
-        //     let secondsPassed = !context.startedAt
-        //       ? 0
-        //       : Math.max(Date.now() - context.startedAt, 0);
-
-        //     const diff = secondsPassed - context.score;
-        //     let newStartedAt = context.startedAt;
-
-        //     if (diff > 70) {
-        //       newStartedAt = Date.now() - context.score;
-        //       secondsPassed = Math.max(Date.now() - newStartedAt, 0);
-        //     }
-
-        //     return {
-        //       score: secondsPassed,
-        //       startedAt: newStartedAt,
-        //     };
+        //   actions: assign<Context, any>({
+        //     gifts: (context: Context, event: CollectGiftEvent) => {
+        //       const gifts = [...context.gifts, event.gift];
+        //       return gifts;
+        //     },
         //   }),
         // },
+        LOSE_LIFE: {
+          actions: assign<Context, any>({
+            lives: (context: Context) => {
+              return context.lives - 1;
+            },
+          }),
+        },
         COLLECT_GIFT: {
           actions: assign<Context, any>({
             gifts: (context: Context, event: CollectGiftEvent) => {
@@ -333,7 +339,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
         },
         END_GAME_EARLY: {
           actions: assign<Context, any>({
-            startedAt: () => 0,
+            endAt: () => Date.now(),
             lastScore: (context: Context) => {
               return context.score;
             },

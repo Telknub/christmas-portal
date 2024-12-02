@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import { useSelector } from "@xstate/react";
 import { PortalContext } from "../../lib/PortalProvider";
-import { SUNNYSIDE } from "assets/sunnyside";
-import { Label } from "components/ui/Label";
 import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 
@@ -16,14 +14,9 @@ export const ChristmasDeliveryMayhemScore: React.FC = () => {
   const score = useSelector(portalService, _score);
 
   return (
-    <Label
-      className="space-x-2 text-xs"
-      icon={SUNNYSIDE.icons.stopwatch}
-      type={"info"}
-    >
-      {t("christmas-delivery-mayhem.score", {
-        score: score,
-      })}
-    </Label>
+    <div className="bg-blue-800 bg-opacity-50 text-white flex flex-col text-shadow border-t-4 rounded-md w-[90px] p-2">
+      <span className="text-xs">{t("christmas-delivery-mayhem.score")}</span>
+      <span className="text-lg">{Math.round(score)}</span>
+    </div>
   );
 };

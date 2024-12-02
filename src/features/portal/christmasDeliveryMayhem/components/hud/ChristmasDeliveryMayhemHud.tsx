@@ -10,6 +10,7 @@ import { ChristmasDeliveryMayhemTravel } from "./ChristmasDeliveryMayhemTravel";
 import { ChristmasDeliveryMayhemInventory } from "./ChristmasDeliveryMayhemInventory";
 import { ChristmasDeliveryMayhemTimer } from "./ChristmasDeliveryMayhemTimer";
 // import { ChristmasDeliveryMayhemTarget } from "./ChristmasDeliveryMayhemTarget";
+import { ChristmasDeliveryMayhemLives } from "./ChristmasDeliveryMayhemLives";
 import { useAchievementToast } from "../../providers/AchievementToastProvider";
 
 // const _isJoystickActive = (state: PortalMachineState) =>
@@ -49,7 +50,7 @@ export const ChristmasDeliveryMayhemHud: React.FC = () => {
     <HudContainer>
       <div>
         <div
-          className="absolute"
+          className="absolute flex flex-col gap-2"
           style={{
             top: `${PIXEL_SCALE * 4}px`,
             left: `${PIXEL_SCALE * 6}px`,
@@ -59,6 +60,7 @@ export const ChristmasDeliveryMayhemHud: React.FC = () => {
           {isPlaying && (
             <>
               <ChristmasDeliveryMayhemTimer />
+              <ChristmasDeliveryMayhemLives />
               <ChristmasDeliveryMayhemScore />
             </>
           )}

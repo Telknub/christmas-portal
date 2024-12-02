@@ -4,12 +4,22 @@ import { translate } from "lib/i18n/translate";
 import { NPC_WEARABLES } from "lib/npcs";
 import { SQUARE_WIDTH } from "features/game/lib/constants";
 
+export type Gifts =
+  | "gift_1"
+  | "gift_2"
+  | "gift_3"
+  | "gift_4"
+  | "gift_5"
+  | "gift_6";
+
 export const UNLIMITED_ATTEMPTS_SFL = 25;
 export const RESTOCK_ATTEMPTS_SFL = 10;
 export const DAILY_ATTEMPTS = 1;
 export const RESTOCK_ATTEMPTS = 3;
 
 export const MAX_PLAYER_GIFTS = 3;
+export const GAME_SECONDS = 180;
+export const GAME_LIVES = 5;
 
 // Gifts
 export const GIFT_RESPAWN = 3000;
@@ -26,7 +36,7 @@ export const SLOWDOWN_SPEED = 25; // Slowdown player
 export const SPEEDUP = 25; // Speed up player
 
 // Gift coordinates
-export const GIFT_CONFIGURATION = [
+export const GIFT_CONFIGURATION: { name: Gifts; x: number; y: number }[] = [
   // Left
   { name: "gift_1", x: SQUARE_WIDTH * 8, y: SQUARE_WIDTH * 2 },
   { name: "gift_2", x: SQUARE_WIDTH * 10, y: SQUARE_WIDTH * 2 },

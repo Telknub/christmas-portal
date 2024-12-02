@@ -6,7 +6,17 @@ import { Label } from "components/ui/Label";
 import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 
-const _gifts = (state: PortalMachineState) => state.context.gifts;
+import page from "public/world/page.png";
+import cameBone from "public/world/camel_bone.webp";
+import candyIcon from "public/world/candy_icon.png";
+import exchangeDisc from "public/world/exchange_disc.png";
+import hieroglyph from "public/world/hieroglyph.webp";
+import rabbit3 from "public/world/rabbit_3.png";
+
+import { Gifts } from "../../ChristmasDeliveryMayhemConstants";
+import { Box } from "components/ui/Box";
+
+const _gifts = (state: PortalMachineState) => state.context.gifts as Gifts[];
 
 export const ChristmasDeliveryMayhemInventory: React.FC = () => {
   const { t } = useAppTranslation();
@@ -14,6 +24,14 @@ export const ChristmasDeliveryMayhemInventory: React.FC = () => {
   const { portalService } = useContext(PortalContext);
 
   const gifts = useSelector(portalService, _gifts);
+  const imageGifts: Record<string, string> = {
+    gift_1: page,
+    gift_2: cameBone,
+    gift_3: candyIcon,
+    gift_4: exchangeDisc,
+    gift_5: hieroglyph,
+    gift_6: rabbit3,
+  };
 
   return (
     <div
@@ -26,11 +44,11 @@ export const ChristmasDeliveryMayhemInventory: React.FC = () => {
       <Label type={"default"}>{t("christmas-delivery-mayhem.inventory")}</Label>
 
       <div className="relative flex flex-col items-center">
-        {/* {gifts.map((gift: string) => (
+        {gifts.map((gift: Gifts) => (
           <>
-            <Box image={ITEM_DETAILS[gift].image} />
+            <Box image={imageGifts[gift]} />
           </>
-        ))} */}
+        ))}
       </div>
     </div>
   );

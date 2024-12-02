@@ -3,6 +3,7 @@ import { BaseScene } from "features/world/scenes/BaseScene";
 import {
   DROP_ANIMATION_GIFT_CONFIGURATION,
   GIFT_RESPAWN,
+  Gifts,
   MAX_PLAYER_GIFTS,
 } from "../ChristmasDeliveryMayhemConstants";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
@@ -12,7 +13,7 @@ interface Props {
   x: number;
   y: number;
   scene: BaseScene;
-  name: string;
+  name: Gifts;
   player?: BumpkinContainer;
   removedAnim?: boolean;
 }
@@ -20,7 +21,6 @@ interface Props {
 export class GiftContainer extends Phaser.GameObjects.Container {
   private spriteName: string;
   private player?: BumpkinContainer;
-  private removedAnim?: boolean;
   private sprite: Phaser.GameObjects.Sprite;
 
   scene: BaseScene;
@@ -30,7 +30,6 @@ export class GiftContainer extends Phaser.GameObjects.Container {
     this.scene = scene;
     this.spriteName = name;
     this.player = player;
-    this.removedAnim = removedAnim;
 
     // Gift Sprite
     const spriteName = name;
