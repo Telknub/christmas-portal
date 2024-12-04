@@ -41,6 +41,15 @@ export class GiftContainer extends Phaser.GameObjects.Container {
     if (removedAnim) {
       this.sprite.setScale(0.5).setOrigin(0.5);
 
+      const shadowLabel = this.scene.add.bitmapText(
+        -8.75,
+        -1.75,
+        "Teeny Tiny Pixls",
+        "-1",
+        3,
+      );
+      this.add(shadowLabel);
+
       const label = this.scene.add.bitmapText(
         -9,
         -2,
@@ -48,6 +57,7 @@ export class GiftContainer extends Phaser.GameObjects.Container {
         "-1",
         3,
       );
+      label.setTintFill(0xffffff);
       this.add(label);
     }
 

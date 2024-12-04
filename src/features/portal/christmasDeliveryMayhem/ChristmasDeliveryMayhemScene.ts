@@ -8,11 +8,11 @@ import { CoalBatchSpawner } from "./containers/CoalBatchSpawner";
 import {
   COALS_CONFIGURATION,
   GIFT_CONFIGURATION,
-  TRASH_CAN_CONFIGURATION,
+  BONFIRE_CONFIGURATION,
 } from "./ChristmasDeliveryMayhemConstants";
 import { SnowStorm } from "./containers/SnowStormContainer";
 import { GiftContainer } from "./containers/GiftContainer";
-import { TrashCanContainer } from "./containers/TrashCanContainer";
+import { BonfireContainer } from "./containers/BonfireContainer";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -93,10 +93,10 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       frameHeight: 18,
     });
 
-    // Trash Can
-    this.load.spritesheet("trash_can", "world/red_chest.png", {
-      frameWidth: 16,
-      frameHeight: 20,
+    // Bonfire
+    this.load.spritesheet("bonfire", "world/bonfire.png", {
+      frameWidth: 23,
+      frameHeight: 40,
     });
   }
 
@@ -108,7 +108,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     super.create();
 
     this.createGifts();
-    this.createTrashCans();
+    this.createBonfires();
 
     this.physics.world.drawDebug = false;
     this.initializeCoals(COALS_CONFIGURATION);
@@ -194,10 +194,10 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     );
   }
 
-  private createTrashCans() {
-    TRASH_CAN_CONFIGURATION.forEach(
+  private createBonfires() {
+    BONFIRE_CONFIGURATION.forEach(
       (config) =>
-        new TrashCanContainer({
+        new BonfireContainer({
           x: config.x,
           y: config.y,
           scene: this,

@@ -11,7 +11,7 @@ interface Props {
   player?: BumpkinContainer;
 }
 
-export class TrashCanContainer extends Phaser.GameObjects.Container {
+export class BonfireContainer extends Phaser.GameObjects.Container {
   private player?: BumpkinContainer;
   private sprite: Phaser.GameObjects.Sprite;
   private hasOverlapped = false;
@@ -19,13 +19,25 @@ export class TrashCanContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
 
   constructor({ x, y, scene, player }: Props) {
-    super(scene, x, y);
+    super(scene, x - 4, y);
     this.scene = scene;
     this.player = player;
 
-    // Trash Can Sprite
-    const spriteName = "trash_can";
+    // Bonfire Sprite
+    const spriteName = "bonfire";
     this.sprite = scene.add.sprite(0, 0, spriteName).setOrigin(0);
+
+    // Animation
+    this.scene.anims.create({
+      key: `${spriteName}_action`,
+      frames: this.scene.anims.generateFrameNumbers(spriteName, {
+        start: 0,
+        end: 10,
+      }),
+      repeat: -1,
+      frameRate: 10,
+    });
+    this.sprite.play(`${spriteName}_action`, true);
 
     // Action - Overlap
     this.handleOverlap();
