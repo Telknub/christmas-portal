@@ -52,6 +52,20 @@ export const TRASH_CAN_CONFIGURATION = [
   { x: SQUARE_WIDTH * 15, y: SQUARE_WIDTH * 2 },
 ];
 
+// Grit initial coordinate
+export const GRIT_CONFIGURATION = [
+  { x: SQUARE_WIDTH * 15, y: SQUARE_WIDTH * 16 },
+];
+
+// Grits existence duration
+export const GRIT_DURATION = 20000
+
+// Duration of the animation (5 seconds)
+export const GRIT_DURATION_ANIM = 5000 
+
+// Set the target Y position
+export const GRIT_TARGET_Y = SQUARE_WIDTH * 3;
+
 // Coal spawn by batch
 export const COAL_BATCH_SIZES = [
   { min: 0, max: 10 },
