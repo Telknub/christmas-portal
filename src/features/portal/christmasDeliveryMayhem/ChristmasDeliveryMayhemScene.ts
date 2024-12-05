@@ -9,12 +9,14 @@ import {
   COALS_CONFIGURATION,
   GIFT_CONFIGURATION,
   TRASH_CAN_CONFIGURATION,
-  GRIT_CONFIGURATION
+  GRIT_CONFIGURATION,
+  SNOWSTORM_CONFIGURATION,
+  GRIT_DURATION,
 } from "./ChristmasDeliveryMayhemConstants";
-import { SnowStorm } from "./containers/SnowStormContainer";
 import { GiftContainer } from "./containers/GiftContainer";
 import { TrashCanContainer } from "./containers/TrashCanContainer";
 import { GritContainer } from "./containers/GritContainer";
+import { NewSnowStormContainer } from "./containers/NewSnowStormContainer";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -27,8 +29,8 @@ import { GritContainer } from "./containers/GritContainer";
 
 export class ChristmasDeliveryMayhemScene extends BaseScene {
   sceneId: SceneId = "christmas_delivery_mayhem";
-  private snowStorm!: SnowStorm;
-  private gritContainer!: GritContainer
+  private snowStorm!: NewSnowStormContainer;
+  private gritContainer!: GritContainer;
   private coalsArray: (Phaser.Physics.Arcade.Sprite & {
     respawnTimer?: Phaser.Time.TimerEvent;
   })[] = [];
@@ -118,18 +120,24 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.createGifts();
     this.createTrashCans();
     this.createGrit();
+    this.createSnowStorm();
 
     this.physics.world.drawDebug = false;
     this.initializeCoals(COALS_CONFIGURATION);
 
-    this.snowStorm = new SnowStorm(
-      this,
-      // subject to change
-      "corn_maze_clouds",
-      "corn_maze_clouds_anim",
-    );
+    //For testing only. Remove when not used.
+    setTimeout(() => {
+      if (this.gritContainer) {
+        this.gritContainer.deactivate();
+      }
+    }, 20000); // 20000
 
-    this.snowStorm.createSnowStorm();
+    //For testing only. Remove when not used.
+    setTimeout(() => {
+      if (this.snowStorm) {
+        this.snowStorm.deactivateSnowstorm(); // Deactivate the snowstorm after 10 seconds
+      }
+    }, 20000); // 20000
 
     // this.initialiseNPCs(NPCS);
   }
@@ -190,29 +198,40 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     }
   }
 
+  private createSnowStorm() {
+    this.snowStorm = new NewSnowStormContainer({
+      x: SNOWSTORM_CONFIGURATION.x,
+      y: SNOWSTORM_CONFIGURATION.y,
+      scene: this,
+      player: this.currentPlayer,
+    });
+    this.snowStorm.activateSnowstorm();
+  }
+
   private createGrit() {
     GRIT_CONFIGURATION.forEach((config) => {
-      const gritContainer = new GritContainer({
+      this.gritContainer = new GritContainer({
         x: config.x,
         y: config.y,
         scene: this,
         player: this.currentPlayer,
       });
+      this.gritContainer.activate();
     });
   }
-  
+
   private createGifts() {
-      GIFT_CONFIGURATION.forEach(
-        (config) =>
-          new GiftContainer({
-            x: config.x,
-            y: config.y,
-            scene: this,
-            name: config.name,
-            player: this.currentPlayer,
-          })
-      );
-    }  
+    GIFT_CONFIGURATION.forEach(
+      (config) =>
+        new GiftContainer({
+          x: config.x,
+          y: config.y,
+          scene: this,
+          name: config.name,
+          player: this.currentPlayer,
+        }),
+    );
+  }
 
   private createTrashCans() {
     TRASH_CAN_CONFIGURATION.forEach(
@@ -223,7 +242,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
           scene: this,
           player: this.currentPlayer,
         }),
-    );  // Store the GritContainer instance
+    ); // Store the GritContainer instance
   }
 
   private setDefaultState() {}

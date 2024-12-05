@@ -1,7 +1,10 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene } from "features/world/scenes/BaseScene";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
-import { GRIT_TARGET_Y, GRIT_DURATION, GRIT_DURATION_ANIM } from "../ChristmasDeliveryMayhemConstants";
+import {
+  GRIT_TARGET_Y,
+  GRIT_DURATION_ANIM,
+} from "../ChristmasDeliveryMayhemConstants";
 
 interface Props {
   x: number;
@@ -15,7 +18,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
   private player?: BumpkinContainer;
   private sprite: Phaser.GameObjects.Sprite;
   private initialY: number;
-  private isActive: boolean = true; // Track if the container is active
+  private isActive: boolean = true; // Flag to track active
   scene: BaseScene;
 
   constructor({ x, y, scene, player }: Props) {
@@ -34,6 +37,8 @@ export class GritContainer extends Phaser.GameObjects.Container {
     this.setSize(this.sprite.width, this.sprite.height);
     this.add(this.sprite);
 
+    this.sprite.setVisible(true);
+
     scene.add.existing(this);
   }
 
@@ -44,7 +49,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
   }
 
   private Grit() {
-    if (!this.player) return;
+    if (!this.player || !this.isActive) return;
 
     this.scene.physics.world.enable(this);
 
@@ -61,7 +66,9 @@ export class GritContainer extends Phaser.GameObjects.Container {
     );
   }
 
-  private handleOverlap() {}
+  private handleOverlap() {
+    // Overlap logic here
+  }
 
   private GritAnim() {
     if (!this.scene.anims.exists("castle_bud_2_anim")) {
@@ -79,18 +86,15 @@ export class GritContainer extends Phaser.GameObjects.Container {
   }
 
   private startMovement() {
+    if (!this.isActive) return;
+
     this.scene.tweens.add({
       targets: this,
       y: GRIT_TARGET_Y,
-      duration: GRIT_DURATION_ANIM, 
-      ease: "Power2", 
-      yoyo: true, 
-      repeat: -1, 
-    });
-
-    this.scene.time.delayedCall(GRIT_DURATION, () => {
-      this.removeLife(); // Remove a life if the player is destroyed
-      this.destroy(); 
+      duration: GRIT_DURATION_ANIM,
+      ease: "Power2",
+      yoyo: true,
+      repeat: -1,
     });
   }
 
@@ -99,45 +103,32 @@ export class GritContainer extends Phaser.GameObjects.Container {
     if (this.portalService) {
       const currentLives = this.portalService.state.context.lives;
       if (currentLives > 0) {
-        this.portalService.send({ type: "LOSE_LIFE" }); 
+        this.portalService.send({ type: "LOSE_LIFE" });
       }
     }
   }
 
-  // Reset the container's
-  private resetContainer() {
-    this.setAlpha(1); 
-    this.y = this.initialY; 
-    this.isActive = true;
-    
-    // Reset physics
-    this.scene.physics.world.enable(this);
-    (this.body as Phaser.Physics.Arcade.Body)
-      .setSize(this.sprite.width, this.sprite.height)
-      .setOffset(this.sprite.width / 2, this.sprite.height / 2)
-      .setImmovable(true)
-      .setCollideWorldBounds(true);
-    
-    // Reset animation
-    this.GritAnim();
-    this.startMovement();
-  }
-
-  // Activate the container
+  // Activate the GritContainer, enabling movement, physics, and animation
   public activate() {
-    if (this.isActive) return; 
-    
-    this.resetContainer(); 
-    this.scene.add.existing(this);
+    if (!this.isActive) {
+      this.isActive = true;
+      this.sprite.setVisible(true);
+      this.Grit();
+      this.GritAnim();
+      this.startMovement();
+    }
   }
 
-  // Deactivate the container
+  // Deactivate the GritContainer, disabling movement, physics, and animation
   public deactivate() {
-    if (!this.isActive) return; 
-    this.isActive = false;
-    this.setAlpha(0); 
-    this.sprite.anims.stop(); 
-    this.scene.tweens.killTweensOf(this); 
-    this.scene.physics.world.disable(this); 
+    if (this.isActive) {
+      this.isActive = false;
+      this.scene.tweens.killTweensOf(this);
+      this.sprite.stop();
+      this.scene.physics.world.disable(this);
+      this.removeLife();
+      this.sprite.destroy();
+      this.destroy();
+    }
   }
 }
