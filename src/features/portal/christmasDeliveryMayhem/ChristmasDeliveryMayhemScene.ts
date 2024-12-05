@@ -9,10 +9,12 @@ import {
   COALS_CONFIGURATION,
   GIFT_CONFIGURATION,
   TRASH_CAN_CONFIGURATION,
+  GRIT_CONFIGURATION
 } from "./ChristmasDeliveryMayhemConstants";
 import { SnowStorm } from "./containers/SnowStormContainer";
 import { GiftContainer } from "./containers/GiftContainer";
 import { TrashCanContainer } from "./containers/TrashCanContainer";
+import { GritContainer } from "./containers/GritContainer";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -26,6 +28,7 @@ import { TrashCanContainer } from "./containers/TrashCanContainer";
 export class ChristmasDeliveryMayhemScene extends BaseScene {
   sceneId: SceneId = "christmas_delivery_mayhem";
   private snowStorm!: SnowStorm;
+  private gritContainer!: GritContainer
   private coalsArray: (Phaser.Physics.Arcade.Sprite & {
     respawnTimer?: Phaser.Time.TimerEvent;
   })[] = [];
@@ -51,6 +54,11 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     // subject to change
     this.load.spritesheet("castle_bud_1", "world/castle_bud_1.webp", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+    this.load.spritesheet("castle_bud_2", "world/castle_bud_2.webp", {
       frameWidth: 32,
       frameHeight: 32,
     });
@@ -109,6 +117,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     this.createGifts();
     this.createTrashCans();
+    this.createGrit();
 
     this.physics.world.drawDebug = false;
     this.initializeCoals(COALS_CONFIGURATION);
@@ -181,18 +190,29 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     }
   }
 
-  private createGifts() {
-    GIFT_CONFIGURATION.forEach(
-      (config) =>
-        new GiftContainer({
-          x: config.x,
-          y: config.y,
-          scene: this,
-          name: config.name,
-          player: this.currentPlayer,
-        }),
-    );
+  private createGrit() {
+    GRIT_CONFIGURATION.forEach((config) => {
+      const gritContainer = new GritContainer({
+        x: config.x,
+        y: config.y,
+        scene: this,
+        player: this.currentPlayer,
+      });
+    });
   }
+  
+  private createGifts() {
+      GIFT_CONFIGURATION.forEach(
+        (config) =>
+          new GiftContainer({
+            x: config.x,
+            y: config.y,
+            scene: this,
+            name: config.name,
+            player: this.currentPlayer,
+          })
+      );
+    }  
 
   private createTrashCans() {
     TRASH_CAN_CONFIGURATION.forEach(
@@ -203,7 +223,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
           scene: this,
           player: this.currentPlayer,
         }),
-    );
+    );  // Store the GritContainer instance
   }
 
   private setDefaultState() {}
