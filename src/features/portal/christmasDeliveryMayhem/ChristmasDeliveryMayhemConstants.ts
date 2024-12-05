@@ -34,6 +34,8 @@ export const SNOWSTORM_DELAY = 15000; // Snowstorm delay effect
 export const DURATION_SNOWSTORM = 10000; // Snowstorm duration effect
 export const SLOWDOWN_SPEED = 25; // Slowdown player
 export const SPEEDUP = 25; // Speed up player
+export const SNOWSTORM_CONFIGURATION = {x: 25, y: 2} // Snow storm coordinates
+
 
 // Gift coordinates
 export const GIFT_CONFIGURATION: { name: Gifts; x: number; y: number }[] = [
@@ -57,14 +59,9 @@ export const GRIT_CONFIGURATION = [
   { x: SQUARE_WIDTH * 15, y: SQUARE_WIDTH * 16 },
 ];
 
-// Grits existence duration
-export const GRIT_DURATION = 20000
-
-// Duration of the animation (5 seconds)
-export const GRIT_DURATION_ANIM = 5000 
-
-// Set the target Y position
-export const GRIT_TARGET_Y = SQUARE_WIDTH * 3;
+export const GRIT_DURATION = 30000 // Grits existence duration
+export const GRIT_DURATION_ANIM = 5000 // Duration of the animation (5 seconds)
+export const GRIT_TARGET_Y = SQUARE_WIDTH * 3; // Set the target Y position
 
 // Coal spawn by batch
 export const COAL_BATCH_SIZES = [
