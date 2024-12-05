@@ -104,14 +104,31 @@ export class GritContainer extends Phaser.GameObjects.Container {
     }
   }
 
+  // Reset the container's
+  private resetContainer() {
+    this.setAlpha(1); 
+    this.y = this.initialY; 
+    this.isActive = true;
+    
+    // Reset physics
+    this.scene.physics.world.enable(this);
+    (this.body as Phaser.Physics.Arcade.Body)
+      .setSize(this.sprite.width, this.sprite.height)
+      .setOffset(this.sprite.width / 2, this.sprite.height / 2)
+      .setImmovable(true)
+      .setCollideWorldBounds(true);
+    
+    // Reset animation
+    this.GritAnim();
+    this.startMovement();
+  }
+
   // Activate the container
   public activate() {
     if (this.isActive) return; 
-    this.isActive = true;
-    this.setAlpha(1); 
-    this.Grit(); 
-    this.GritAnim(); 
-    this.startMovement(); 
+    
+    this.resetContainer(); 
+    this.scene.add.existing(this);
   }
 
   // Deactivate the container
@@ -120,6 +137,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
     this.isActive = false;
     this.setAlpha(0); 
     this.sprite.anims.stop(); 
-    this.scene.tweens.killTweensOf(this);
+    this.scene.tweens.killTweensOf(this); 
+    this.scene.physics.world.disable(this); 
   }
 }
