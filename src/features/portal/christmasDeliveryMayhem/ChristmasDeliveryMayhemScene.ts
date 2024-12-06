@@ -11,11 +11,15 @@ import {
   GIFT_CONFIGURATION,
   BONFIRE_CONFIGURATION,
   ELVES_CONFIGURATION,
+  GRIT_CONFIGURATION,
+  SNOWSTORM_CONFIGURATION,
+  GRIT_DURATION,
 } from "./ChristmasDeliveryMayhemConstants";
-import { SnowStorm } from "./containers/SnowStormContainer";
 import { GiftContainer } from "./containers/GiftContainer";
 import { BonfireContainer } from "./containers/BonfireContainer";
 import { ElfContainer } from "./containers/ElfContainer";
+import { GritContainer } from "./containers/GritContainer";
+import { NewSnowStormContainer } from "./containers/NewSnowStormContainer";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -28,7 +32,8 @@ import { ElfContainer } from "./containers/ElfContainer";
 
 export class ChristmasDeliveryMayhemScene extends BaseScene {
   sceneId: SceneId = "christmas_delivery_mayhem";
-  private snowStorm!: SnowStorm;
+  private snowStorm!: NewSnowStormContainer;
+  private gritContainer!: GritContainer;
   private coalsArray: (Phaser.Physics.Arcade.Sprite & {
     respawnTimer?: Phaser.Time.TimerEvent;
   })[] = [];
@@ -56,6 +61,11 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     // subject to change
     this.load.spritesheet("castle_bud_1", "world/castle_bud_1.webp", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+    this.load.spritesheet("castle_bud_2", "world/castle_bud_2.webp", {
       frameWidth: 32,
       frameHeight: 32,
     });
@@ -121,18 +131,25 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.createGifts();
     this.createBonfires();
     this.createElves();
+    this.createGrit();
+    this.createSnowStorm();
 
     this.physics.world.drawDebug = false;
     this.initializeCoals(COALS_CONFIGURATION);
 
-    this.snowStorm = new SnowStorm(
-      this,
-      // subject to change
-      "corn_maze_clouds",
-      "corn_maze_clouds_anim",
-    );
+    //For testing only. Remove when not used.
+    setTimeout(() => {
+      if (this.gritContainer) {
+        this.gritContainer.deactivate();
+      }
+    }, 20000); // 20000
 
-    this.snowStorm.createSnowStorm();
+    //For testing only. Remove when not used.
+    setTimeout(() => {
+      if (this.snowStorm) {
+        this.snowStorm.deactivateSnowstorm(); // Deactivate the snowstorm after 10 seconds
+      }
+    }, 20000); // 20000
 
     // this.initialiseNPCs(NPCS);
   }
@@ -192,6 +209,28 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
         this,
       );
     }
+  }
+
+  private createSnowStorm() {
+    this.snowStorm = new NewSnowStormContainer({
+      x: SNOWSTORM_CONFIGURATION.x,
+      y: SNOWSTORM_CONFIGURATION.y,
+      scene: this,
+      player: this.currentPlayer,
+    });
+    // this.snowStorm.activateSnowstorm();
+  }
+
+  private createGrit() {
+    GRIT_CONFIGURATION.forEach((config) => {
+      this.gritContainer = new GritContainer({
+        x: config.x,
+        y: config.y,
+        scene: this,
+        player: this.currentPlayer,
+      });
+      this.gritContainer.activate();
+    });
   }
 
   private createGifts() {
