@@ -1,6 +1,6 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene } from "features/world/scenes/BaseScene";
-import { GIFT_RESPAWN } from "../ChristmasDeliveryMayhemConstants";
+import { GIFT_RESPAWN, Gifts } from "../ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./GiftContainer";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
 
@@ -19,13 +19,16 @@ export class BonfireContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
 
   constructor({ x, y, scene, player }: Props) {
-    super(scene, x - 4, y);
+    super(scene, x + 4, y + 4);
     this.scene = scene;
     this.player = player;
 
     // Bonfire Sprite
     const spriteName = "bonfire";
-    this.sprite = scene.add.sprite(0, 0, spriteName).setOrigin(0);
+    this.sprite = scene.add
+      .sprite(0, 0, spriteName)
+      .setOrigin(0)
+      .setScale(1.05);
 
     // Animation
     this.scene.anims.create({
@@ -60,7 +63,10 @@ export class BonfireContainer extends Phaser.GameObjects.Container {
     this.scene.physics.world.enable(this);
 
     (this.body as Phaser.Physics.Arcade.Body)
-      .setSize(this.sprite.width, this.sprite.height)
+      .setSize(
+        this.sprite.width * this.sprite.scale,
+        this.sprite.height * this.sprite.scale,
+      )
       .setOffset(this.sprite.width / 2, this.sprite.height / 2)
       .setImmovable(true)
       .setCollideWorldBounds(true);
@@ -97,7 +103,7 @@ export class BonfireContainer extends Phaser.GameObjects.Container {
       const gift = new GiftContainer({
         x: this.player?.x || 0,
         y: this.player?.y || 0,
-        name: giftName,
+        name: giftName as Gifts,
         scene: this.scene,
         removedAnim: true,
       });

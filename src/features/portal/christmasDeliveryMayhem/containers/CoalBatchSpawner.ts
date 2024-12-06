@@ -1,3 +1,4 @@
+import { SQUARE_WIDTH } from "features/game/lib/constants";
 import {
   COAL_BATCH_SPAWN,
   COAL_BATCH_SIZES,
@@ -29,7 +30,7 @@ export class CoalBatchSpawner {
   spawnBatch(startIndex: number, endIndex: number) {
     const batch = this.coalsConfig.slice(startIndex, endIndex);
     batch.forEach(({ x, y }) => {
-      (this.scene as any).coals(x, y);
+      (this.scene as any).coals(x + 1, y + 3);
     });
   }
 }

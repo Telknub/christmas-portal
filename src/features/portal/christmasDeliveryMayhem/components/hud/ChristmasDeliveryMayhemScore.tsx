@@ -14,7 +14,7 @@ export const ChristmasDeliveryMayhemScore: React.FC = () => {
   const score = useSelector(portalService, _score);
 
   return (
-    <div className="bg-blue-800 bg-opacity-50 text-white flex flex-col text-shadow border-t-4 rounded-md w-[90px] p-2">
+    <div className="bg-blue-800 bg-opacity-80 text-white flex flex-col text-shadow border-t-4 rounded-md w-[90px] p-2">
       <span className="text-xs">{t("christmas-delivery-mayhem.score")}</span>
       <span className="text-lg">{Math.round(score)}</span>
     </div>

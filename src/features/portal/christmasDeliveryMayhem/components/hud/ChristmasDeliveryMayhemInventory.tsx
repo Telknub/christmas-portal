@@ -6,12 +6,12 @@ import { Label } from "components/ui/Label";
 import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 
-import page from "public/world/page.png";
-import cameBone from "public/world/camel_bone.webp";
-import candyIcon from "public/world/candy_icon.png";
-import exchangeDisc from "public/world/exchange_disc.png";
-import hieroglyph from "public/world/hieroglyph.webp";
-import rabbit3 from "public/world/rabbit_3.png";
+import gift_1 from "public/world/_gift_1.png";
+import gift_2 from "public/world/_gift_2.png";
+import gift_3 from "public/world/_gift_3.png";
+import gift_4 from "public/world/_gift_4.png";
+import gift_5 from "public/world/_gift_5.png";
+import gift_6 from "public/world/_gift_6.png";
 
 import { Gifts } from "../../ChristmasDeliveryMayhemConstants";
 import { Box } from "components/ui/Box";
@@ -25,12 +25,12 @@ export const ChristmasDeliveryMayhemInventory: React.FC = () => {
 
   const gifts = useSelector(portalService, _gifts);
   const imageGifts: Record<string, string> = {
-    gift_1: page,
-    gift_2: cameBone,
-    gift_3: candyIcon,
-    gift_4: exchangeDisc,
-    gift_5: hieroglyph,
-    gift_6: rabbit3,
+    gift_1: gift_1,
+    gift_2: gift_2,
+    gift_3: gift_3,
+    gift_4: gift_4,
+    gift_5: gift_5,
+    gift_6: gift_6,
   };
 
   return (
@@ -44,10 +44,8 @@ export const ChristmasDeliveryMayhemInventory: React.FC = () => {
       <Label type={"default"}>{t("christmas-delivery-mayhem.inventory")}</Label>
 
       <div className="relative flex flex-col items-center">
-        {gifts.map((gift: Gifts) => (
-          <>
-            <Box image={imageGifts[gift]} />
-          </>
+        {gifts.map((gift: Gifts, index) => (
+          <Box key={index} image={imageGifts[gift]} />
         ))}
       </div>
     </div>

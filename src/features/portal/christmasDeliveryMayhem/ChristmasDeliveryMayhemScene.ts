@@ -1,4 +1,5 @@
 import mapJson from "assets/map/christmasDeliveryMayhem.json";
+import tilesetconfig from "assets/map/christmas_tileset.json";
 import { SceneId } from "features/world/mmoMachine";
 import { BaseScene } from "features/world/scenes/BaseScene";
 import { SQUARE_WIDTH } from "features/game/lib/constants";
@@ -9,10 +10,12 @@ import {
   COALS_CONFIGURATION,
   GIFT_CONFIGURATION,
   BONFIRE_CONFIGURATION,
+  ELVES_CONFIGURATION,
 } from "./ChristmasDeliveryMayhemConstants";
 import { SnowStorm } from "./containers/SnowStormContainer";
 import { GiftContainer } from "./containers/GiftContainer";
 import { BonfireContainer } from "./containers/BonfireContainer";
+import { ElfContainer } from "./containers/ElfContainer";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -35,6 +38,8 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       name: "christmas_delivery_mayhem",
       map: {
         json: mapJson,
+        imageKey: "christmas-tileset",
+        defaultTilesetConfig: tilesetconfig,
       },
       audio: { fx: { walk_key: "dirt_footstep" } },
     });
@@ -68,28 +73,28 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     });
 
     // Gifts
-    this.load.spritesheet("gift_1", "world/page.png", {
+    this.load.spritesheet("gift_1", "world/gift_1.png", {
       frameWidth: 16,
-      frameHeight: 16,
+      frameHeight: 18,
     });
-    this.load.spritesheet("gift_2", "world/camel_bone.webp", {
-      frameWidth: 13,
-      frameHeight: 16,
-    });
-    this.load.spritesheet("gift_3", "world/candy_icon.png", {
-      frameWidth: 14,
-      frameHeight: 14,
-    });
-    this.load.spritesheet("gift_4", "world/exchange_disc.png", {
-      frameWidth: 18,
-      frameHeight: 19,
-    });
-    this.load.spritesheet("gift_5", "world/hieroglyph.webp", {
+    this.load.spritesheet("gift_2", "world/gift_2.png", {
       frameWidth: 16,
-      frameHeight: 13,
+      frameHeight: 18,
     });
-    this.load.spritesheet("gift_6", "world/rabbit_3.png", {
-      frameWidth: 17,
+    this.load.spritesheet("gift_3", "world/gift_3.png", {
+      frameWidth: 16,
+      frameHeight: 18,
+    });
+    this.load.spritesheet("gift_4", "world/gift_4.png", {
+      frameWidth: 16,
+      frameHeight: 18,
+    });
+    this.load.spritesheet("gift_5", "world/gift_5.png", {
+      frameWidth: 16,
+      frameHeight: 18,
+    });
+    this.load.spritesheet("gift_6", "world/gift_6.png", {
+      frameWidth: 16,
       frameHeight: 18,
     });
 
@@ -97,6 +102,12 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.load.spritesheet("bonfire", "world/bonfire.png", {
       frameWidth: 23,
       frameHeight: 40,
+    });
+
+    // Elves
+    this.load.spritesheet("elf", "world/elf.png", {
+      frameWidth: 20,
+      frameHeight: 19,
     });
   }
 
@@ -109,6 +120,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     this.createGifts();
     this.createBonfires();
+    this.createElves();
 
     this.physics.world.drawDebug = false;
     this.initializeCoals(COALS_CONFIGURATION);
@@ -164,6 +176,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     ) as Phaser.Physics.Arcade.Sprite & {
       respawnTimer?: Phaser.Time.TimerEvent;
     };
+    coal.setOrigin(0);
     coal.setSize(SQUARE_WIDTH, SQUARE_WIDTH);
     coal.setImmovable(true);
     coal.setCollideWorldBounds(true);
@@ -201,6 +214,19 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
           x: config.x,
           y: config.y,
           scene: this,
+          player: this.currentPlayer,
+        }),
+    );
+  }
+
+  private createElves() {
+    ELVES_CONFIGURATION.forEach(
+      (config) =>
+        new ElfContainer({
+          x: config.x,
+          y: config.y,
+          scene: this,
+          direction: config.direction,
           player: this.currentPlayer,
         }),
     );

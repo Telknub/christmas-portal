@@ -35,20 +35,32 @@ export class GiftContainer extends Phaser.GameObjects.Container {
     const spriteName = name;
     this.sprite = scene.add.sprite(0, 0, spriteName).setOrigin(0);
 
+    // Animation
+    this.scene.anims.create({
+      key: `${spriteName}_action`,
+      frames: this.scene.anims.generateFrameNumbers(spriteName, {
+        start: 0,
+        end: 1,
+      }),
+      repeat: -1,
+      frameRate: 2,
+    });
+    this.sprite.play(`${spriteName}_action`, true);
+
     // Action - Overlap
     this.handleOverlap();
 
     if (removedAnim) {
       this.sprite.setScale(0.5).setOrigin(0.5);
 
-      const shadowLabel = this.scene.add.bitmapText(
-        -8.75,
-        -1.75,
+      const shadowBottomLabel = this.scene.add.bitmapText(
+        -8.5,
+        -1.5,
         "Teeny Tiny Pixls",
         "-1",
         3,
       );
-      this.add(shadowLabel);
+      this.add(shadowBottomLabel);
 
       const label = this.scene.add.bitmapText(
         -9,
@@ -79,8 +91,8 @@ export class GiftContainer extends Phaser.GameObjects.Container {
     this.scene.physics.world.enable(this);
 
     (this.body as Phaser.Physics.Arcade.Body)
-      .setSize(this.sprite.width, this.sprite.height)
-      .setOffset(this.sprite.width / 2, this.sprite.height / 2)
+      .setSize(16, 16)
+      .setOffset(8, 25)
       .setImmovable(true)
       .setCollideWorldBounds(true);
 

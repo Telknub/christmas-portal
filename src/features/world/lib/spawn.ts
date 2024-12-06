@@ -12,8 +12,8 @@ const randomYOffset = Math.random() * 20;
 export const SPAWNS: () => SpawnLocation = () => ({
   christmas_delivery_mayhem: {
     default: {
-      x: 240,
-      y: 160,
+      x: 272,
+      y: 132,
     },
   },
   portal_example: {

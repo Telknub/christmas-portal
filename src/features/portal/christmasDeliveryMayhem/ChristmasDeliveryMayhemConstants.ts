@@ -38,18 +38,26 @@ export const SPEEDUP = 25; // Speed up player
 // Gift coordinates
 export const GIFT_CONFIGURATION: { name: Gifts; x: number; y: number }[] = [
   // Left
-  { name: "gift_1", x: SQUARE_WIDTH * 8, y: SQUARE_WIDTH * 2 },
-  { name: "gift_2", x: SQUARE_WIDTH * 10, y: SQUARE_WIDTH * 2 },
-  { name: "gift_3", x: SQUARE_WIDTH * 12, y: SQUARE_WIDTH * 2 },
+  { name: "gift_1", x: SQUARE_WIDTH * 8, y: SQUARE_WIDTH * 3 },
+  { name: "gift_2", x: SQUARE_WIDTH * 10, y: SQUARE_WIDTH * 3 },
+  { name: "gift_3", x: SQUARE_WIDTH * 12, y: SQUARE_WIDTH * 3 },
   // Right
-  { name: "gift_4", x: SQUARE_WIDTH * 18, y: SQUARE_WIDTH * 2 },
-  { name: "gift_5", x: SQUARE_WIDTH * 20, y: SQUARE_WIDTH * 2 },
-  { name: "gift_6", x: SQUARE_WIDTH * 22, y: SQUARE_WIDTH * 2 },
+  { name: "gift_4", x: SQUARE_WIDTH * 21, y: SQUARE_WIDTH * 3 },
+  { name: "gift_5", x: SQUARE_WIDTH * 23, y: SQUARE_WIDTH * 3 },
+  { name: "gift_6", x: SQUARE_WIDTH * 25, y: SQUARE_WIDTH * 3 },
 ];
 
 // Bonfire coordinates
 export const BONFIRE_CONFIGURATION = [
-  { x: SQUARE_WIDTH * 15, y: SQUARE_WIDTH * 1 },
+  { x: SQUARE_WIDTH * 16, y: SQUARE_WIDTH * 2 },
+];
+
+// Elves coordinates
+export const ELVES_CONFIGURATION = [
+  { x: SQUARE_WIDTH * 3, y: SQUARE_WIDTH * 13, direction: "right" },
+  { x: SQUARE_WIDTH * 3, y: SQUARE_WIDTH * 17, direction: "right" },
+  { x: SQUARE_WIDTH * 30, y: SQUARE_WIDTH * 13, direction: "left" },
+  { x: SQUARE_WIDTH * 30, y: SQUARE_WIDTH * 17, direction: "left" },
 ];
 
 // Coal spawn by batch
@@ -84,7 +92,7 @@ export const COALS_CONFIGURATION: { x: number; y: number }[] = [
   { x: SQUARE_WIDTH * 23, y: SQUARE_WIDTH * 9 },
   { x: SQUARE_WIDTH * 13, y: SQUARE_WIDTH * 10 },
   { x: SQUARE_WIDTH * 16, y: SQUARE_WIDTH * 16 },
-  { x: SQUARE_WIDTH * 21, y: SQUARE_WIDTH * 14 },
+  { x: SQUARE_WIDTH * 21, y: SQUARE_WIDTH * 13 },
   { x: SQUARE_WIDTH * 18, y: SQUARE_WIDTH * 7 },
   { x: SQUARE_WIDTH * 11, y: SQUARE_WIDTH * 8 },
   { x: SQUARE_WIDTH * 23, y: SQUARE_WIDTH * 14 },

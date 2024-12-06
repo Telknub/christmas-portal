@@ -18,7 +18,7 @@ export function coalsAnim(
 
   // subject to change "poof"
   // Play the poof animation
-  const poof = scene.add.sprite(x, y, "poof");
+  const poof = scene.add.sprite(x, y, "poof").setOrigin(0.2, 0.5);
   if (!scene.anims.exists("poof_anim")) {
     scene.anims.create({
       key: "poof_anim",
@@ -36,7 +36,7 @@ export function coalsAnim(
 
     // subject to change "castle_bud_1"
     // Spawn the castle_bud_1 sprite
-    const krampus = scene.add.sprite(x, y, "castle_bud_1");
+    const krampus = scene.add.sprite(x, y, "castle_bud_1").setOrigin(0.3, 0.5);
 
     // subject to change "castle_bud_1_anim"
     // Create the castle_bud_1 animation if it doesn't exist
@@ -59,7 +59,7 @@ export function coalsAnim(
 
       // subject to change "poof"
       // Optional: Play the poof animation again to indicate disappearance
-      const poofAgain = scene.add.sprite(x, y, "poof");
+      const poofAgain = scene.add.sprite(x, y, "poof").setOrigin(0.2, 0.5);
       poofAgain.play("poof_anim", true);
       poofAgain.on("animationcomplete", () => {
         poofAgain.destroy();
@@ -81,6 +81,7 @@ export function coalsAnim(
       ) as Phaser.Physics.Arcade.Sprite & {
         respawnTimer?: Phaser.Time.TimerEvent;
       };
+      newCoal.setOrigin(0);
       newCoal.setSize(SQUARE_WIDTH, SQUARE_WIDTH);
       newCoal.setImmovable(true);
       newCoal.setCollideWorldBounds(true);
