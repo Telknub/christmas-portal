@@ -2,7 +2,6 @@ import mapJson from "assets/map/christmasDeliveryMayhem.json";
 import tilesetconfig from "assets/map/christmas_tileset.json";
 import { SceneId } from "features/world/mmoMachine";
 import { BaseScene } from "features/world/scenes/BaseScene";
-import { SQUARE_WIDTH } from "features/game/lib/constants";
 import { MachineInterpreter } from "./lib/christmasDeliveryMayhemMachine";
 import {
   COALS_CONFIGURATION,
@@ -11,7 +10,6 @@ import {
   ELVES_CONFIGURATION,
   GRIT_CONFIGURATION,
   SNOWSTORM_CONFIGURATION,
-  GRIT_DURATION,
 } from "./ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./containers/GiftContainer";
 import { BonfireContainer } from "./containers/BonfireContainer";
@@ -59,30 +57,46 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       frameHeight: 19,
     });
 
-    this.load.spritesheet("coalspawn_spritesheet", "world/coalspawn_spritesheet.png", {
-      frameWidth: 10,
-      frameHeight: 30,
-    });
+    this.load.spritesheet(
+      "coalspawn_spritesheet",
+      "world/coalspawn_spritesheet.png",
+      {
+        frameWidth: 10,
+        frameHeight: 30,
+      },
+    );
 
     this.load.spritesheet("coal", "world/coal.png", {
       frameWidth: 12,
       frameHeight: 12,
-    }) 
-
-    this.load.spritesheet("snowstorm_left_final_tileset", "world/snowstorm_left_final_tileset.png", {
-      frameWidth: 544,
-      frameHeight: 320,
     });
 
-    this.load.spritesheet("snowstorm_right_final_tileset_2", "world/snowstorm_right_final_tileset_2.png", {
-      frameWidth: 544,
-      frameHeight: 320,
-    });
+    this.load.spritesheet(
+      "snowstorm_left_final_tileset",
+      "world/snowstorm_left_final_tileset.png",
+      {
+        frameWidth: 544,
+        frameHeight: 320,
+      },
+    );
 
-    this.load.spritesheet("snowstorm_final_tileset", "world/snowstorm_final_tileset.png", {
-      frameWidth: 544,
-      frameHeight: 320,
-    });
+    this.load.spritesheet(
+      "snowstorm_right_final_tileset_2",
+      "world/snowstorm_right_final_tileset_2.png",
+      {
+        frameWidth: 544,
+        frameHeight: 320,
+      },
+    );
+
+    this.load.spritesheet(
+      "snowstorm_final_tileset",
+      "world/snowstorm_final_tileset.png",
+      {
+        frameWidth: 544,
+        frameHeight: 320,
+      },
+    );
 
     this.load.spritesheet("Grit_Carrying", "world/Grit_Carrying.webp", {
       frameWidth: 25,
@@ -142,6 +156,14 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       frameWidth: 20,
       frameHeight: 19,
     });
+
+    //sounds
+    this.load.audio("coal-sound", "assets/sounds/coal-sound.mp3"); //coal spawn sound, player step on coal, player uses campfire
+    this.load.audio("snow-storm", "assets/sounds/snow-storm.mp3"); //play when snow storm starts, stop when snow storm ends
+    this.load.audio("grit-spawn", "assets/sounds/grit-spawn.mp3"); //play when grit spawns
+    this.load.audio("bad-sound", "assets/sounds/bad-sound.mp3"); //play when something bad happens
+    this.load.audio("good-sound", "assets/sounds/good-sound.mp3"); //play when something good happens
+    this.load.audio("gift-pickup", "assets/sounds/gift-pickup.mp3"); //play when player picks up a gift
   }
 
   async create() {
@@ -156,9 +178,10 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.createElves();
     this.createCoals();
     this.createSnowStorm();
-    this.snowStorm.normalSnowStorm()
-    
+    this.snowStorm.normalSnowStorm();
+
     setTimeout(() => {
+      this.sound.play("grit-spawn");
       this.createGrit();
     }, 10000); // 20000
 
@@ -230,26 +253,25 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   private createCoals() {
     COALS_CONFIGURATION.forEach(
       (config) =>
-        this.coal = new CoalsContainer({
+        (this.coal = new CoalsContainer({
           x: config.x,
           y: config.y,
           scene: this,
           player: this.currentPlayer,
-        }),
-        // this.coal.activate()
+        })),
+      // this.coal.activate()
     );
   }
 
   private createGifts() {
-    GIFT_CONFIGURATION.forEach(
-      (config) =>{
-        new GiftContainer({
-          x: config.x,
-          y: config.y,
-          scene: this,
-          name: config.name,
-          player: this.currentPlayer,
-        })
+    GIFT_CONFIGURATION.forEach((config) => {
+      new GiftContainer({
+        x: config.x,
+        y: config.y,
+        scene: this,
+        name: config.name,
+        player: this.currentPlayer,
+      });
     });
   }
 
@@ -278,5 +300,5 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     );
   }
 
-  private setDefaultState() {}
+  //private setDefaultState() {}
 }
