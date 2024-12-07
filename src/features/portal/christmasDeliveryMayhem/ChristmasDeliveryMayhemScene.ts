@@ -158,12 +158,16 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     });
 
     //sounds
-    this.load.audio("coal-sound", "assets/sounds/coal-sound.mp3"); //coal spawn sound, player step on coal, player uses campfire
-    this.load.audio("snow-storm", "assets/sounds/snow-storm.mp3"); //play when snow storm starts, stop when snow storm ends
-    this.load.audio("grit-spawn", "assets/sounds/grit-spawn.mp3"); //play when grit spawns
-    this.load.audio("bad-sound", "assets/sounds/bad-sound.mp3"); //play when something bad happens
-    this.load.audio("good-sound", "assets/sounds/good-sound.mp3"); //play when something good happens
-    this.load.audio("gift-pickup", "assets/sounds/gift-pickup.mp3"); //play when player picks up a gift
+    this.load.audio("coal-sound", "world/sound-effects/coal-sound.mp3"); // done
+    this.load.audio("grit-spawn", "world/sound-effects/grit-spawn.mp3"); // done
+    this.load.audio("gift-pickup", "world/sound-effects/gift-pickup.mp3"); // done
+    this.load.audio("snow-storm", "world/sound-effects/snow-storm.mp3"); // doneddd
+
+    //partially implemented. grit plays the sound when he takes one of your lives now
+    this.load.audio("bad-sound", "world/sound-effects/bad-sound.mp3"); //play when something bad happens
+
+    //not used yet. elfs not taking my gifts yet
+    this.load.audio("good-sound", "world/sound-effects/good-sound.mp3"); //play when something good happens
   }
 
   async create() {
@@ -181,13 +185,13 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.snowStorm.normalSnowStorm();
 
     setTimeout(() => {
-      this.sound.play("grit-spawn");
       this.createGrit();
     }, 10000); // 20000
 
     // this.physics.world.drawDebug = true;
 
     //For testing only. Remove when not used.
+    this.snowStorm.activateSnowstorm();
     setTimeout(() => {
       if (this.gritContainer) {
         this.gritContainer.deactivate();

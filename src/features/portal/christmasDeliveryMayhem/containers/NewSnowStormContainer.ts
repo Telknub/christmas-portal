@@ -1,10 +1,6 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene, WALKING_SPEED } from "features/world/scenes/BaseScene";
-import {
-  SLOWDOWN_SPEED,
-  DURATION_SNOWSTORM,
-  SPEEDUP,
-} from "../ChristmasDeliveryMayhemConstants";
+import { SLOWDOWN_SPEED, SPEEDUP } from "../ChristmasDeliveryMayhemConstants";
 
 interface Props {
   x: number;
@@ -21,8 +17,8 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
   private randomDirection!: string; // Store the random direction
   public isActive = true; // Flag to track active snowstorm
-  private startTime: number = 0; // Track the start time of the snowstorm
-  private activateNormalSnow: boolean = false;
+  private startTime = 0; // Track the start time of the snowstorm
+  private activateNormalSnow = false;
 
   constructor({ x, y, scene, player }: Props) {
     super(scene, x, y);
@@ -42,7 +38,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
     this.add(this.sprite0);
 
     this.sprite.setVisible(false);
-    this.sprite0.setVisible(false)
+    this.sprite0.setVisible(false);
 
     scene.add.existing(this);
   }
@@ -50,6 +46,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   // Activate the snowstorm event
   activateSnowstorm() {
     this.initializeSnowStorm();
+    this.scene.sound.play("snow-storm", { loop: true });
     console.log("Snowstorm activated.");
   }
 
@@ -57,6 +54,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   deactivateSnowstorm() {
     this.isActive = false;
     this.scene.velocity = WALKING_SPEED;
+    this.scene.sound.stopByKey("snow-storm");
 
     this.sprite.setVisible(false);
     this.randomDirection = "";
@@ -83,10 +81,13 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
     if (!this.scene.anims.exists("snowstorm_left_final_tileset_anim")) {
       this.scene.anims.create({
         key: "snowstorm_left_final_tileset_anim",
-        frames: this.scene.anims.generateFrameNumbers("snowstorm_left_final_tileset", {
-          start: 0,
-          end: 19,
-        }),
+        frames: this.scene.anims.generateFrameNumbers(
+          "snowstorm_left_final_tileset",
+          {
+            start: 0,
+            end: 19,
+          },
+        ),
         repeat: -1,
         frameRate: 10,
       });
@@ -98,10 +99,13 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
     if (!this.scene.anims.exists("snowstorm_right_final_tileset_2_anim")) {
       this.scene.anims.create({
         key: "snowstorm_right_final_tileset_2_anim",
-        frames: this.scene.anims.generateFrameNumbers("snowstorm_right_final_tileset_2", {
-          start: 0,
-          end: 19,
-        }),
+        frames: this.scene.anims.generateFrameNumbers(
+          "snowstorm_right_final_tileset_2",
+          {
+            start: 0,
+            end: 19,
+          },
+        ),
         repeat: -1,
         frameRate: 10,
       });
@@ -126,23 +130,27 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   }
 
   public normalSnowStorm() {
-    if(this.activateNormalSnow) return
-    const normalSnow = this.scene.add.sprite(0, 0, "snowstorm_final_tileset").setOrigin(0);
+    if (this.activateNormalSnow) return;
+    const normalSnow = this.scene.add
+      .sprite(0, 0, "snowstorm_final_tileset")
+      .setOrigin(0);
     normalSnow.setVisible(true);
     normalSnow.setDepth(100000000000);
 
     if (!this.scene.anims.exists("snowstorm_final_tileset_anim")) {
       this.scene.anims.create({
         key: "snowstorm_final_tileset_anim",
-        frames: this.scene.anims.generateFrameNumbers("snowstorm_final_tileset", {
-          start: 0,
-          end: 19,
-        }),
+        frames: this.scene.anims.generateFrameNumbers(
+          "snowstorm_final_tileset",
+          {
+            start: 0,
+            end: 19,
+          },
+        ),
         repeat: -1,
         frameRate: 10,
       });
     }
     normalSnow.play("snowstorm_final_tileset_anim", true);
   }
-
 }

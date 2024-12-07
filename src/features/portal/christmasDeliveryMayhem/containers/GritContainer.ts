@@ -45,7 +45,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
 
     this.sprite.setVisible(true);
 
-    this.setDepth(10000)
+    this.setDepth(10000);
 
     scene.add.existing(this);
   }
@@ -65,13 +65,13 @@ export class GritContainer extends Phaser.GameObjects.Container {
       .setSize(this.sprite.width, this.sprite.height)
       .setOffset(this.sprite.width / 2, this.sprite.height / 2)
       .setImmovable(true)
-      .setCollideWorldBounds(true)
+      .setCollideWorldBounds(true);
 
-      this.overlapHandler = this.scene.physics.add.overlap(
-        this.player as Phaser.GameObjects.GameObject,
-        this as Phaser.GameObjects.GameObject,
-        () => this.handleOverlap()
-      );
+    this.overlapHandler = this.scene.physics.add.overlap(
+      this.player as Phaser.GameObjects.GameObject,
+      this as Phaser.GameObjects.GameObject,
+      () => this.handleOverlap(),
+    );
   }
 
   private GritAnim() {
@@ -91,36 +91,36 @@ export class GritContainer extends Phaser.GameObjects.Container {
 
   private handleOverlap() {
     if (!this.isActive) return;
-
+    this.scene.sound.play("grit-spawn");
     this.GritScapeAnim();
     this.scene.tweens.killTweensOf(this);
     this.collision();
-}
-
-private GritScapeAnim() {
-  if (!this.scene.anims.exists("Grit_escape_anim")) {
-    this.scene.anims.create({
-      key: "Grit_escape_anim",
-      frames: this.scene.anims.generateFrameNumbers("Grit_escape", {
-        start: 0,
-        end: 8,
-      }),
-      repeat: 0,
-      frameRate: 8,
-    });
   }
 
-  // Create a new sprite for the escape animation
-  const escapeSprite = this.scene.add.sprite(this.x, this.y, "Grit_escape");
-  escapeSprite.setDepth(1); // Ensure it appears above other objects
-  escapeSprite.play("Grit_escape_anim", true);
-  escapeSprite.setOrigin(0)
+  private GritScapeAnim() {
+    if (!this.scene.anims.exists("Grit_escape_anim")) {
+      this.scene.anims.create({
+        key: "Grit_escape_anim",
+        frames: this.scene.anims.generateFrameNumbers("Grit_escape", {
+          start: 0,
+          end: 8,
+        }),
+        repeat: 0,
+        frameRate: 8,
+      });
+    }
 
-  // Add a tween or timer to destroy the escape sprite after animation
-  escapeSprite.on("animationcomplete", () => {
-    escapeSprite.destroy();
-  });
-}
+    // Create a new sprite for the escape animation
+    const escapeSprite = this.scene.add.sprite(this.x, this.y, "Grit_escape");
+    escapeSprite.setDepth(1); // Ensure it appears above other objects
+    escapeSprite.play("Grit_escape_anim", true);
+    escapeSprite.setOrigin(0);
+
+    // Add a tween or timer to destroy the escape sprite after animation
+    escapeSprite.on("animationcomplete", () => {
+      escapeSprite.destroy();
+    });
+  }
 
   private startMovement() {
     if (!this.isActive) return;
@@ -132,6 +132,7 @@ private GritScapeAnim() {
       yoyo: true,
       repeat: -1,
     });
+    this.scene.sound.play("grit-spawn");
   }
 
   // Remove one life from the player
@@ -140,6 +141,7 @@ private GritScapeAnim() {
       const currentLives = this.portalService.state.context.lives;
       if (currentLives > 0) {
         this.portalService.send({ type: "LOSE_LIFE" });
+        this.scene.sound.play("bad-sound");
       }
     }
   }
@@ -149,10 +151,10 @@ private GritScapeAnim() {
       this.isActive = false;
 
       // Remove the overlap event
-    if (this.overlapHandler) {
-      this.scene.physics.world.removeCollider(this.overlapHandler);
-      this.overlapHandler = undefined;
-    }
+      if (this.overlapHandler) {
+        this.scene.physics.world.removeCollider(this.overlapHandler);
+        this.overlapHandler = undefined;
+      }
       this.scene.tweens.killTweensOf(this);
       this.sprite.stop();
       this.scene.physics.world.disable(this);
@@ -178,10 +180,10 @@ private GritScapeAnim() {
       this.isActive = false;
 
       // Remove the overlap event
-    if (this.overlapHandler) {
-      this.scene.physics.world.removeCollider(this.overlapHandler);
-      this.overlapHandler = undefined;
-    }
+      if (this.overlapHandler) {
+        this.scene.physics.world.removeCollider(this.overlapHandler);
+        this.overlapHandler = undefined;
+      }
 
       this.scene.tweens.killTweensOf(this);
       this.sprite.stop();
