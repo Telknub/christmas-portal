@@ -24,7 +24,6 @@ export class GritContainer extends Phaser.GameObjects.Container {
   private initialY: number;
   private isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
-  scene: BaseScene;
 
   constructor({ x, y, scene, gifts, player }: Props) {
     super(scene, x, y);
