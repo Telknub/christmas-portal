@@ -5,27 +5,32 @@ import {
   GRIT_TARGET_Y,
   GRIT_DURATION_ANIM,
 } from "../ChristmasDeliveryMayhemConstants";
+import { GiftContainer } from "./GiftContainer";
 
 interface Props {
   x: number;
   y: number;
   scene: BaseScene;
+  gifts: GiftContainer[];
   player?: BumpkinContainer;
 }
 
 export class GritContainer extends Phaser.GameObjects.Container {
   private player?: BumpkinContainer;
+  private gifts: GiftContainer[];
   private sprite: Phaser.GameObjects.Sprite;
   scene: BaseScene;
   private spriteGritHide!: Phaser.GameObjects.Sprite;
   private initialY: number;
-  private isActive: boolean = true; // Flag to track active
+  private isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
+  scene: BaseScene;
 
-  constructor({ x, y, scene, player }: Props) {
+  constructor({ x, y, scene, gifts, player }: Props) {
     super(scene, x, y);
     this.scene = scene;
     this.player = player;
+    this.gifts = gifts;
     this.initialY = y;
 
     const spriteName = "Grit_Carrying";

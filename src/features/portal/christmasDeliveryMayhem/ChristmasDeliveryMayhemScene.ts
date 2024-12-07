@@ -31,6 +31,7 @@ import { CoalsContainer } from "./containers/NewCoals";
 
 export class ChristmasDeliveryMayhemScene extends BaseScene {
   sceneId: SceneId = "christmas_delivery_mayhem";
+  private gifts!: GiftContainer[];
   private snowStorm!: NewSnowStormContainer;
   private gritContainer!: GritContainer;
   private coal!: CoalsContainer;
@@ -219,6 +220,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
         x: config.x,
         y: config.y,
         scene: this,
+        gifts: this.gifts,
         player: this.currentPlayer,
       });
       this.gritContainer.activate();

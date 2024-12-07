@@ -110,11 +110,15 @@ export class GiftContainer extends Phaser.GameObjects.Container {
       return;
     }
 
+    this.portalService?.send("COLLECT_GIFT", { gift: this.spriteName });
+    this.desactivate(GIFT_RESPAWN);
+  }
+
+  desactivate(miliseconds: number) {
     this.setVisible(false);
     this.scene.physics.world.disable(this);
-    this.portalService?.send("COLLECT_GIFT", { gift: this.spriteName });
 
-    this.scene.time.delayedCall(GIFT_RESPAWN, () => {
+    this.scene.time.delayedCall(miliseconds, () => {
       this.setVisible(true);
       this.scene.physics.world.enable(this);
     });
