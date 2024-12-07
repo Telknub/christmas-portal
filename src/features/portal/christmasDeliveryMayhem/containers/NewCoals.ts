@@ -1,9 +1,7 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene } from "features/world/scenes/BaseScene";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
-import {
-  Gifts,
-} from "../ChristmasDeliveryMayhemConstants";
+import { Gifts } from "../ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./GiftContainer";
 
 interface Props {
@@ -17,9 +15,8 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
   private player?: BumpkinContainer;
   private sprite: Phaser.GameObjects.Sprite;
   scene: BaseScene;
-  private isActive: boolean = true; // Flag to track active
+  private isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
-
 
   constructor({ x, y, scene, player }: Props) {
     super(scene, x, y);
@@ -34,7 +31,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
 
     this.Coal();
 
-    this.sprite.setVisible(true)
+    this.sprite.setVisible(true);
 
     scene.add.existing(this);
   }
@@ -55,28 +52,28 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       .setImmovable(true)
       .setCollideWorldBounds(true);
 
-      this.overlapHandler = this.scene.physics.add.overlap(
-        this.player as Phaser.GameObjects.GameObject,
-        this as Phaser.GameObjects.GameObject,
-        () => this.handleOverlap()
-      );
-
+    this.overlapHandler = this.scene.physics.add.overlap(
+      this.player as Phaser.GameObjects.GameObject,
+      this as Phaser.GameObjects.GameObject,
+      () => this.handleOverlap(),
+    );
   }
 
   private handleOverlap() {
     if (!this.isActive) return;
-  
-    this.isActive = false; 
+
+    this.isActive = false;
 
     // Remove the overlap event
     if (this.overlapHandler) {
       this.scene.physics.world.removeCollider(this.overlapHandler);
       this.overlapHandler = undefined;
     }
-  
+
+    this.scene.sound.play("coal-sound");
     this.PoofAnim();
     this.sprite.destroy();
-    this.removeGift()
+    this.removeGift();
   }
 
   // Remove one gift from the player
@@ -89,7 +86,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
         const gift = new GiftContainer({
           x: this.player?.x || 0,
           y: this.player?.y || 0,
-          name: giftName as Gifts,          
+          name: giftName as Gifts,
           scene: this.scene,
           removedAnim: true,
         });
@@ -104,7 +101,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       }
     }
   }
-  
+
   private PoofAnim() {
     if (!this.scene.anims.exists("coalspawn_spritesheet_anim")) {
       this.scene.anims.create({
@@ -117,17 +114,21 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
         frameRate: 10,
       });
     }
-  
-    const escapeSprite = this.scene.add.sprite(this.x, this.y, "coalspawn_spritesheet");
-    escapeSprite.setDepth(1); 
+
+    const escapeSprite = this.scene.add.sprite(
+      this.x,
+      this.y,
+      "coalspawn_spritesheet",
+    );
+    escapeSprite.setDepth(1);
     escapeSprite.play("coalspawn_spritesheet_anim", true);
-    escapeSprite.setOrigin(-.2, .7)
-  
+    escapeSprite.setOrigin(-0.2, 0.7);
+
     escapeSprite.on("animationcomplete", () => {
       escapeSprite.destroy();
       this.KrampusAnim();
     });
-  }  
+  }
 
   private KrampusAnim() {
     if (!this.scene.anims.exists("krampus_anim")) {
@@ -141,17 +142,17 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
         frameRate: 10,
       });
     }
-  
+
     const escapeSprite = this.scene.add.sprite(this.x, this.y, "krampus");
-    escapeSprite.setDepth(1); 
+    escapeSprite.setDepth(1);
     escapeSprite.play("krampus_anim", true);
-    escapeSprite.setOrigin(0, 0.5)
-  
+    escapeSprite.setOrigin(0, 0.5);
+
     escapeSprite.on("animationcomplete", () => {
       escapeSprite.destroy();
       this.PoofAnim1();
     });
-  }  
+  }
 
   private PoofAnim1() {
     if (!this.scene.anims.exists("coalspawn_spritesheet_anim")) {
@@ -165,38 +166,42 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
         frameRate: 10,
       });
     }
-  
-    const escapeSprite = this.scene.add.sprite(this.x, this.y, "coalspawn_spritesheet");
-    escapeSprite.setDepth(1); 
+
+    const escapeSprite = this.scene.add.sprite(
+      this.x,
+      this.y,
+      "coalspawn_spritesheet",
+    );
+    escapeSprite.setDepth(1);
     escapeSprite.play("coalspawn_spritesheet_anim", true);
-    escapeSprite.setOrigin(-.2, .7)
-  
+    escapeSprite.setOrigin(-0.2, 0.7);
+
     escapeSprite.on("animationcomplete", () => {
       escapeSprite.destroy();
     });
-  }  
-  
+  }
+
   // Activate function
   public activate() {
-    if(!this.activate){
-    this.isActive = true;
-    this.sprite.setVisible(true);
-    this.Coal();
+    if (!this.activate) {
+      this.isActive = true;
+      this.sprite.setVisible(true);
+      this.Coal();
+    }
   }
- }
 
   // Deactivate function
   public deactivate() {
-    if(!this.activate){
-    this.isActive = false;
-    // Clear any active overlap handler and other states
-    if (this.overlapHandler) {
-      this.scene.physics.world.removeCollider(this.overlapHandler);
-      this.overlapHandler = undefined;
+    if (!this.activate) {
+      this.isActive = false;
+      // Clear any active overlap handler and other states
+      if (this.overlapHandler) {
+        this.scene.physics.world.removeCollider(this.overlapHandler);
+        this.overlapHandler = undefined;
+      }
+      this.sprite.setVisible(false);
+      this.removeGift();
+      this.sprite.setAlpha(0);
     }
-    this.sprite.setVisible(false);
-    this.removeGift(); 
-    this.sprite.setAlpha(0);
-    } 
   }
 }
