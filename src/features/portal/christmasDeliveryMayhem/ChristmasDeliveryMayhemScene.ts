@@ -4,8 +4,6 @@ import { SceneId } from "features/world/mmoMachine";
 import { BaseScene } from "features/world/scenes/BaseScene";
 import { SQUARE_WIDTH } from "features/game/lib/constants";
 import { MachineInterpreter } from "./lib/christmasDeliveryMayhemMachine";
-import { coalsAnim } from "./containers/CoalsContainer";
-import { CoalBatchSpawner } from "./containers/CoalBatchSpawner";
 import {
   COALS_CONFIGURATION,
   GIFT_CONFIGURATION,
@@ -20,6 +18,7 @@ import { BonfireContainer } from "./containers/BonfireContainer";
 import { ElfContainer } from "./containers/ElfContainer";
 import { GritContainer } from "./containers/GritContainer";
 import { NewSnowStormContainer } from "./containers/NewSnowStormContainer";
+import { CoalsContainer } from "./containers/NewCoals";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -34,6 +33,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   sceneId: SceneId = "christmas_delivery_mayhem";
   private snowStorm!: NewSnowStormContainer;
   private gritContainer!: GritContainer;
+  private coal!: CoalsContainer;
   private coalsArray: (Phaser.Physics.Arcade.Sprite & {
     respawnTimer?: Phaser.Time.TimerEvent;
   })[] = [];
@@ -53,33 +53,55 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   preload() {
     super.preload();
 
-    // subject to change
-    this.load.spritesheet("poof", "world/poof.png", {
-      frameWidth: 15,
-      frameHeight: 18,
+    this.load.spritesheet("krampus", "world/krampus.png", {
+      frameWidth: 20,
+      frameHeight: 19,
     });
 
-    // subject to change
-    this.load.spritesheet("castle_bud_1", "world/castle_bud_1.webp", {
-      frameWidth: 32,
-      frameHeight: 32,
+    this.load.spritesheet("coalspawn_spritesheet", "world/coalspawn_spritesheet.png", {
+      frameWidth: 10,
+      frameHeight: 30,
     });
 
-    this.load.spritesheet("castle_bud_2", "world/castle_bud_2.webp", {
-      frameWidth: 32,
-      frameHeight: 32,
+    this.load.spritesheet("coal", "world/coal.png", {
+      frameWidth: 12,
+      frameHeight: 12,
+    }) 
+
+    this.load.spritesheet("snowstorm_left_final_tileset", "world/snowstorm_left_final_tileset.png", {
+      frameWidth: 544,
+      frameHeight: 320,
+    });
+
+    this.load.spritesheet("snowstorm_right_final_tileset_2", "world/snowstorm_right_final_tileset_2.png", {
+      frameWidth: 544,
+      frameHeight: 320,
+    });
+
+    this.load.spritesheet("snowstorm_final_tileset", "world/snowstorm_final_tileset.png", {
+      frameWidth: 544,
+      frameHeight: 320,
+    });
+
+    this.load.spritesheet("Grit_Carrying", "world/Grit_Carrying.webp", {
+      frameWidth: 25,
+      frameHeight: 19,
+    });
+
+    this.load.spritesheet("Grit_up", "world/Grit_up.webp", {
+      frameWidth: 25,
+      frameHeight: 19,
+    });
+
+    this.load.spritesheet("Grit_escape", "world/Grit_escape.png", {
+      frameWidth: 14,
+      frameHeight: 17,
     });
 
     // subject to change
     this.load.spritesheet("sand", "world/sand.webp", {
       frameWidth: 14,
       frameHeight: 10,
-    });
-
-    // subject to change
-    this.load.spritesheet("corn_maze_clouds", "world/corn_maze_clouds.png", {
-      frameWidth: 640,
-      frameHeight: 640,
     });
 
     // Gifts
@@ -131,11 +153,15 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.createGifts();
     this.createBonfires();
     this.createElves();
-    this.createGrit();
+    this.createCoals();
     this.createSnowStorm();
+    this.snowStorm.normalSnowStorm()
+    
+    setTimeout(() => {
+      this.createGrit();
+    }, 10000); // 20000
 
-    this.physics.world.drawDebug = false;
-    this.initializeCoals(COALS_CONFIGURATION);
+    // this.physics.world.drawDebug = true;
 
     //For testing only. Remove when not used.
     setTimeout(() => {
@@ -177,40 +203,6 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     }
   }
 
-  // Initialize Coals
-  initializeCoals(coalsConfig: { x: number; y: number }[]) {
-    const coalBatchSpawner = new CoalBatchSpawner(this, coalsConfig);
-    coalBatchSpawner.spawnInBatches();
-  }
-
-  coals(x: number, y: number) {
-    // subject to change
-    const coal = this.physics.add.sprite(
-      x,
-      y,
-      // subject to change "sand"
-      "sand",
-    ) as Phaser.Physics.Arcade.Sprite & {
-      respawnTimer?: Phaser.Time.TimerEvent;
-    };
-    coal.setOrigin(0);
-    coal.setSize(SQUARE_WIDTH, SQUARE_WIDTH);
-    coal.setImmovable(true);
-    coal.setCollideWorldBounds(true);
-
-    this.coalsArray.push(coal);
-
-    if (this.currentPlayer) {
-      this.physics.add.overlap(
-        coal,
-        this.currentPlayer,
-        () => coalsAnim(coal, this, this.coalsArray),
-        undefined,
-        this,
-      );
-    }
-  }
-
   private createSnowStorm() {
     this.snowStorm = new NewSnowStormContainer({
       x: SNOWSTORM_CONFIGURATION.x,
@@ -233,17 +225,30 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     });
   }
 
+  private createCoals() {
+    COALS_CONFIGURATION.forEach(
+      (config) =>
+        this.coal = new CoalsContainer({
+          x: config.x,
+          y: config.y,
+          scene: this,
+          player: this.currentPlayer,
+        }),
+        // this.coal.activate()
+    );
+  }
+
   private createGifts() {
     GIFT_CONFIGURATION.forEach(
-      (config) =>
+      (config) =>{
         new GiftContainer({
           x: config.x,
           y: config.y,
           scene: this,
           name: config.name,
           player: this.currentPlayer,
-        }),
-    );
+        })
+    });
   }
 
   private createBonfires() {

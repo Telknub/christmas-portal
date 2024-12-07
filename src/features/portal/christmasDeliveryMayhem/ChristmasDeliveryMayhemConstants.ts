@@ -24,11 +24,6 @@ export const GAME_LIVES = 5;
 // Gifts
 export const GIFT_RESPAWN = 3000;
 
-//Krampus Coals
-export const KRAMPUS_DURATION = 1000; // Krampus spawn duration
-export const COAL_RESPAWN = 10000; // Individual coal respawn
-export const COAL_BATCH_SPAWN = 10000; // Delay between each batch spawn
-
 //SnowStorm
 export const SNOWSTORM_DELAY = 15000; // Snowstorm delay effect
 export const DURATION_SNOWSTORM = 10000; // Snowstorm duration effect
@@ -63,12 +58,12 @@ export const ELVES_CONFIGURATION = [
 
 // Grit initial coordinate
 export const GRIT_CONFIGURATION = [
-  { x: SQUARE_WIDTH * 15, y: SQUARE_WIDTH * 16 },
+  { x: SQUARE_WIDTH * 16.5, y: SQUARE_WIDTH * 20 },
 ];
 
 export const GRIT_DURATION = 30000; // Grits existence duration
 export const GRIT_DURATION_ANIM = 5000; // Duration of the animation (5 seconds)
-export const GRIT_TARGET_Y = SQUARE_WIDTH * 3; // Set the target Y position
+export const GRIT_TARGET_Y = SQUARE_WIDTH * 5; // Set the target Y position
 
 // Coal spawn by batch
 export const COAL_BATCH_SIZES = [
@@ -103,50 +98,11 @@ export const COALS_CONFIGURATION: { x: number; y: number }[] = [
   { x: SQUARE_WIDTH * 13, y: SQUARE_WIDTH * 10 },
   { x: SQUARE_WIDTH * 16, y: SQUARE_WIDTH * 16 },
   { x: SQUARE_WIDTH * 21, y: SQUARE_WIDTH * 13 },
-  { x: SQUARE_WIDTH * 18, y: SQUARE_WIDTH * 7 },
+  { x: SQUARE_WIDTH * 18, y: SQUARE_WIDTH * 12 },
   { x: SQUARE_WIDTH * 11, y: SQUARE_WIDTH * 8 },
   { x: SQUARE_WIDTH * 23, y: SQUARE_WIDTH * 14 },
   { x: SQUARE_WIDTH * 8, y: SQUARE_WIDTH * 11 },
   { x: SQUARE_WIDTH * 19, y: SQUARE_WIDTH * 10 },
-  // { x: 445, y: 39 },
-  // { x: 105, y: 30 },
-  // { x: 325, y: 260 },
-  // { x: 316, y: 100 },
-  // { x: 420, y: 210 },
-  // { x: 93, y: 107 },
-  // { x: 29, y: 215 },
-  // { x: 118, y: 190 },
-  // { x: 85, y: 125 },
-  // { x: 102, y: 70 },
-  // { x: 467, y: 50 },
-  // { x: 55, y: 100 },
-  // { x: 129, y: 200 },
-  // { x: 12, y: 150 },
-  // { x: 328, y: 150 },
-  // { x: 453, y: 295 },
-  // { x: 360, y: 210 },
-  // { x: 400, y: 280 },
-  // { x: 380, y: 40 },
-  // { x: 395, y: 60 },
-  // { x: 355, y: 230 },
-  // { x: 332, y: 75 },
-  // { x: 470, y: 120 },
-  // { x: 490, y: 180 },
-  // { x: 338, y: 270 },
-  // { x: 32, y: 134 },
-  // { x: 68, y: 295 },
-  // { x: 143, y: 250 },
-  // { x: 110, y: 270 },
-  // { x: 45, y: 210 },
-  // { x: 138, y: 160 },
-  // { x: 45, y: 20 },
-  // { x: 50, y: 90 },
-  // { x: 375, y: 100 },
-  // { x: 52, y: 215 },
-  // { x: 116, y: 185 },
-  // { x: 41, y: 110 },
-  // { x: 72, y: 305 },
-  // { x: 365, y: 220 },
 ];
 
 export const DROP_ANIMATION_GIFT_CONFIGURATION: {
