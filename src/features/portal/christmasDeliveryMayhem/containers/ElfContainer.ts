@@ -1,13 +1,7 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene } from "features/world/scenes/BaseScene";
-import {
-  DROP_ANIMATION_GIFT_CONFIGURATION,
-  GIFT_RESPAWN,
-  Gifts,
-  MAX_PLAYER_GIFTS,
-} from "../ChristmasDeliveryMayhemConstants";
+import { Gifts } from "../ChristmasDeliveryMayhemConstants";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
-import { translate } from "lib/i18n/translate";
 import { GiftContainer } from "./GiftContainer";
 
 interface Props {
