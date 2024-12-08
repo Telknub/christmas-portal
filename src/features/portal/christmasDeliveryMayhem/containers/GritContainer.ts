@@ -22,9 +22,9 @@ export class GritContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
   private spriteGritHide!: Phaser.GameObjects.Sprite;
   private initialY: number;
-  private isActive = true; // Flag to track active
+  public isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
-  scene: BaseScene;
+  private giftDeactivateTimer?: Phaser.Time.TimerEvent;
 
   constructor({ x, y, scene, gifts, player }: Props) {
     super(scene, x, y);
@@ -45,7 +45,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
 
     this.sprite.setVisible(true);
 
-    this.setDepth(10000)
+    this.setDepth(10000);
 
     scene.add.existing(this);
   }
@@ -65,13 +65,13 @@ export class GritContainer extends Phaser.GameObjects.Container {
       .setSize(this.sprite.width, this.sprite.height)
       .setOffset(this.sprite.width / 2, this.sprite.height / 2)
       .setImmovable(true)
-      .setCollideWorldBounds(true)
+      .setCollideWorldBounds(true);
 
-      this.overlapHandler = this.scene.physics.add.overlap(
-        this.player as Phaser.GameObjects.GameObject,
-        this as Phaser.GameObjects.GameObject,
-        () => this.handleOverlap()
-      );
+    this.overlapHandler = this.scene.physics.add.overlap(
+      this.player as Phaser.GameObjects.GameObject,
+      this as Phaser.GameObjects.GameObject,
+      () => this.handleOverlap(),
+    );
   }
 
   private GritAnim() {
@@ -95,35 +95,36 @@ export class GritContainer extends Phaser.GameObjects.Container {
     this.GritScapeAnim();
     this.scene.tweens.killTweensOf(this);
     this.collision();
-}
+  }
 
-private GritScapeAnim() {
-  if (!this.scene.anims.exists("Grit_escape_anim")) {
-    this.scene.anims.create({
-      key: "Grit_escape_anim",
-      frames: this.scene.anims.generateFrameNumbers("Grit_escape", {
-        start: 0,
-        end: 8,
-      }),
-      repeat: 0,
-      frameRate: 8,
+  private GritScapeAnim() {
+    if (!this.scene.anims.exists("Grit_escape_anim")) {
+      this.scene.anims.create({
+        key: "Grit_escape_anim",
+        frames: this.scene.anims.generateFrameNumbers("Grit_escape", {
+          start: 0,
+          end: 8,
+        }),
+        repeat: 0,
+        frameRate: 8,
+      });
+    }
+
+    const escapeSprite = this.scene.add.sprite(this.x, this.y, "Grit_escape");
+    escapeSprite.setDepth(1); 
+    escapeSprite.play("Grit_escape_anim", true);
+    escapeSprite.setOrigin(0);
+
+    escapeSprite.on("animationcomplete", () => {
+      escapeSprite.destroy();
     });
   }
 
-  // Create a new sprite for the escape animation
-  const escapeSprite = this.scene.add.sprite(this.x, this.y, "Grit_escape");
-  escapeSprite.setDepth(1); // Ensure it appears above other objects
-  escapeSprite.play("Grit_escape_anim", true);
-  escapeSprite.setOrigin(0)
-
-  // Add a tween or timer to destroy the escape sprite after animation
-  escapeSprite.on("animationcomplete", () => {
-    escapeSprite.destroy();
-  });
-}
-
   private startMovement() {
     if (!this.isActive) return;
+
+    this.giftNotVisible();
+
     this.scene.tweens.add({
       targets: this,
       y: GRIT_TARGET_Y,
@@ -131,6 +132,16 @@ private GritScapeAnim() {
       ease: "Linear",
       yoyo: true,
       repeat: -1,
+    });
+  }
+
+  private giftNotVisible() {
+    if (!this.isActive) return;
+
+    this.giftDeactivateTimer = this.scene.time.delayedCall(3000, () => {
+      this.gifts.forEach((gift) => {
+        gift.deactivateGift(2000); // Deactivate each gift after the delay
+      });
     });
   }
 
@@ -144,15 +155,15 @@ private GritScapeAnim() {
     }
   }
 
-  private collision() {
+  public collision() {
     if (this.isActive) {
       this.isActive = false;
 
       // Remove the overlap event
-    if (this.overlapHandler) {
-      this.scene.physics.world.removeCollider(this.overlapHandler);
-      this.overlapHandler = undefined;
-    }
+      if (this.overlapHandler) {
+        this.scene.physics.world.removeCollider(this.overlapHandler);
+        this.overlapHandler = undefined;
+      }
       this.scene.tweens.killTweensOf(this);
       this.sprite.stop();
       this.scene.physics.world.disable(this);
@@ -161,8 +172,8 @@ private GritScapeAnim() {
     }
   }
 
-  // Activate the GritContainer, enabling movement, physics, and animation
-  public activate() {
+  // Activate the GritContainer
+  public activateGrit() {
     if (!this.isActive) {
       this.isActive = true;
       this.sprite.setVisible(true);
@@ -172,16 +183,22 @@ private GritScapeAnim() {
     }
   }
 
-  // Deactivate the GritContainer, disabling movement, physics, and animation
-  public deactivate() {
+  // Deactivate the GritContainer
+  public deactivateGrit() {
     if (this.isActive) {
       this.isActive = false;
 
       // Remove the overlap event
-    if (this.overlapHandler) {
-      this.scene.physics.world.removeCollider(this.overlapHandler);
-      this.overlapHandler = undefined;
-    }
+      if (this.overlapHandler) {
+        this.scene.physics.world.removeCollider(this.overlapHandler);
+        this.overlapHandler = undefined;
+      }
+
+      // Cancel previous timer if it exists
+      if (this.giftDeactivateTimer) {
+        this.giftDeactivateTimer.remove(); // Stop the previous timer
+        this.giftDeactivateTimer = undefined;
+      }
 
       this.scene.tweens.killTweensOf(this);
       this.sprite.stop();
