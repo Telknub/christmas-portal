@@ -91,7 +91,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
 
   private handleOverlap() {
     if (!this.isActive) return;
-
+    this.scene.sound.play("grit-spawn");
     this.GritScapeAnim();
     this.scene.tweens.killTweensOf(this);
     this.collision();
@@ -111,7 +111,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
     }
 
     const escapeSprite = this.scene.add.sprite(this.x, this.y, "Grit_escape");
-    escapeSprite.setDepth(1); 
+    escapeSprite.setDepth(1);
     escapeSprite.play("Grit_escape_anim", true);
     escapeSprite.setOrigin(0);
 
@@ -133,6 +133,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
       yoyo: true,
       repeat: -1,
     });
+    this.scene.sound.play("grit-spawn");
   }
 
   private giftNotVisible() {
@@ -151,6 +152,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
       const currentLives = this.portalService.state.context.lives;
       if (currentLives > 0) {
         this.portalService.send({ type: "LOSE_LIFE" });
+        this.scene.sound.play("bad-sound");
       }
     }
   }

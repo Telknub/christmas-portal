@@ -1,6 +1,6 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene } from "features/world/scenes/BaseScene";
-import { GIFT_RESPAWN, Gifts } from "../ChristmasDeliveryMayhemConstants";
+import { Gifts } from "../ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./GiftContainer";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
 
@@ -79,6 +79,7 @@ export class BonfireContainer extends Phaser.GameObjects.Container {
           this.hasOverlapped = true;
           this.animateRemoval();
           this.portalService?.send("CLEAR_INVENTORY");
+          this.scene.sound.play("coal-sound");
         }
       },
     );

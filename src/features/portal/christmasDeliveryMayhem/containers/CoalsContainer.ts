@@ -15,7 +15,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
   private player?: BumpkinContainer;
   private sprite: Phaser.GameObjects.Sprite;
   scene: BaseScene;
-  private isActive: boolean = true; // Flag to track active
+  private isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
 
   constructor({ x, y, scene, player }: Props) {
@@ -70,6 +70,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       this.overlapHandler = undefined;
     }
 
+    this.scene.sound.play("coal-sound");
     this.PoofAnim();
     this.sprite.destroy();
     this.removeGift();

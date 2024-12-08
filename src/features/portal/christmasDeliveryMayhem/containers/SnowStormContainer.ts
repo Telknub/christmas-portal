@@ -17,8 +17,8 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
   private randomDirection!: string; // Store the random direction
   public isActive = true; // Flag to track active snowstorm
-  private startTime: number = 0; // Track the start time of the snowstorm
-  private activateNormalSnow: boolean = false;
+  private startTime = 0; // Track the start time of the snowstorm
+  private activateNormalSnow = false;
 
   constructor({ x, y, scene, player }: Props) {
     super(scene, x, y);
@@ -46,6 +46,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   // Activate the snowstorm event
   activateSnowstorm() {
     this.initializeSnowStorm();
+    this.scene.sound.play("snow-storm", { loop: true });
     console.log("Snowstorm activated.");
   }
 
@@ -53,6 +54,8 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   deactivateSnowstorm() {
     this.isActive = false;
     this.scene.velocity = WALKING_SPEED;
+    this.scene.sound.stopByKey("snow-storm");
+
     this.sprite.setVisible(false);
     this.randomDirection = "";
     this.startTime = 0;
