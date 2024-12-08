@@ -15,8 +15,8 @@ import { GiftContainer } from "./containers/GiftContainer";
 import { BonfireContainer } from "./containers/BonfireContainer";
 import { ElfContainer } from "./containers/ElfContainer";
 import { GritContainer } from "./containers/GritContainer";
-import { NewSnowStormContainer } from "./containers/NewSnowStormContainer";
-import { CoalsContainer } from "./containers/NewCoals";
+import { NewSnowStormContainer } from "./containers/SnowStormContainer";
+import { CoalsContainer } from "./containers/CoalsContainer";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -29,13 +29,10 @@ import { CoalsContainer } from "./containers/NewCoals";
 
 export class ChristmasDeliveryMayhemScene extends BaseScene {
   sceneId: SceneId = "christmas_delivery_mayhem";
-  private gifts!: GiftContainer[];
+  private gifts: GiftContainer[] = [];
   private snowStorm!: NewSnowStormContainer;
   private gritContainer!: GritContainer;
-  private coal!: CoalsContainer;
-  private coalsArray: (Phaser.Physics.Arcade.Sprite & {
-    respawnTimer?: Phaser.Time.TimerEvent;
-  })[] = [];
+  private coal: CoalsContainer[] = [];
 
   constructor() {
     super({
@@ -52,7 +49,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   preload() {
     super.preload();
 
-    this.load.spritesheet("krampus", "world/krampus.png", {
+    this.load.spritesheet("krampus", "world/krampus.webp", {
       frameWidth: 20,
       frameHeight: 19,
     });
@@ -103,20 +100,9 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       frameHeight: 19,
     });
 
-    this.load.spritesheet("Grit_up", "world/Grit_up.webp", {
-      frameWidth: 25,
-      frameHeight: 19,
-    });
-
     this.load.spritesheet("Grit_escape", "world/Grit_escape.png", {
       frameWidth: 14,
       frameHeight: 17,
-    });
-
-    // subject to change
-    this.load.spritesheet("sand", "world/sand.webp", {
-      frameWidth: 14,
-      frameHeight: 10,
     });
 
     // Gifts
@@ -177,33 +163,41 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     super.create();
 
-    this.createGifts();
     this.createBonfires();
     this.createElves();
     this.createCoals();
     this.createSnowStorm();
+    this.createGifts();
+    this.createGrit();
     this.snowStorm.normalSnowStorm();
 
-    setTimeout(() => {
-      this.createGrit();
-    }, 10000); // 20000
+    // To test each event, comment out the other event duration samples
 
-    // this.physics.world.drawDebug = true;
+    // Grit event duration sample
+    // setTimeout(() => {
+    //   if(this.gritContainer) {
+    //     this.gritContainer.deactivateGrit()
+    //   }
+    // }, 10000)
 
-    //For testing only. Remove when not used.
-    this.snowStorm.activateSnowstorm();
+    // Coals event duration sample
     setTimeout(() => {
-      if (this.gritContainer) {
-        this.gritContainer.deactivate();
+      if (this.coal) {
+        COALS_CONFIGURATION.forEach((_, index) => {
+          const coal = this.coal[index];
+          coal.deactivateCoal();
+        });
       }
-    }, 20000); // 20000
+    }, 50000);
 
-    //For testing only. Remove when not used.
-    setTimeout(() => {
-      if (this.snowStorm) {
-        this.snowStorm.deactivateSnowstorm(); // Deactivate the snowstorm after 10 seconds
-      }
-    }, 20000); // 20000
+    // Snowstorm event duration sample
+    // setTimeout(() => {
+    //   if(this.snowStorm) {
+    //     this.snowStorm.deactivateSnowstorm()
+    //   }
+    // }, 20000)
+
+    this.physics.world.drawDebug = false;
 
     // this.initialiseNPCs(NPCS);
   }
@@ -238,7 +232,8 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       scene: this,
       player: this.currentPlayer,
     });
-    // this.snowStorm.activateSnowstorm();
+    // use activateSnowstorm to activate
+    this.snowStorm.deactivateSnowstorm();
   }
 
   private createGrit() {
@@ -250,32 +245,35 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
         gifts: this.gifts,
         player: this.currentPlayer,
       });
-      this.gritContainer.activate();
+      // use activateGrit to activate
+      this.gritContainer.deactivateGrit();
     });
   }
 
   private createCoals() {
-    COALS_CONFIGURATION.forEach(
-      (config) =>
-        (this.coal = new CoalsContainer({
-          x: config.x,
-          y: config.y,
-          scene: this,
-          player: this.currentPlayer,
-        })),
-      // this.coal.activate()
-    );
+    COALS_CONFIGURATION.forEach((config) => {
+      const coal = new CoalsContainer({
+        x: config.x,
+        y: config.y,
+        scene: this,
+        player: this.currentPlayer,
+      });
+      this.coal.push(coal);
+      // use deactivateCoal to deactivate
+      coal.activateCoal();
+    });
   }
 
   private createGifts() {
     GIFT_CONFIGURATION.forEach((config) => {
-      new GiftContainer({
+      const gift = new GiftContainer({
         x: config.x,
         y: config.y,
         scene: this,
         name: config.name,
         player: this.currentPlayer,
       });
+      this.gifts.push(gift);
     });
   }
 

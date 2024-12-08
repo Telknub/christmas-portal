@@ -22,8 +22,9 @@ export class GritContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
   private spriteGritHide!: Phaser.GameObjects.Sprite;
   private initialY: number;
-  private isActive = true; // Flag to track active
+  public isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
+  private giftDeactivateTimer?: Phaser.Time.TimerEvent;
 
   constructor({ x, y, scene, gifts, player }: Props) {
     super(scene, x, y);
@@ -109,13 +110,11 @@ export class GritContainer extends Phaser.GameObjects.Container {
       });
     }
 
-    // Create a new sprite for the escape animation
     const escapeSprite = this.scene.add.sprite(this.x, this.y, "Grit_escape");
-    escapeSprite.setDepth(1); // Ensure it appears above other objects
+    escapeSprite.setDepth(1);
     escapeSprite.play("Grit_escape_anim", true);
     escapeSprite.setOrigin(0);
 
-    // Add a tween or timer to destroy the escape sprite after animation
     escapeSprite.on("animationcomplete", () => {
       escapeSprite.destroy();
     });
@@ -123,6 +122,9 @@ export class GritContainer extends Phaser.GameObjects.Container {
 
   private startMovement() {
     if (!this.isActive) return;
+
+    this.giftNotVisible();
+
     this.scene.tweens.add({
       targets: this,
       y: GRIT_TARGET_Y,
@@ -132,6 +134,16 @@ export class GritContainer extends Phaser.GameObjects.Container {
       repeat: -1,
     });
     this.scene.sound.play("grit-spawn");
+  }
+
+  private giftNotVisible() {
+    if (!this.isActive) return;
+
+    this.giftDeactivateTimer = this.scene.time.delayedCall(3000, () => {
+      this.gifts.forEach((gift) => {
+        gift.deactivateGift(2000); // Deactivate each gift after the delay
+      });
+    });
   }
 
   // Remove one life from the player
@@ -145,7 +157,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
     }
   }
 
-  private collision() {
+  public collision() {
     if (this.isActive) {
       this.isActive = false;
 
@@ -162,8 +174,8 @@ export class GritContainer extends Phaser.GameObjects.Container {
     }
   }
 
-  // Activate the GritContainer, enabling movement, physics, and animation
-  public activate() {
+  // Activate the GritContainer
+  public activateGrit() {
     if (!this.isActive) {
       this.isActive = true;
       this.sprite.setVisible(true);
@@ -173,8 +185,8 @@ export class GritContainer extends Phaser.GameObjects.Container {
     }
   }
 
-  // Deactivate the GritContainer, disabling movement, physics, and animation
-  public deactivate() {
+  // Deactivate the GritContainer
+  public deactivateGrit() {
     if (this.isActive) {
       this.isActive = false;
 
@@ -182,6 +194,12 @@ export class GritContainer extends Phaser.GameObjects.Container {
       if (this.overlapHandler) {
         this.scene.physics.world.removeCollider(this.overlapHandler);
         this.overlapHandler = undefined;
+      }
+
+      // Cancel previous timer if it exists
+      if (this.giftDeactivateTimer) {
+        this.giftDeactivateTimer.remove(); // Stop the previous timer
+        this.giftDeactivateTimer = undefined;
       }
 
       this.scene.tweens.killTweensOf(this);

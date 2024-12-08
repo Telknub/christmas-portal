@@ -120,6 +120,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   }
 
   speedDirection() {
+    if (!this.isActive) return;
     if (this.scene.currentPlayer?.directionFacing === this.randomDirection) {
       this.scene.velocity = WALKING_SPEED - SLOWDOWN_SPEED;
       console.log("slower");

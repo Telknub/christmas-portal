@@ -115,17 +115,17 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       });
     }
 
-    const escapeSprite = this.scene.add.sprite(
+    const poofSprite = this.scene.add.sprite(
       this.x,
       this.y,
       "coalspawn_spritesheet",
     );
-    escapeSprite.setDepth(1);
-    escapeSprite.play("coalspawn_spritesheet_anim", true);
-    escapeSprite.setOrigin(-0.2, 0.7);
+    poofSprite.setDepth(1);
+    poofSprite.play("coalspawn_spritesheet_anim", true);
+    poofSprite.setOrigin(-0.2, 0.7);
 
-    escapeSprite.on("animationcomplete", () => {
-      escapeSprite.destroy();
+    poofSprite.on("animationcomplete", () => {
+      poofSprite.destroy();
       this.KrampusAnim();
     });
   }
@@ -143,13 +143,13 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       });
     }
 
-    const escapeSprite = this.scene.add.sprite(this.x, this.y, "krampus");
-    escapeSprite.setDepth(1);
-    escapeSprite.play("krampus_anim", true);
-    escapeSprite.setOrigin(0, 0.5);
+    const krampusSprite = this.scene.add.sprite(this.x, this.y, "krampus");
+    krampusSprite.setDepth(1);
+    krampusSprite.play("krampus_anim", true);
+    krampusSprite.setOrigin(0, 0.5);
 
-    escapeSprite.on("animationcomplete", () => {
-      escapeSprite.destroy();
+    krampusSprite.on("animationcomplete", () => {
+      krampusSprite.destroy();
       this.PoofAnim1();
     });
   }
@@ -167,41 +167,36 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       });
     }
 
-    const escapeSprite = this.scene.add.sprite(
+    const poofSprite1 = this.scene.add.sprite(
       this.x,
       this.y,
       "coalspawn_spritesheet",
     );
-    escapeSprite.setDepth(1);
-    escapeSprite.play("coalspawn_spritesheet_anim", true);
-    escapeSprite.setOrigin(-0.2, 0.7);
+    poofSprite1.setDepth(1);
+    poofSprite1.play("coalspawn_spritesheet_anim", true);
+    poofSprite1.setOrigin(-0.2, 0.7);
 
-    escapeSprite.on("animationcomplete", () => {
-      escapeSprite.destroy();
+    poofSprite1.on("animationcomplete", () => {
+      poofSprite1.destroy();
     });
   }
 
   // Activate function
-  public activate() {
-    if (!this.activate) {
-      this.isActive = true;
-      this.sprite.setVisible(true);
-      this.Coal();
-    }
+  public activateCoal() {
+    this.isActive = true;
+    this.sprite.setVisible(true);
+    this.Coal();
   }
 
   // Deactivate function
-  public deactivate() {
-    if (!this.activate) {
-      this.isActive = false;
-      // Clear any active overlap handler and other states
-      if (this.overlapHandler) {
-        this.scene.physics.world.removeCollider(this.overlapHandler);
-        this.overlapHandler = undefined;
-      }
-      this.sprite.setVisible(false);
-      this.removeGift();
-      this.sprite.setAlpha(0);
+  public deactivateCoal() {
+    this.isActive = false;
+    // Clear any active overlap handler and other states
+    if (this.overlapHandler) {
+      this.scene.physics.world.removeCollider(this.overlapHandler);
+      this.overlapHandler = undefined;
     }
+    this.sprite.setVisible(false);
+    this.sprite.setAlpha(0);
   }
 }
