@@ -58,11 +58,11 @@ export const ELVES_CONFIGURATION = [
 
 // Grit initial coordinate
 export const GRIT_CONFIGURATION = [
-  { x: SQUARE_WIDTH * 16.5, y: SQUARE_WIDTH * 20 },
+  { x: SQUARE_WIDTH * 16.5, y: SQUARE_WIDTH * 18 },
 ];
 
 export const GRIT_DURATION = 30000; // Grits existence duration
-export const GRIT_DURATION_ANIM = 5000; // Duration of the animation (5 seconds)
+export const GRIT_DURATION_ANIM = 4000; // Duration of the animation (5 seconds)
 export const GRIT_TARGET_Y = SQUARE_WIDTH * 5; // Set the target Y position
 
 // Coal spawn by batch
@@ -89,7 +89,6 @@ export const COALS_CONFIGURATION: { x: number; y: number }[] = [
   { x: SQUARE_WIDTH * 16, y: SQUARE_WIDTH * 7 },
   { x: SQUARE_WIDTH * 22, y: SQUARE_WIDTH * 10 },
   { x: SQUARE_WIDTH * 14, y: SQUARE_WIDTH * 8 },
-  { x: SQUARE_WIDTH * 23, y: SQUARE_WIDTH * 6 },
   { x: SQUARE_WIDTH * 19, y: SQUARE_WIDTH * 17 },
   { x: SQUARE_WIDTH * 10, y: SQUARE_WIDTH * 10 },
   { x: SQUARE_WIDTH * 13, y: SQUARE_WIDTH * 15 },
