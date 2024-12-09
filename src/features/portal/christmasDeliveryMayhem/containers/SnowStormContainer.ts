@@ -46,6 +46,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   // Activate the snowstorm event
   activateSnowstorm() {
     this.initializeSnowStorm();
+    this.scene.sound.play("snow-storm", { loop: true });
     console.log("Snowstorm activated.");
   }
 
@@ -53,6 +54,8 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   deactivateSnowstorm() {
     this.isActive = false;
     this.scene.velocity = WALKING_SPEED;
+    this.scene.sound.stopByKey("snow-storm");
+
     this.sprite.setVisible(false);
     this.randomDirection = "";
     this.startTime = 0;

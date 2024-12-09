@@ -70,6 +70,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       this.overlapHandler = undefined;
     }
 
+    this.scene.sound.play("coal-sound");
     this.PoofAnim();
     this.sprite.destroy();
     this.removeGift();

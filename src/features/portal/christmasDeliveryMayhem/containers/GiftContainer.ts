@@ -109,7 +109,7 @@ export class GiftContainer extends Phaser.GameObjects.Container {
       this.player?.speak(translate("christmas-delivery-mayhem.noMoreSpace"));
       return;
     }
-
+    this.scene.sound.play("gift-pickup");
     this.portalService?.send("COLLECT_GIFT", { gift: this.spriteName });
     this.deactivateGift(GIFT_RESPAWN);
   }

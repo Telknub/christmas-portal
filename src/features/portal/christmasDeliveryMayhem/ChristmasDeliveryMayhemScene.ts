@@ -2,7 +2,6 @@ import mapJson from "assets/map/christmasDeliveryMayhem.json";
 import tilesetconfig from "assets/map/christmas_tileset.json";
 import { SceneId } from "features/world/mmoMachine";
 import { BaseScene } from "features/world/scenes/BaseScene";
-import { SQUARE_WIDTH } from "features/game/lib/constants";
 import { MachineInterpreter } from "./lib/christmasDeliveryMayhemMachine";
 import {
   COALS_CONFIGURATION,
@@ -154,6 +153,18 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       frameWidth: 7,
       frameHeight: 8,
     });
+
+    //sounds
+    this.load.audio("coal-sound", "world/sound-effects/coal-sound.mp3"); // done
+    this.load.audio("grit-spawn", "world/sound-effects/grit-spawn.mp3"); // done
+    this.load.audio("gift-pickup", "world/sound-effects/gift-pickup.mp3"); // done
+    this.load.audio("snow-storm", "world/sound-effects/snow-storm.mp3"); // doneddd
+
+    //partially implemented. grit plays the sound when he takes one of your lives now
+    this.load.audio("bad-sound", "world/sound-effects/bad-sound.mp3"); //play when something bad happens
+
+    //not used yet. elfs not taking my gifts yet
+    this.load.audio("good-sound", "world/sound-effects/good-sound.mp3"); //play when something good happens
   }
 
   async create() {
@@ -197,7 +208,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     //   }
     // }, 20000)
 
-    this.physics.world.drawDebug = true;
+    this.physics.world.drawDebug = false;
 
     // this.initialiseNPCs(NPCS);
   }
@@ -312,5 +323,5 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     );
   }
 
-  private setDefaultState() {}
+  //private setDefaultState() {}
 }
