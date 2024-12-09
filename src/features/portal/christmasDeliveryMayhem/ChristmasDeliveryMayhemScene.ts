@@ -31,6 +31,7 @@ import { CoalsContainer } from "./containers/CoalsContainer";
 export class ChristmasDeliveryMayhemScene extends BaseScene {
   sceneId: SceneId = "christmas_delivery_mayhem";
   private gifts: GiftContainer[] = [];
+  private elves: ElfContainer[] = [];
   private snowStorm!: NewSnowStormContainer;
   private gritContainer!: GritContainer;
   private coal: CoalsContainer[] = [];
@@ -143,6 +144,16 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       frameWidth: 20,
       frameHeight: 19,
     });
+
+    // Emoticons
+    this.load.spritesheet("happy", "world/happy.png", {
+      frameWidth: 7,
+      frameHeight: 8,
+    });
+    this.load.spritesheet("sad", "world/sad.png", {
+      frameWidth: 7,
+      frameHeight: 8,
+    });
   }
 
   async create() {
@@ -186,7 +197,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     //   }
     // }, 20000)
 
-    this.physics.world.drawDebug = false;
+    this.physics.world.drawDebug = true;
 
     // this.initialiseNPCs(NPCS);
   }
@@ -209,9 +220,19 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     // Player current position
     // console.log({y: this.currentPlayer?.y, x: this.currentPlayer?.x})
 
+    const lives = this.portalService?.state.context.lives || 0;
+    if (lives <= 0) {
+      this.portalService?.send("GAME_OVER");
+    }
+
     if (this.isGameReady) {
+      this.initializeRequests();
       this.portalService?.send("START");
     }
+  }
+
+  private initializeRequests() {
+    this.elves.forEach((elf) => elf.createRequest());
   }
 
   private createSnowStorm() {
@@ -254,16 +275,16 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   }
 
   private createGifts() {
-    GIFT_CONFIGURATION.forEach((config) => {
-      const gift = new GiftContainer({
-        x: config.x,
-        y: config.y,
-        scene: this,
-        name: config.name,
-        player: this.currentPlayer,
-      });
-      this.gifts.push(gift);
-    });
+    this.gifts = GIFT_CONFIGURATION.map(
+      (config) =>
+        new GiftContainer({
+          x: config.x,
+          y: config.y,
+          scene: this,
+          name: config.name,
+          player: this.currentPlayer,
+        }),
+    );
   }
 
   private createBonfires() {
@@ -279,7 +300,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   }
 
   private createElves() {
-    ELVES_CONFIGURATION.forEach(
+    this.elves = ELVES_CONFIGURATION.map(
       (config) =>
         new ElfContainer({
           x: config.x,

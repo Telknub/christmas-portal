@@ -819,6 +819,8 @@
   "christmas-delivery-mayhem.lampWear": "Wear x{{multiplier}}",
   "christmas-delivery-mayhem.lose": "You will lose in: {{time}}",
   "christmas-delivery-mayhem.noMoreSpace": "No more space!",
+  "christmas-delivery-mayhem.deliveryStreak": "Delivery Streak:",
+  "christmas-delivery-mayhem.streak": "x{{streak}}",
   "description.wicker.man": "Join hands and make a chain, the shadow of the Wicker Man will rise up again",
   "description.golden bonsai": "Goblins love bonsai too",
   "description.christmas.bear": "Santa's favorite",

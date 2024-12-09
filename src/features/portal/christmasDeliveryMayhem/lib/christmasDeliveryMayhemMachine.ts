@@ -8,6 +8,7 @@ import {
   DAILY_ATTEMPTS,
   GAME_SECONDS,
   GAME_LIVES,
+  Gifts,
 } from "../ChristmasDeliveryMayhemConstants";
 import { GameState } from "features/game/types/game";
 import { purchaseMinigameItem } from "features/game/events/minigames/purchaseMinigameItem";
@@ -35,7 +36,8 @@ export interface Context {
   state: GameState | undefined;
   score: number;
   lastScore: number;
-  gifts: string[];
+  gifts: Gifts[];
+  streak: number;
   lives: number;
   endAt: number;
   attemptsLeft: number;
@@ -58,15 +60,24 @@ type SetJoystickActiveEvent = {
 
 type CollectGiftEvent = {
   type: "COLLECT_GIFT";
-  gift: string;
+  gift: Gifts;
 };
 
 type ClearInventoryEvent = {
   type: "CLEAR_INVENTORY";
 };
 
+type RemoveLastGiftInventoryEvent = {
+  type: "REMOVE_LAST_GIFT_INVENTORY";
+};
+
 type LoseLifeEvent = {
   type: "LOSE_LIFE";
+};
+
+type StreakEvent = {
+  type: "STREAK";
+  streak: number;
 };
 
 export type PortalEvent =
@@ -81,8 +92,10 @@ export type PortalEvent =
   | { type: "END_GAME_EARLY" }
   | { type: "GAME_OVER" }
   | GainPointsEvent
+  | StreakEvent
   | CollectGiftEvent
   | ClearInventoryEvent
+  | RemoveLastGiftInventoryEvent
   | LoseLifeEvent
   | UnlockAchievementsEvent;
 
@@ -119,6 +132,7 @@ const resetGameTransition = {
     actions: assign({
       score: () => 0,
       gifts: () => [],
+      streal: () => 0,
       lives: () => 0,
       endAt: () => 0,
     }) as any,
@@ -139,6 +153,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
     score: 0,
     lastScore: 0,
     gifts: [],
+    streak: 0,
     lives: 0,
     attemptsLeft: 0,
     endAt: 0,
@@ -288,6 +303,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
             endAt: () => Date.now() + GAME_SECONDS * 1000,
             score: 0,
             gifts: [],
+            streak: 0,
             lives: GAME_LIVES,
             state: (context: any) => {
               startAttempt();
@@ -307,14 +323,30 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
 
     playing: {
       on: {
-        // GAIN_POINTS: {
-        //   actions: assign<Context, any>({
-        //     gifts: (context: Context, event: CollectGiftEvent) => {
-        //       const gifts = [...context.gifts, event.gift];
-        //       return gifts;
-        //     },
-        //   }),
-        // },
+        STREAK: {
+          actions: assign<Context, any>((context, event: StreakEvent) => {
+            let streak = context.streak;
+
+            if (event.streak === 1) {
+              if (streak >= 0) {
+                streak += event.streak;
+              } else {
+                streak = event.streak;
+              }
+            } else {
+              if (streak <= 0) {
+                streak += event.streak;
+              } else {
+                streak = event.streak;
+              }
+            }
+
+            return {
+              score: context.score + streak,
+              streak: streak,
+            };
+          }),
+        },
         LOSE_LIFE: {
           actions: assign<Context, any>({
             lives: (context: Context) => {
@@ -334,6 +366,15 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
           actions: assign<Context, any>({
             gifts: () => {
               return [];
+            },
+          }),
+        },
+        REMOVE_LAST_GIFT_INVENTORY: {
+          actions: assign<Context, any>({
+            gifts: (context: Context) => {
+              const gifts = [...context.gifts];
+              gifts.pop();
+              return gifts;
             },
           }),
         },

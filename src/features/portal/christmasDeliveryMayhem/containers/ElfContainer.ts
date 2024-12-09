@@ -1,27 +1,42 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene } from "features/world/scenes/BaseScene";
-import { Gifts } from "../ChristmasDeliveryMayhemConstants";
+import {
+  Gifts,
+  GIFTS_NAMES,
+  MAX_GIFTS_PER_REQUEST,
+  REQUEST_COOLDOWN,
+  REQUEST_TIME_LIMIT_PER_GIFTS,
+} from "../ChristmasDeliveryMayhemConstants";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
 import { GiftContainer } from "./GiftContainer";
+import { RequestBubbleContainer } from "./RequestBubbleContainer";
+import { ProgressBar } from "./ProgressBarContainer";
+import confetti from "canvas-confetti";
 
 interface Props {
   x: number;
   y: number;
   scene: BaseScene;
-  direction: string;
+  direction: "left" | "right";
   player?: BumpkinContainer;
 }
 
 export class ElfContainer extends Phaser.GameObjects.Container {
+  private direction: "left" | "right";
   private player?: BumpkinContainer;
   private sprite: Phaser.GameObjects.Sprite;
+  private requestBubble: RequestBubbleContainer | null;
+  private request!: Gifts[];
+  private progressBar: ProgressBar;
 
   scene: BaseScene;
 
   constructor({ x, y, scene, direction, player }: Props) {
-    super(scene, x - 2, y - 3);
+    super(scene, x - 2, y - 6);
     this.scene = scene;
+    this.direction = direction;
     this.player = player;
+    this.requestBubble = null;
 
     // Elf Sprite
     const spriteName = "elf";
@@ -45,16 +60,30 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     });
     this.sprite.play(`${spriteName}_action`, true);
 
+    // Progress Bar
+    this.progressBar = new ProgressBar({
+      x: 2,
+      y: this.sprite.height + 3,
+      scene: this.scene,
+      duration: REQUEST_TIME_LIMIT_PER_GIFTS[1],
+      onComplete: () => this.handleTimeout(),
+    });
+
     // Action - Overlap
     this.handleOverlap();
 
+    this.setDepth(1000000000);
     this.setSize(this.sprite.width, this.sprite.height);
-    this.add(this.sprite);
+    this.add([this.sprite, this.progressBar]);
 
     scene.add.existing(this);
   }
 
-  public get portalService() {
+  private get isGamePlaying() {
+    return this.portalService?.state.matches("playing") === true;
+  }
+
+  private get portalService() {
     return this.scene.registry.get("portalService") as
       | MachineInterpreter
       | undefined;
@@ -66,8 +95,8 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     this.scene.physics.world.enable(this);
 
     (this.body as Phaser.Physics.Arcade.Body)
-      .setSize(this.sprite.width, this.sprite.height)
-      .setOffset(this.sprite.width / 2, this.sprite.height / 2)
+      .setSize(16, 16)
+      .setOffset(this.sprite.width / 2 + 2, this.sprite.height / 2 + 22)
       .setImmovable(true)
       .setCollideWorldBounds(true);
 
@@ -80,10 +109,68 @@ export class ElfContainer extends Phaser.GameObjects.Container {
 
   private deliverGifts() {
     const myInventory = this.portalService?.state.context.gifts || [];
-    if (myInventory?.length > 0) {
-      this.animateRemoval();
-      this.portalService?.send("CLEAR_INVENTORY");
+    if (myInventory?.length === 0) return;
+
+    this.animateRemoval();
+    this.portalService?.send("CLEAR_INVENTORY");
+    this.requestBubble?.destroy();
+    this.requestBubble = null;
+    this.progressBar.delete();
+
+    const isInRequest = myInventory.every((gift) =>
+      this.request.includes(gift),
+    );
+    let emotionName;
+    let streak;
+
+    if (this.request.length === myInventory.length && isInRequest) {
+      confetti();
+      emotionName = "happy";
+      streak = 1;
+    } else {
+      this.portalService?.send("LOSE_LIFE");
+      emotionName = "sad";
+      streak = -1;
     }
+    this.portalService?.send("STREAK", { streak: streak });
+    const points = this.portalService?.state.context.streak || 0;
+    const emoticon = this.createEmoticon(points, emotionName);
+
+    this.scene.time.delayedCall(REQUEST_COOLDOWN, () => {
+      emoticon.destroy();
+      this.createRequest();
+    });
+  }
+
+  private createEmoticon(amount: number, spriteName: string) {
+    const emoticonContainer = this.scene.add.container(10, -3);
+    const sign = amount > 0 ? "+" : "-";
+
+    const shadowBottomLabel = this.scene.add.bitmapText(
+      -6.5,
+      -1.5,
+      "Teeny Tiny Pixls",
+      `${sign}${Math.abs(amount)}`,
+      4,
+    );
+    emoticonContainer.add(shadowBottomLabel);
+
+    const label = this.scene.add.bitmapText(
+      -7,
+      -2,
+      "Teeny Tiny Pixls",
+      `${sign}${Math.abs(amount)}`,
+      4,
+    );
+    label.setTintFill(0xffffff);
+    emoticonContainer.add(label);
+
+    const emoticon = this.scene.add.sprite(3, 0, spriteName);
+    emoticonContainer.add(emoticon);
+
+    this.add(emoticonContainer);
+
+    return emoticonContainer;
   }
 
   private animateRemoval() {
@@ -99,5 +186,53 @@ export class ElfContainer extends Phaser.GameObjects.Container {
       });
       gift.playRemovalAnimation(index);
     });
+  }
+
+  private handleTimeout() {
+    this.requestBubble?.destroy();
+    this.requestBubble = null;
+    if (!this.isGamePlaying) return;
+
+    this.portalService?.send("LOSE_LIFE");
+    this.portalService?.send("STREAK", { streak: -1 });
+    const points = this.portalService?.state.context.streak || 0;
+    const emoticon = this.createEmoticon(points, "sad");
+
+    this.scene.time.delayedCall(REQUEST_COOLDOWN, () => {
+      emoticon.destroy();
+      this.createRequest();
+    });
+  }
+
+  private generateRandomRequest() {
+    const request: Gifts[] = [];
+    const gifts = [...GIFTS_NAMES];
+    const amount = Math.floor(Math.random() * MAX_GIFTS_PER_REQUEST) + 1;
+
+    for (let i = 1; i <= amount; i++) {
+      const randomIndex = Math.floor(Math.random() * gifts.length);
+      request.push(gifts[randomIndex]);
+      gifts.splice(randomIndex, 1);
+    }
+    return request;
+  }
+
+  createRequest() {
+    if (this.requestBubble) return;
+
+    this.request = this.generateRandomRequest();
+
+    this.requestBubble = new RequestBubbleContainer({
+      x: 9,
+      y: 10,
+      scene: this.scene,
+      gifts: this.request,
+      direction: this.direction,
+    });
+    this.add(this.requestBubble);
+
+    this.progressBar.duration =
+      REQUEST_TIME_LIMIT_PER_GIFTS[this.request.length];
+    this.progressBar?.start();
   }
 }

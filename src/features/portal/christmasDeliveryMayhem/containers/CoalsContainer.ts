@@ -15,7 +15,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
   private player?: BumpkinContainer;
   private sprite: Phaser.GameObjects.Sprite;
   scene: BaseScene;
-  private isActive: boolean = true; // Flag to track active
+  private isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
 
   constructor({ x, y, scene, player }: Props) {
@@ -77,28 +77,20 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
 
   // Remove one gift from the player
   private removeGift() {
-    const removedGifts = this.portalService?.state.context.gifts as string[];
+    const gifts = this.portalService?.state.context.gifts || [];
 
-    if (removedGifts.length > 0) {
-      const giftName = removedGifts.pop();
-      if (giftName) {
-        const gift = new GiftContainer({
-          x: this.player?.x || 0,
-          y: this.player?.y || 0,
-          name: giftName as Gifts,
-          scene: this.scene,
-          removedAnim: true,
-        });
-        gift.playRemovalAnimation(removedGifts.length);
-        this.portalService?.send("CLEAR_INVENTORY");
-        if (
-          this.portalService &&
-          this.portalService.state.context.gifts !== undefined
-        ) {
-          this.portalService.state.context.gifts = removedGifts;
-        }
-      }
+    if (gifts.length > 0) {
+      const gift = new GiftContainer({
+        x: this.player?.x || 0,
+        y: this.player?.y || 0,
+        name: gifts[gifts.length - 1],
+        scene: this.scene,
+        removedAnim: true,
+      });
+      gift.playRemovalAnimation(0);
+      this.portalService?.send("REMOVE_LAST_GIFT_INVENTORY");
     }
+    this.portalService?.send("LOSE_LIFE");
   }
 
   private PoofAnim() {

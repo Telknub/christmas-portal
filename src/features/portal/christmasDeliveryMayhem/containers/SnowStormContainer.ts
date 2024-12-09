@@ -17,8 +17,8 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
   private randomDirection!: string; // Store the random direction
   public isActive = true; // Flag to track active snowstorm
-  private startTime: number = 0; // Track the start time of the snowstorm
-  private activateNormalSnow: boolean = false;
+  private startTime = 0; // Track the start time of the snowstorm
+  private activateNormalSnow = false;
 
   constructor({ x, y, scene, player }: Props) {
     super(scene, x, y);
