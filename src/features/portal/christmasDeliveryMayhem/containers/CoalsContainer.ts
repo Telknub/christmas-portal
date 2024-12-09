@@ -121,8 +121,8 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       "coalspawn_spritesheet",
     );
     poofSprite.setDepth(1);
-    poofSprite.play("coalspawn_spritesheet_anim", true);
     poofSprite.setOrigin(-0.2, 0.7);
+    poofSprite.play("coalspawn_spritesheet_anim", true);
 
     poofSprite.on("animationcomplete", () => {
       poofSprite.destroy();
@@ -147,6 +147,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
     krampusSprite.setDepth(1);
     krampusSprite.play("krampus_anim", true);
     krampusSprite.setOrigin(0, 0.5);
+    this.scene.sound.play("grit-spawn");
 
     krampusSprite.on("animationcomplete", () => {
       krampusSprite.destroy();

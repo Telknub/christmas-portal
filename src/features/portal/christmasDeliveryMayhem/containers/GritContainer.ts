@@ -133,7 +133,6 @@ export class GritContainer extends Phaser.GameObjects.Container {
       yoyo: true,
       repeat: -1,
     });
-    this.scene.sound.play("grit-spawn");
   }
 
   private giftNotVisible() {
@@ -142,6 +141,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
     this.giftDeactivateTimer = this.scene.time.delayedCall(3000, () => {
       this.gifts.forEach((gift) => {
         gift.deactivateGift(2000); // Deactivate each gift after the delay
+        this.scene.sound.play("gift-pickup");
       });
     });
   }
