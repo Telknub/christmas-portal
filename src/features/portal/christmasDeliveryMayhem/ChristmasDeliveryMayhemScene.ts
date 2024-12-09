@@ -189,17 +189,17 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     //   if(this.gritContainer) {
     //     this.gritContainer.deactivateGrit()
     //   }
-    // }, 10000)
+    // }, 15000)
 
     // Coals event duration sample
-    setTimeout(() => {
-      if (this.coal) {
-        COALS_CONFIGURATION.forEach((_, index) => {
-          const coal = this.coal[index];
-          coal.deactivateCoal();
-        });
-      }
-    }, 50000);
+    // setTimeout(() => {
+    //   if (this.coal) {
+    //     COALS_CONFIGURATION.forEach((_, index) => {
+    //       const coal = this.coal[index];
+    //       coal.deactivateCoal();
+    //     });
+    //   }
+    // }, 50000);
 
     // Snowstorm event duration sample
     // setTimeout(() => {
@@ -281,7 +281,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       });
       this.coal.push(coal);
       // use deactivateCoal to deactivate
-      coal.activateCoal();
+      coal.deactivateCoal();
     });
   }
 
