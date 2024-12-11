@@ -121,6 +121,8 @@ export class GiftContainer extends Phaser.GameObjects.Container {
     this.scene.time.delayedCall(miliseconds, () => {
       this.setVisible(true);
       this.scene.physics.world.enable(this);
+      //gift gen sound
+      this.scene.sound.play("gift-gen");
     });
   }
 
