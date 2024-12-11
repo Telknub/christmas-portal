@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { Game, AUTO } from "phaser";
+import { Game, AUTO, CANVAS } from "phaser";
 import NinePatchPlugin from "phaser3-rex-plugins/plugins/ninepatch-plugin.js";
 import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
 
@@ -24,7 +24,7 @@ export const ChristmasDeliveryMayhemPhaser: React.FC = () => {
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
-      type: AUTO,
+      type: CANVAS,
       fps: {
         target: 30,
         smoothStep: true,

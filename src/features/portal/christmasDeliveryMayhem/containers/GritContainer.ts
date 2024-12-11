@@ -167,7 +167,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
       const currentLives = this.portalService.state.context.lives;
       if (currentLives > 0) {
         this.portalService.send({ type: "LOSE_LIFE" });
-        this.scene.sound.play("bad-sound");
+        this.scene.sound.play("bad-sound", { volume: 0.1 });
       }
     }
   }

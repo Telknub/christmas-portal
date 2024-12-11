@@ -130,7 +130,7 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     } else {
       this.portalService?.send("STREAK", { streak: -1 });
       this.portalService?.send("LOSE_LIFE");
-      this.scene.sound.play("bad-sound");
+      this.scene.sound.play("bad-sound", { volume: 0.1 });
       emotionName = "sad";
     }
     const points = this.portalService?.state.context.streak || 0;
