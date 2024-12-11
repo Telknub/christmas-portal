@@ -71,7 +71,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       this.overlapHandler = undefined;
     }
 
-    this.scene.sound.play("coal-sound");
+    this.scene.sound.play("coal-sound", { volume: 0.3 });
     this.PoofAnim();
     this.sprite.setVisible(false);
     // this.sprite.destroy();
@@ -141,7 +141,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
     krampusSprite.setDepth(1);
     krampusSprite.play("krampus_anim", true);
     krampusSprite.setOrigin(0, 0.5);
-    this.scene.sound.play("grit-spawn");
+    this.scene.sound.play("grit-spawn", { volume: 0.5 });
 
     krampusSprite.on("animationcomplete", () => {
       krampusSprite.destroy();

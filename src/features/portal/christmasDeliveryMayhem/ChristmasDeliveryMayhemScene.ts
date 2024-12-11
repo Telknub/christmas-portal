@@ -265,13 +265,6 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     const lives = this.portalService?.state.context.lives || 0;
     if (lives <= 0) {
-      this.portalService?.send("GAME_OVER");
-    }
-
-    if (this.isGameReady) {
-      this.initializeRequests();
-      this.portalService?.send("START");
-      this.sound.play("bg-music", { loop: true });
       this.isCameraFading = true;
       this.time.delayedCall(1000, () => {
         this.portalService?.send("GAME_OVER");
@@ -306,6 +299,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       if (this.isGameReady) {
         this.initializeRequests();
         this.portalService?.send("START");
+        this.sound.play("bg-music", { loop: true, volume: 0.1 });
       }
     }
   }

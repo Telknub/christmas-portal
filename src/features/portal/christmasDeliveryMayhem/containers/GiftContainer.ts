@@ -122,7 +122,7 @@ export class GiftContainer extends Phaser.GameObjects.Container {
       this.setVisible(true);
       this.scene.physics.world.enable(this);
       //gift gen sound
-      this.scene.sound.play("gift-gen");
+      this.scene.sound.play("gift-gen", { volume: 0.1 });
     });
   }
 

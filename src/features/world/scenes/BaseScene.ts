@@ -56,7 +56,7 @@ export type NPCBumpkin = {
 const SEND_PACKET_RATE = 10;
 const NAME_TAG_OFFSET_PX = 12;
 
-export const WALKING_SPEED = 50;
+export const WALKING_SPEED = 75;
 
 type BaseSceneOptions = {
   name: SceneId;

@@ -79,7 +79,7 @@ export class BonfireContainer extends Phaser.GameObjects.Container {
           this.hasOverlapped = true;
           this.animateRemoval();
           this.portalService?.send("CLEAR_INVENTORY");
-          this.scene.sound.play("coal-sound");
+          this.scene.sound.play("coal-sound", { volume: 0.3 });
         }
       },
     );
