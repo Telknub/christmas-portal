@@ -72,7 +72,8 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
 
     this.scene.sound.play("coal-sound");
     this.PoofAnim();
-    this.sprite.destroy();
+    this.sprite.setVisible(false);
+    // this.sprite.destroy();
     this.removeGift();
   }
 
@@ -175,14 +176,14 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
   }
 
   // Activate function
-  public activateCoal() {
+  public activate() {
     this.isActive = true;
     this.sprite.setVisible(true);
     this.Coal();
   }
 
   // Deactivate function
-  public deactivateCoal() {
+  public deactivate() {
     this.isActive = false;
     // Clear any active overlap handler and other states
     if (this.overlapHandler) {
@@ -190,6 +191,6 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
       this.overlapHandler = undefined;
     }
     this.sprite.setVisible(false);
-    this.sprite.setAlpha(0);
+    // this.sprite.setAlpha(0);
   }
 }

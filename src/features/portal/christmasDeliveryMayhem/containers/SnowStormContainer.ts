@@ -44,14 +44,14 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   }
 
   // Activate the snowstorm event
-  activateSnowstorm() {
+  activate() {
     this.initializeSnowStorm();
     this.scene.sound.play("snow-storm", { loop: true });
-    console.log("Snowstorm activated.");
+    // console.log("Snowstorm activated.");
   }
 
   // Deactivate the snowstorm event
-  deactivateSnowstorm() {
+  deactivate() {
     this.isActive = false;
     this.scene.velocity = WALKING_SPEED;
     this.scene.sound.stopByKey("snow-storm");
@@ -59,7 +59,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
     this.sprite.setVisible(false);
     this.randomDirection = "";
     this.startTime = 0;
-    console.log("Snowstorm deactivated and variables cleared.");
+    // console.log("Snowstorm deactivated and variables cleared.");
   }
 
   initializeSnowStorm() {
@@ -123,10 +123,10 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
     if (!this.isActive) return;
     if (this.scene.currentPlayer?.directionFacing === this.randomDirection) {
       this.scene.velocity = WALKING_SPEED - SLOWDOWN_SPEED;
-      console.log("slower");
+      // console.log("slower");
     } else {
       const newSpeed = (this.scene.velocity = WALKING_SPEED + SPEEDUP);
-      console.log("faster", newSpeed);
+      // console.log("faster", newSpeed);
     }
   }
 

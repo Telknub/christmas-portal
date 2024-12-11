@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useSelector } from "@xstate/react";
 import { PortalContext } from "../../lib/PortalProvider";
 import { SUNNYSIDE } from "assets/sunnyside";
@@ -6,24 +6,109 @@ import useUiRefresher from "lib/utils/hooks/useUiRefresher";
 import { Label } from "components/ui/Label";
 import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 import { secondsToString } from "lib/utils/time";
-import { GAME_SECONDS } from "../../ChristmasDeliveryMayhemConstants";
+import {
+  EVENT_INTERVAL,
+  GAME_SECONDS,
+  EVENTS_NAMES,
+  Events,
+  EVENT_SELECTION_TIME,
+} from "../../ChristmasDeliveryMayhemConstants";
+import { PIXEL_SCALE } from "features/game/lib/constants";
+
+import coal from "public/world/coal.png";
+import snowflake from "public/world/snowflake_icon.png";
+import grit from "public/world/grit_icon.png";
+import { useAppTranslation } from "lib/i18n/useAppTranslations";
 
 const _endAt = (state: PortalMachineState) => state.context.endAt;
+const _event = (state: PortalMachineState) => state.context.event;
+
+let nextGoal = 1;
+let placeholderEvent: Events = "";
+let iconName: Events = "";
+let indexEvent = 0;
+const eventIcon: Record<Events, any> = {
+  storm: snowflake,
+  krampus: coal,
+  grit: grit,
+  "": "",
+};
+
+const getRandomEvent = () => {
+  const randomIndex = Math.floor(Math.random() * EVENTS_NAMES.length);
+  return EVENTS_NAMES[randomIndex];
+};
 
 export const ChristmasDeliveryMayhemTimer: React.FC = () => {
   useUiRefresher({ delay: 100 });
 
+  const { t } = useAppTranslation();
   const { portalService } = useContext(PortalContext);
-
   const endAt = useSelector(portalService, _endAt);
+  const event = useSelector(portalService, _event);
 
   const secondsLeft = !endAt
     ? GAME_SECONDS
     : Math.max(endAt - Date.now(), 0) / 1000;
 
+  if (secondsLeft <= 0) {
+    portalService.send("GAME_OVER");
+    return <></>;
+  }
+
+  const millisecondsPassed = (GAME_SECONDS - secondsLeft) * 1000;
+  const completedEvents = Math.floor(millisecondsPassed / EVENT_INTERVAL);
+
+  // console.log(millisecondsPassed / EVENT_INTERVAL, nextGoal);
+
+  // Selecting Event
+  if (
+    millisecondsPassed >= EVENT_INTERVAL * nextGoal - EVENT_SELECTION_TIME &&
+    millisecondsPassed <= EVENT_INTERVAL * nextGoal
+  ) {
+    placeholderEvent = EVENTS_NAMES[indexEvent];
+    iconName = placeholderEvent;
+
+    if (indexEvent === EVENTS_NAMES.length - 1) {
+      indexEvent = 0;
+    } else {
+      indexEvent += 1;
+    }
+  }
+
+  // Select Event
+  if (completedEvents === nextGoal) {
+    const currentEvent = getRandomEvent();
+    iconName = currentEvent;
+    placeholderEvent = "";
+    portalService.send("UPDATE_EVENT", { event: currentEvent });
+    nextGoal += 1;
+  }
+
   return (
-    <Label icon={SUNNYSIDE.icons.stopwatch} type={"info"}>
-      {secondsToString(secondsLeft, { length: "full" })}
-    </Label>
+    <>
+      <Label icon={SUNNYSIDE.icons.stopwatch} type={"info"}>
+        {secondsToString(secondsLeft, { length: "full" })}
+      </Label>
+
+      <div
+        className="absolute flex flex-col items-center w-screen mb-3"
+        style={{
+          bottom: `${PIXEL_SCALE * 3}px`,
+        }}
+      >
+        {(event !== "" || placeholderEvent !== "") && (
+          <Label
+            className="space-x-2 text-xs"
+            icon={eventIcon[iconName]}
+            type={"info"}
+          >
+            {event !== "" && placeholderEvent === ""
+              ? t("christmas-delivery-mayhem.event")
+              : t("christmas-delivery-mayhem.choosingEvent")}
+          </Label>
+        )}
+      </div>
+    </>
   );
 };

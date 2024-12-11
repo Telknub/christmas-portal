@@ -4,6 +4,7 @@ import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
 import {
   GRIT_TARGET_Y,
   GRIT_DURATION_ANIM,
+  GIFT_RESPAWN_TIME_AFTER_THEFT,
 } from "../ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./GiftContainer";
 
@@ -18,13 +19,12 @@ interface Props {
 export class GritContainer extends Phaser.GameObjects.Container {
   private player?: BumpkinContainer;
   private gifts: GiftContainer[];
-  private sprite: Phaser.GameObjects.Sprite;
+  sprite: Phaser.GameObjects.Sprite;
   scene: BaseScene;
   private spriteGritHide!: Phaser.GameObjects.Sprite;
   private initialY: number;
   public isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
-  private giftDeactivateTimer?: Phaser.Time.TimerEvent;
 
   constructor({ x, y, scene, gifts, player }: Props) {
     super(scene, x, y);
@@ -123,26 +123,39 @@ export class GritContainer extends Phaser.GameObjects.Container {
   private startMovement() {
     if (!this.isActive) return;
 
-    this.giftNotVisible();
+    const gritReturns = () => {
+      this.scene.tweens.add({
+        targets: this,
+        y: this.initialY,
+        duration: GRIT_DURATION_ANIM * 1.75,
+        ease: "Linear",
+        onComplete: () => {
+          this.handleOverlap();
+          this.removeLife();
+        },
+      });
+    };
 
     this.scene.tweens.add({
       targets: this,
       y: GRIT_TARGET_Y,
       duration: GRIT_DURATION_ANIM,
       ease: "Linear",
-      yoyo: true,
-      repeat: -1,
+      onComplete: () => {
+        this.giftNotVisible();
+        gritReturns();
+      },
     });
   }
 
   private giftNotVisible() {
     if (!this.isActive) return;
 
-    this.giftDeactivateTimer = this.scene.time.delayedCall(3000, () => {
-      this.gifts.forEach((gift) => {
-        gift.deactivateGift(2000); // Deactivate each gift after the delay
-        this.scene.sound.play("gift-pickup");
-      });
+    // console.log(this.gifts);
+
+    this.gifts.forEach((gift) => {
+      gift.deactivateGift(GIFT_RESPAWN_TIME_AFTER_THEFT); // Deactivate each gift after the delay
+      this.scene.sound.play("gift-pickup");
     });
   }
 
@@ -160,6 +173,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
   public collision() {
     if (this.isActive) {
       this.isActive = false;
+      this.y = this.initialY;
 
       // Remove the overlap event
       if (this.overlapHandler) {
@@ -169,13 +183,14 @@ export class GritContainer extends Phaser.GameObjects.Container {
       this.scene.tweens.killTweensOf(this);
       this.sprite.stop();
       this.scene.physics.world.disable(this);
-      this.sprite.destroy();
-      this.destroy();
+      this.sprite.setVisible(false);
+      // this.sprite.destroy();
+      // this.destroy();
     }
   }
 
   // Activate the GritContainer
-  public activateGrit() {
+  public activate() {
     if (!this.isActive) {
       this.isActive = true;
       this.sprite.setVisible(true);
@@ -186,9 +201,10 @@ export class GritContainer extends Phaser.GameObjects.Container {
   }
 
   // Deactivate the GritContainer
-  public deactivateGrit() {
+  public deactivate() {
     if (this.isActive) {
       this.isActive = false;
+      this.y = this.initialY;
 
       // Remove the overlap event
       if (this.overlapHandler) {
@@ -196,19 +212,13 @@ export class GritContainer extends Phaser.GameObjects.Container {
         this.overlapHandler = undefined;
       }
 
-      // Cancel previous timer if it exists
-      if (this.giftDeactivateTimer) {
-        this.giftDeactivateTimer.remove(); // Stop the previous timer
-        this.giftDeactivateTimer = undefined;
-      }
-
       this.scene.tweens.killTweensOf(this);
       this.sprite.stop();
       this.scene.physics.world.disable(this);
       this.sprite.setVisible(false);
-      this.removeLife();
-      this.sprite.destroy();
-      this.destroy();
+      // this.removeLife();
+      // this.sprite.destroy();
+      // this.destroy();
     }
   }
 }

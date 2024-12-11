@@ -15,7 +15,6 @@ import { ChristmasDeliveryMayhemGuide } from "./ChristmasDeliveryMayhemGuide";
 import { SquareIcon } from "components/ui/SquareIcon";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { hasFeatureAccess } from "lib/flags";
-import { millisecondsToString } from "lib/utils/time";
 // import { ChristmasDeliveryMayhemPrize } from "./ChristmasDeliveryMayhemPrize";
 // import { ChristmasDeliveryMayhemAchievementsList } from "./ChristmasDeliveryMayhemAchievementsList";
 
@@ -80,34 +79,20 @@ export const ChristmasDeliveryMayhemMission: React.FC<Props> = ({
                 {showScore && (
                   <span>
                     {t("christmas-delivery-mayhem.score", {
-                      score: millisecondsToString(lastScore, {
-                        length: "full",
-                      }),
+                      score: lastScore,
                     })}
                   </span>
                 )}
                 <span>
                   {t("christmas-delivery-mayhem.bestToday", {
-                    score: minigame?.history[dateKey]?.highscore
-                      ? millisecondsToString(
-                          minigame?.history[dateKey]?.highscore,
-                          {
-                            length: "full",
-                          },
-                        )
-                      : 0,
+                    score: minigame?.history[dateKey]?.highscore || 0,
                   })}
                 </span>
                 <span>
                   {t("christmas-delivery-mayhem.bestAllTime", {
-                    score: millisecondsToString(
-                      Object.values(minigame?.history ?? {}).reduce(
-                        (acc, { highscore }) => Math.max(acc, highscore),
-                        0,
-                      ),
-                      {
-                        length: "full",
-                      },
+                    score: Object.values(minigame?.history ?? {}).reduce(
+                      (acc, { highscore }) => Math.max(acc, highscore),
+                      0,
                     ),
                   })}
                 </span>
