@@ -11,7 +11,6 @@ import {
   GRIT_CONFIGURATION,
   SNOWSTORM_CONFIGURATION,
   Events,
-  GAME_SECONDS,
   EVENT_DURATION,
 } from "./ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./containers/GiftContainer";
@@ -59,6 +58,16 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
   preload() {
     super.preload();
+
+    this.load.spritesheet("snowflake_icon", "world/snowflake_icon.png", {
+      frameWidth: 13,
+      frameHeight: 13,
+    });
+
+    this.load.spritesheet("grit_icon", "world/grit_icon.png", {
+      frameWidth: 13,
+      frameHeight: 12,
+    });
 
     this.load.spritesheet("krampus", "world/krampus.webp", {
       frameWidth: 20,
@@ -235,8 +244,29 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   update() {
     super.update();
 
-    if (this.snowStorm?.isActive) {
+    // if (this.snowStorm?.isActive) {
+    //   this.snowStorm.speedDirection();
+    // }
+
+    this.coal.forEach((coalContainer) => {
+      const isCoalActive = coalContainer.isActive;
+      if (isCoalActive) {
+        coalContainer.emotionIndicator();
+        coalContainer.updateEmoticonPosition();
+      }
+    });
+
+    const isSnowStormActive = this.snowStorm?.isActive;
+    if (isSnowStormActive) {
       this.snowStorm.speedDirection();
+      this.snowStorm.emotionIndicator();
+      this.snowStorm.updateEmoticonPosition();
+    }
+
+    const isGritActive = this.gritContainer?.isActive;
+    if (isGritActive) {
+      this.gritContainer.emotionIndicator();
+      this.gritContainer.updateEmoticonPosition();
     }
 
     // Player current position

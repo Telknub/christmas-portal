@@ -1,6 +1,10 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene, WALKING_SPEED } from "features/world/scenes/BaseScene";
-import { SLOWDOWN_SPEED, SPEEDUP } from "../ChristmasDeliveryMayhemConstants";
+import {
+  SLOWDOWN_SPEED,
+  SPEEDUP,
+  INDICATOR_BLINK_SPEED,
+} from "../ChristmasDeliveryMayhemConstants";
 
 interface Props {
   x: number;
@@ -19,6 +23,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   public isActive = true; // Flag to track active snowstorm
   private startTime = 0; // Track the start time of the snowstorm
   private activateNormalSnow = false;
+  private emoticonContainer: Phaser.GameObjects.Sprite | null = null;
 
   constructor({ x, y, scene, player }: Props) {
     super(scene, x, y);
@@ -47,6 +52,9 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   activate() {
     this.initializeSnowStorm();
     this.scene.sound.play("snow-storm", { loop: true });
+    if (this.emoticonContainer) {
+      this.emoticonContainer.setVisible(true);
+    }
     // console.log("Snowstorm activated.");
   }
 
@@ -59,6 +67,10 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
     this.sprite.setVisible(false);
     this.randomDirection = "";
     this.startTime = 0;
+
+    if (this.emoticonContainer) {
+      this.emoticonContainer.setVisible(false);
+    }
     // console.log("Snowstorm deactivated and variables cleared.");
   }
 
@@ -127,6 +139,62 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
     } else {
       const newSpeed = (this.scene.velocity = WALKING_SPEED + SPEEDUP);
       // console.log("faster", newSpeed);
+    }
+  }
+
+  emotionIndicator() {
+    const emotionName = "snowflake_icon";
+
+    if (!this.isActive) {
+      return emotionName;
+    }
+
+    if (!this.emoticonContainer) {
+      const emoticon = this.createEmoticon(emotionName);
+
+      if (emoticon) {
+        this.createBlinkingEffect(emoticon);
+
+        // this.scene.time.delayedCall(INDICATOR_DURATION, () => {
+        //   emoticon.setVisible(false)
+        // });
+      }
+    }
+  }
+
+  private createBlinkingEffect(emoticon: Phaser.GameObjects.Sprite) {
+    this.scene.tweens.add({
+      targets: emoticon,
+      alpha: { from: 1, to: 0 },
+      duration: INDICATOR_BLINK_SPEED,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
+  }
+
+  private createEmoticon(spriteName: string) {
+    if (!this.player) {
+      return;
+    }
+
+    if (!this.emoticonContainer) {
+      this.emoticonContainer = this.scene.add.sprite(
+        this.player.x,
+        this.player.y,
+        spriteName,
+      );
+    }
+
+    return this.emoticonContainer;
+  }
+
+  updateEmoticonPosition() {
+    if (this.player && this.emoticonContainer) {
+      const positionX = this.player.x;
+      const positionY = this.player.y - 15;
+
+      this.emoticonContainer.setPosition(positionX, positionY);
     }
   }
 
