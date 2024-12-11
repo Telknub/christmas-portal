@@ -50,7 +50,7 @@ export const ChristmasDeliveryMayhemHud: React.FC = () => {
     <HudContainer>
       <div>
         <div
-          className="absolute flex flex-col gap-2"
+          className="absolute flex flex-col gap-2 h-full"
           style={{
             top: `${PIXEL_SCALE * 4}px`,
             left: `${PIXEL_SCALE * 6}px`,

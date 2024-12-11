@@ -9,6 +9,7 @@ import {
   GAME_SECONDS,
   GAME_LIVES,
   Gifts,
+  Events,
 } from "../ChristmasDeliveryMayhemConstants";
 import { GameState } from "features/game/types/game";
 import { purchaseMinigameItem } from "features/game/events/minigames/purchaseMinigameItem";
@@ -38,6 +39,8 @@ export interface Context {
   lastScore: number;
   gifts: Gifts[];
   streak: number;
+  event: Events;
+  placeholderEvent: Events;
   lives: number;
   endAt: number;
   attemptsLeft: number;
@@ -80,6 +83,16 @@ type StreakEvent = {
   streak: number;
 };
 
+type UpdateEventEvent = {
+  type: "UPDATE_EVENT";
+  event: Events;
+};
+
+type UpdatePlaceholderEventEvent = {
+  type: "UPDATE_PLACEHOLDER_EVENT";
+  event: Events;
+};
+
 export type PortalEvent =
   | SetJoystickActiveEvent
   | { type: "START" }
@@ -93,6 +106,8 @@ export type PortalEvent =
   | { type: "GAME_OVER" }
   | GainPointsEvent
   | StreakEvent
+  | UpdateEventEvent
+  | UpdatePlaceholderEventEvent
   | CollectGiftEvent
   | ClearInventoryEvent
   | RemoveLastGiftInventoryEvent
@@ -132,8 +147,10 @@ const resetGameTransition = {
     actions: assign({
       score: () => 0,
       gifts: () => [],
-      streal: () => 0,
-      lives: () => 0,
+      streak: () => 0,
+      event: () => "",
+      placeholderEvent: () => "",
+      lives: () => GAME_LIVES,
       endAt: () => 0,
     }) as any,
   },
@@ -154,7 +171,9 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
     lastScore: 0,
     gifts: [],
     streak: 0,
-    lives: 0,
+    event: "",
+    placeholderEvent: "",
+    lives: GAME_LIVES,
     attemptsLeft: 0,
     endAt: 0,
   },
@@ -304,6 +323,8 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
             score: 0,
             gifts: [],
             streak: 0,
+            event: "",
+            placeholderEvent: "",
             lives: GAME_LIVES,
             state: (context: any) => {
               startAttempt();
@@ -345,6 +366,23 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
               score: context.score + streak,
               streak: streak,
             };
+          }),
+        },
+        UPDATE_EVENT: {
+          actions: assign<Context, any>({
+            event: (context: Context, event: UpdateEventEvent) => {
+              return event.event;
+            },
+          }),
+        },
+        UPDATE_PLACEHOLDER_EVENT: {
+          actions: assign<Context, any>({
+            placeholderEvent: (
+              context: Context,
+              event: UpdatePlaceholderEventEvent,
+            ) => {
+              return event.event;
+            },
           }),
         },
         LOSE_LIFE: {

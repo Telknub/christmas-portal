@@ -15,20 +15,24 @@ export const GIFTS_NAMES = [
 
 export type Gifts = (typeof GIFTS_NAMES)[number];
 
+export const EVENTS_NAMES = ["storm", "krampus", "grit"] as const;
+
+export type Events = (typeof EVENTS_NAMES)[number] | "";
+
 export const UNLIMITED_ATTEMPTS_SFL = 25;
 export const RESTOCK_ATTEMPTS_SFL = 10;
 export const DAILY_ATTEMPTS = 1;
 export const RESTOCK_ATTEMPTS = 3;
 
-export const GAME_SECONDS = 180;
+export const GAME_SECONDS = 300;
 export const GAME_LIVES = 5;
 export const MAX_PLAYER_GIFTS = 3;
 export const MAX_GIFTS_PER_REQUEST = 3;
 export const REQUEST_COOLDOWN = 3000;
 export const REQUEST_TIME_LIMIT_PER_GIFTS: Record<number, number> = {
-  1: 20000,
-  2: 25000,
-  3: 30000,
+  1: 60000,
+  2: 80000,
+  3: 100000,
 };
 
 const PROGRESS_BAR_WIDTH_PERCENT = 0.75;
@@ -36,8 +40,17 @@ export const PROGRESS_BAR_WIDTH = SQUARE_WIDTH * PROGRESS_BAR_WIDTH_PERCENT;
 export const PROGRESS_BAR_X =
   (SQUARE_WIDTH * (1 - PROGRESS_BAR_WIDTH_PERCENT)) / 2;
 
+export const EVENT_INTERVAL = 45000;
+export const EVENT_DURATION = 30000;
+export const EVENT_SELECTION_TIME = 5000;
+
 // Gifts
 export const GIFT_RESPAWN = 3000;
+export const GIFT_RESPAWN_TIME_AFTER_THEFT = 6000;
+
+// Indicator
+export const INDICATOR_DURATION = 5000;
+export const INDICATOR_BLINK_SPEED = 500;
 
 //SnowStorm
 export const SNOWSTORM_DELAY = 15000; // Snowstorm delay effect

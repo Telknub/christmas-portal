@@ -10,6 +10,8 @@ import {
   ELVES_CONFIGURATION,
   GRIT_CONFIGURATION,
   SNOWSTORM_CONFIGURATION,
+  Events,
+  EVENT_DURATION,
 } from "./ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./containers/GiftContainer";
 import { BonfireContainer } from "./containers/BonfireContainer";
@@ -17,6 +19,7 @@ import { ElfContainer } from "./containers/ElfContainer";
 import { GritContainer } from "./containers/GritContainer";
 import { NewSnowStormContainer } from "./containers/SnowStormContainer";
 import { CoalsContainer } from "./containers/CoalsContainer";
+import { isArray } from "xstate/lib/utils";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -34,6 +37,12 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   private snowStorm!: NewSnowStormContainer;
   private gritContainer!: GritContainer;
   private coal: CoalsContainer[] = [];
+  private currentEventName = "";
+  private eventInitialDate: Date | null = null;
+  private christmasEvents!: Record<
+    Events,
+    () => NewSnowStormContainer | GritContainer | CoalsContainer[] | null
+  >;
 
   constructor() {
     super({
@@ -49,6 +58,16 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
   preload() {
     super.preload();
+
+    this.load.spritesheet("snowflake_icon", "world/snowflake_icon.png", {
+      frameWidth: 13,
+      frameHeight: 13,
+    });
+
+    this.load.spritesheet("grit_icon", "world/grit_icon.png", {
+      frameWidth: 13,
+      frameHeight: 12,
+    });
 
     this.load.spritesheet("krampus", "world/krampus.webp", {
       frameWidth: 20,
@@ -179,6 +198,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.createSnowStorm();
     this.createGifts();
     this.createGrit();
+    this.createEvents();
     this.snowStorm.normalSnowStorm();
 
     // To test each event, comment out the other event duration samples
@@ -223,8 +243,21 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   update() {
     super.update();
 
-    if (this.snowStorm?.isActive) {
+    // if (this.snowStorm?.isActive) {
+    //   this.snowStorm.speedDirection();
+    // }
+
+    const isSnowStormActive = this.snowStorm?.isActive;
+    if (isSnowStormActive) {
       this.snowStorm.speedDirection();
+      this.snowStorm.emotionIndicator();
+      this.snowStorm.updateEmoticonPosition();
+    }
+
+    const isGritActive = this.gritContainer?.isActive;
+    if (isGritActive) {
+      this.gritContainer.emotionIndicator();
+      this.gritContainer.updateEmoticonPosition();
     }
 
     // Player current position
@@ -239,11 +272,53 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       this.initializeRequests();
       this.portalService?.send("START");
       this.sound.play("bg-music", { loop: true });
+      this.isCameraFading = true;
+      this.time.delayedCall(1000, () => {
+        this.portalService?.send("GAME_OVER");
+      });
+    } else {
+      // Activate event
+      const eventName = this.portalService?.state.context.event || "";
+      if (eventName !== "" && eventName !== this.currentEventName) {
+        const event = this.christmasEvents[eventName]();
+        if (!isArray(event)) {
+          event?.activate();
+        } else {
+          event?.forEach((e) => e.activate());
+        }
+        this.currentEventName = eventName;
+        this.eventInitialDate = new Date();
+      }
+      // Desactivate event
+      const millisecondsLeftInEvent = this.secondsLeftInEvent() * 1000;
+      if (millisecondsLeftInEvent >= EVENT_DURATION) {
+        const event = this.christmasEvents[eventName]();
+        if (!isArray(event)) {
+          event?.deactivate();
+        } else {
+          event?.forEach((e) => e.deactivate());
+        }
+        this.currentEventName = "";
+        this.eventInitialDate = null;
+        this.portalService?.send("UPDATE_EVENT", { event: "" });
+      }
+
+      if (this.isGameReady) {
+        this.initializeRequests();
+        this.portalService?.send("START");
+      }
     }
   }
 
   private initializeRequests() {
     this.elves.forEach((elf) => elf.createRequest());
+  }
+
+  private secondsLeftInEvent() {
+    const secondsLeft = !this.eventInitialDate
+      ? -1000
+      : Math.max(Date.now() - this.eventInitialDate.getTime(), 0) / 1000;
+    return secondsLeft;
   }
 
   private createSnowStorm() {
@@ -253,8 +328,8 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       scene: this,
       player: this.currentPlayer,
     });
-    // use activateSnowstorm to activate
-    this.snowStorm.deactivateSnowstorm();
+    // use activate() to activate
+    this.snowStorm.deactivate();
   }
 
   private createGrit() {
@@ -266,8 +341,8 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
         gifts: this.gifts,
         player: this.currentPlayer,
       });
-      // use activateGrit to activate
-      this.gritContainer.deactivateGrit();
+      // use activate() to activate
+      this.gritContainer.deactivate();
     });
   }
 
@@ -280,8 +355,8 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
         player: this.currentPlayer,
       });
       this.coal.push(coal);
-      // use deactivateCoal to deactivate
-      coal.deactivateCoal();
+      // use activate() to deactivate
+      coal.deactivate();
     });
   }
 
@@ -321,6 +396,15 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
           player: this.currentPlayer,
         }),
     );
+  }
+
+  private createEvents() {
+    this.christmasEvents = {
+      storm: () => this.snowStorm,
+      krampus: () => this.coal,
+      grit: () => this.gritContainer,
+      "": () => null,
+    };
   }
 
   //private setDefaultState() {}

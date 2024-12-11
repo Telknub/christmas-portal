@@ -3,12 +3,12 @@ import React, { useContext } from "react";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { OuterPanel } from "components/ui/Panel";
-import { millisecondsToString, secondsToString } from "lib/utils/time";
 import coins from "assets/icons/coins.webp";
 import { Label } from "components/ui/Label";
 import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 import { useSelector } from "@xstate/react";
 import { PortalContext } from "../../lib/PortalProvider";
+import { secondsToString } from "lib/utils/time";
 
 const _dailyHighscore = (state: PortalMachineState) => {
   const dateKey = new Date().toISOString().slice(0, 10);
@@ -53,9 +53,7 @@ export const ChristmasDeliveryMayhemPrize: React.FC = () => {
       <div className="px-1">
         <span className="text-xs mb-2">
           {t("christmas-delivery-mayhem.portal.missionObjectives", {
-            targetScore: millisecondsToString(prize.score, {
-              length: "full",
-            }),
+            targetScore: prize.score,
           })}
         </span>
         <div className="flex justify-between mt-2 flex-wrap">

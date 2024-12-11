@@ -121,20 +121,18 @@ export class ElfContainer extends Phaser.GameObjects.Container {
       this.request.includes(gift),
     );
     let emotionName;
-    let streak;
 
     if (this.request.length === myInventory.length && isInRequest) {
       confetti();
       this.scene.sound.play("good-sound");
+      this.portalService?.send("STREAK", { streak: 1 });
       emotionName = "happy";
-      streak = 1;
     } else {
+      this.portalService?.send("STREAK", { streak: -1 });
       this.portalService?.send("LOSE_LIFE");
       this.scene.sound.play("bad-sound");
       emotionName = "sad";
-      streak = -1;
     }
-    this.portalService?.send("STREAK", { streak: streak });
     const points = this.portalService?.state.context.streak || 0;
     const emoticon = this.createEmoticon(points, emotionName);
 
@@ -195,10 +193,10 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     this.requestBubble = null;
     if (!this.isGamePlaying) return;
 
-    this.portalService?.send("LOSE_LIFE");
     this.portalService?.send("STREAK", { streak: -1 });
     const points = this.portalService?.state.context.streak || 0;
     const emoticon = this.createEmoticon(points, "sad");
+    this.portalService?.send("LOSE_LIFE");
 
     this.scene.time.delayedCall(REQUEST_COOLDOWN, () => {
       emoticon.destroy();
