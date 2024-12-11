@@ -111,10 +111,11 @@ export const OuterPanel: React.FC<PanelProps> = ({
       <div
         // Fix for dark mode
 
-        className={classNames(className, "bg-[#66B3DC]")}
+        className={classNames(className, "bg-[]")}
         style={{
           ...pixelChristmasDarkBorderStyle,
           padding: `${PIXEL_SCALE * 1}px`,
+          background: "url(/world/snowBg.gif)",
           ...(hasTabs
             ? {
                 paddingTop:
