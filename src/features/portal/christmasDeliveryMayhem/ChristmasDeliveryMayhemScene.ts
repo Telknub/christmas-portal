@@ -248,14 +248,6 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     //   this.snowStorm.speedDirection();
     // }
 
-    this.coal.forEach((coalContainer) => {
-      const isCoalActive = coalContainer.isActive;
-      if (isCoalActive) {
-        coalContainer.emotionIndicator();
-        coalContainer.updateEmoticonPosition();
-      }
-    });
-
     const isSnowStormActive = this.snowStorm?.isActive;
     if (isSnowStormActive) {
       this.snowStorm.speedDirection();
