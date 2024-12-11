@@ -159,12 +159,11 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.load.audio("grit-spawn", "world/sound-effects/grit-spawn.mp3"); // done
     this.load.audio("gift-pickup", "world/sound-effects/gift-pickup.mp3"); // done
     this.load.audio("snow-storm", "world/sound-effects/snow-storm.mp3"); // doneddd
-
-    //partially implemented. grit plays the sound when he takes one of your lives now
-    this.load.audio("bad-sound", "world/sound-effects/bad-sound.mp3"); //play when something bad happens
-
-    //not used yet. elfs not taking my gifts yet
-    this.load.audio("good-sound", "world/sound-effects/good-sound.mp3"); //play when something good happens
+    this.load.audio("bad-sound", "world/sound-effects/bad-sound.mp3"); //done
+    this.load.audio("good-sound", "world/sound-effects/good-sound.mp3"); //done
+    this.load.audio("gift-gen", "world/sound-effects/gift-gen.mp3");
+    //bg music
+    this.load.audio("bg-music", "world/sound-effects/sunflower-christmas.mp3");
   }
 
   async create() {
@@ -239,6 +238,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     if (this.isGameReady) {
       this.initializeRequests();
       this.portalService?.send("START");
+      this.sound.play("bg-music", { loop: true });
     }
   }
 

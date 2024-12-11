@@ -125,10 +125,12 @@ export class ElfContainer extends Phaser.GameObjects.Container {
 
     if (this.request.length === myInventory.length && isInRequest) {
       confetti();
+      this.scene.sound.play("good-sound");
       emotionName = "happy";
       streak = 1;
     } else {
       this.portalService?.send("LOSE_LIFE");
+      this.scene.sound.play("bad-sound");
       emotionName = "sad";
       streak = -1;
     }
