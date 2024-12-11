@@ -2,7 +2,7 @@ import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene } from "features/world/scenes/BaseScene";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
 import { GiftContainer } from "./GiftContainer";
-import { INDICATOR_BLINK_SPEED } from "../ChristmasDeliveryMayhemConstants";
+
 
 interface Props {
   x: number;
@@ -17,8 +17,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
   public isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
-  private emoticonContainer: Phaser.GameObjects.Sprite | null = null;
-  private emotionTimer?: Phaser.Time.TimerEvent;
+
 
   constructor({ x, y, scene, player }: Props) {
     super(scene, x, y);
@@ -177,70 +176,11 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
     });
   }
 
-  emotionIndicator() {
-    const emotionName = "coal";
-
-    if (!this.isActive) {
-      return emotionName;
-    }
-
-    if (!this.emoticonContainer) {
-      const emoticon = this.createEmoticon(emotionName);
-
-      if (emoticon) {
-        this.createBlinkingEffect(emoticon);
-
-        // this.scene.time.delayedCall(INDICATOR_DURATION, () => {
-        //   emoticon.setVisible(false);
-        // });
-      }
-    }
-  }
-
-  private createBlinkingEffect(emoticon: Phaser.GameObjects.Sprite) {
-    this.scene.tweens.add({
-      targets: emoticon,
-      alpha: { from: 1, to: 0 },
-      duration: INDICATOR_BLINK_SPEED,
-      yoyo: true,
-      repeat: -1,
-      ease: "Sine.easeInOut",
-    });
-  }
-
-  private createEmoticon(spriteName: string) {
-    if (!this.player) {
-      return;
-    }
-
-    if (!this.emoticonContainer) {
-      this.emoticonContainer = this.scene.add.sprite(
-        this.player.x,
-        this.player.y,
-        spriteName,
-      );
-    }
-
-    return this.emoticonContainer;
-  }
-
-  updateEmoticonPosition() {
-    if (this.player && this.emoticonContainer) {
-      const positionX = this.player.x;
-      const positionY = this.player.y - 15;
-
-      this.emoticonContainer.setPosition(positionX, positionY);
-    }
-  }
-
   // Activate function
   public activate() {
     this.isActive = true;
     this.sprite.setVisible(true);
     this.Coal();
-    if (this.emoticonContainer) {
-      this.emoticonContainer.setVisible(true);
-    }
   }
 
   // Deactivate function
@@ -250,9 +190,6 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
     if (this.overlapHandler) {
       this.scene.physics.world.removeCollider(this.overlapHandler);
       this.overlapHandler = undefined;
-    }
-    if (this.emoticonContainer) {
-      this.emoticonContainer.setVisible(false);
     }
     this.sprite.setVisible(false);
     // this.sprite.setAlpha(0);
