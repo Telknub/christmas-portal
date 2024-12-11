@@ -5,6 +5,7 @@ import {
   GRIT_TARGET_Y,
   GRIT_DURATION_ANIM,
   GIFT_RESPAWN_TIME_AFTER_THEFT,
+  INDICATOR_BLINK_SPEED,
 } from "../ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./GiftContainer";
 
@@ -25,6 +26,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
   private initialY: number;
   public isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
+  private emoticonContainer: Phaser.GameObjects.Sprite | null = null;
 
   constructor({ x, y, scene, gifts, player }: Props) {
     super(scene, x, y);
@@ -175,6 +177,14 @@ export class GritContainer extends Phaser.GameObjects.Container {
       this.isActive = false;
       this.y = this.initialY;
 
+      if (this.emoticonContainer) {
+        this.emoticonContainer.setVisible(false);
+      }
+
+      this.gifts.forEach((gift) => {
+        gift.deactivateGift(200);
+      });
+
       // Remove the overlap event
       if (this.overlapHandler) {
         this.scene.physics.world.removeCollider(this.overlapHandler);
@@ -189,6 +199,62 @@ export class GritContainer extends Phaser.GameObjects.Container {
     }
   }
 
+  emotionIndicator() {
+    const emotionName = "grit_icon";
+
+    if (!this.isActive) {
+      return emotionName;
+    }
+
+    if (!this.emoticonContainer) {
+      const emoticon = this.createEmoticon(emotionName);
+
+      if (emoticon) {
+        this.createBlinkingEffect(emoticon);
+
+        // this.scene.time.delayedCall(INDICATOR_DURATION, () => {
+        //   emoticon.setVisible(false);
+        // });
+      }
+    }
+  }
+
+  private createEmoticon(emoticonSprite: string) {
+    if (!this.player) {
+      return;
+    }
+
+    if (!this.emoticonContainer) {
+      this.emoticonContainer = this.scene.add.sprite(
+        this.player.x,
+        this.player.y,
+        emoticonSprite,
+      );
+    }
+
+    return this.emoticonContainer;
+  }
+
+  private createBlinkingEffect(emoticon: Phaser.GameObjects.Sprite) {
+    this.scene.tweens.add({
+      targets: emoticon,
+      alpha: { from: 1, to: 0 },
+      duration: INDICATOR_BLINK_SPEED,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
+  }
+
+  updateEmoticonPosition() {
+    if (this.player && this.emoticonContainer) {
+      const positionX = this.player.x;
+      const positionY = this.player.y - 15;
+
+      this.emoticonContainer.setPosition(positionX, positionY);
+    }
+  }
+
   // Activate the GritContainer
   public activate() {
     if (!this.isActive) {
@@ -197,6 +263,9 @@ export class GritContainer extends Phaser.GameObjects.Container {
       this.Grit();
       this.GritAnim();
       this.startMovement();
+      if (this.emoticonContainer) {
+        this.emoticonContainer.setVisible(true);
+      }
     }
   }
 
@@ -210,6 +279,10 @@ export class GritContainer extends Phaser.GameObjects.Container {
       if (this.overlapHandler) {
         this.scene.physics.world.removeCollider(this.overlapHandler);
         this.overlapHandler = undefined;
+      }
+
+      if (this.emoticonContainer) {
+        this.emoticonContainer.setVisible(false);
       }
 
       this.scene.tweens.killTweensOf(this);

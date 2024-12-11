@@ -48,6 +48,10 @@ export const EVENT_SELECTION_TIME = 5000;
 export const GIFT_RESPAWN = 3000;
 export const GIFT_RESPAWN_TIME_AFTER_THEFT = 6000;
 
+// Indicator
+export const INDICATOR_DURATION = 5000;
+export const INDICATOR_BLINK_SPEED = 500;
+
 //SnowStorm
 export const SNOWSTORM_DELAY = 15000; // Snowstorm delay effect
 export const DURATION_SNOWSTORM = 10000; // Snowstorm duration effect

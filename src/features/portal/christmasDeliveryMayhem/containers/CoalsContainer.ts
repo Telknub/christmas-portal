@@ -1,8 +1,8 @@
 import { BumpkinContainer } from "features/world/containers/BumpkinContainer";
 import { BaseScene } from "features/world/scenes/BaseScene";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
-import { Gifts } from "../ChristmasDeliveryMayhemConstants";
 import { GiftContainer } from "./GiftContainer";
+
 
 interface Props {
   x: number;
@@ -15,8 +15,9 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
   private player?: BumpkinContainer;
   private sprite: Phaser.GameObjects.Sprite;
   scene: BaseScene;
-  private isActive = true; // Flag to track active
+  public isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
+
 
   constructor({ x, y, scene, player }: Props) {
     super(scene, x, y);
