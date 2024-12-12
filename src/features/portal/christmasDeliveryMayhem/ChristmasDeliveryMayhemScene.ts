@@ -1,7 +1,7 @@
 import mapJson from "assets/map/christmasDeliveryMayhem.json";
 import tilesetconfig from "assets/map/christmas_tileset.json";
 import { SceneId } from "features/world/mmoMachine";
-import { BaseScene } from "features/world/scenes/BaseScene";
+import { BaseScene, WALKING_SPEED } from "features/world/scenes/BaseScene";
 import { MachineInterpreter } from "./lib/christmasDeliveryMayhemMachine";
 import {
   COALS_CONFIGURATION,
@@ -192,6 +192,8 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     super.create();
 
+    this.velocity = 0;
+
     this.createBonfires();
     this.createElves();
     this.createCoals();
@@ -236,6 +238,10 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     return this.portalService?.state.matches("ready") === true;
   }
 
+  private get isGamePlaying() {
+    return this.portalService?.state.matches("playing") === true;
+  }
+
   public get portalService() {
     return this.registry.get("portalService") as MachineInterpreter | undefined;
   }
@@ -248,56 +254,63 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     const lives = this.portalService?.state.context.lives || 0;
     if (lives <= 0) {
+      // Game over
       this.isCameraFading = true;
+      this.velocity = 0;
       this.time.delayedCall(1000, () => {
         this.portalService?.send("GAME_OVER");
-        this.gritContainer.desactivate();
-        this.snowStorm.desactivate();
-        this.coal.forEach((e) => e.desactivate());
+        // this.gritContainer.desactivate();
+        // this.snowStorm.desactivate();
+        // this.coal.forEach((e) => e.desactivate());
       });
     } else {
-      // Activate event
-      const eventName = this.portalService?.state.context.event || "";
-      if (eventName !== "" && eventName !== this.currentEventName) {
-        const event = this.christmasEvents[eventName]();
-        if (!isArray(event)) {
-          event?.activate();
-        } else {
-          event?.forEach((e) => e.activate());
+      if (this.isGamePlaying) {
+        // Activate event
+        const eventName = this.portalService?.state.context.event || "";
+        if (eventName !== "" && eventName !== this.currentEventName) {
+          const event = this.christmasEvents[eventName]();
+          if (!isArray(event)) {
+            event?.activate();
+          } else {
+            event?.forEach((e) => e.activate());
+          }
+          this.currentEventName = eventName;
+          this.eventInitialDate = new Date();
         }
-        this.currentEventName = eventName;
-        this.eventInitialDate = new Date();
-      }
-      // Desactivate event
-      const millisecondsLeftInEvent = this.secondsLeftInEvent() * 1000;
-      if (millisecondsLeftInEvent >= EVENT_DURATION) {
-        const event = this.christmasEvents[eventName]();
-        if (!isArray(event)) {
-          event?.desactivate();
-        } else {
-          event?.forEach((e) => e.desactivate());
+        // Desactivate event
+        const millisecondsLeftInEvent = this.secondsLeftInEvent() * 1000;
+        if (millisecondsLeftInEvent >= EVENT_DURATION) {
+          const event = this.christmasEvents[eventName]();
+          if (!isArray(event)) {
+            event?.desactivate();
+          } else {
+            event?.forEach((e) => e.desactivate());
+          }
+          this.currentEventName = "";
+          this.eventInitialDate = null;
+          this.portalService?.send("UPDATE_EVENT", { event: "" });
         }
-        this.currentEventName = "";
-        this.eventInitialDate = null;
-        this.portalService?.send("UPDATE_EVENT", { event: "" });
-      }
 
-      // Activate emoticon
-      const isSnowStormActive = this.snowStorm?.isActive;
-      if (isSnowStormActive) {
-        this.snowStorm.speedDirection();
-        this.snowStorm.emotionIndicator();
-        this.snowStorm.updateEmoticonPosition();
-      }
-      const isGritActive = this.gritContainer?.isActive;
-      if (isGritActive) {
-        this.gritContainer.emotionIndicator();
-        this.gritContainer.updateEmoticonPosition();
+        // Activate emoticon
+        const isSnowStormActive = this.snowStorm?.isActive;
+        if (isSnowStormActive) {
+          this.snowStorm.speedDirection();
+          this.snowStorm.emotionIndicator();
+          this.snowStorm.updateEmoticonPosition();
+        }
+        const isGritActive = this.gritContainer?.isActive;
+        if (isGritActive) {
+          this.gritContainer.emotionIndicator();
+          this.gritContainer.updateEmoticonPosition();
+        }
+      } else {
+        this.velocity = 0;
       }
 
       if (this.isGameReady) {
         this.initializeRequests();
         this.portalService?.send("START");
+        this.velocity = WALKING_SPEED;
         this.sound.play("bg-music", { loop: true, volume: 0.1 });
       }
     }

@@ -1,7 +1,7 @@
 import { Minigame } from "features/game/types/game";
 import {
-  RESTOCK_ATTEMPTS_SFL,
-  UNLIMITED_ATTEMPTS_SFL,
+  // RESTOCK_ATTEMPTS_SFL,
+  // UNLIMITED_ATTEMPTS_SFL,
   DAILY_ATTEMPTS,
   RESTOCK_ATTEMPTS,
 } from "../ChristmasDeliveryMayhemConstants";
@@ -16,29 +16,40 @@ export const getAttemptsLeft = (minigame?: Minigame) => {
 
   const history = minigame?.history ?? {};
   const purchases = minigame?.purchases ?? [];
+  const moreAttemptsDay = ["2014-12-14", "2014-12-15"];
+  let dailyAttempts = DAILY_ATTEMPTS;
 
   const now = new Date();
   const startOfTodayUTC = getStartOfUTCDay(now);
   const endOfTodayUTC = startOfTodayUTC + 24 * 60 * 60 * 1000; // 24 hours later
-  const hasUnlimitedAttempts = purchases.some(
-    (purchase) =>
-      purchase.sfl === UNLIMITED_ATTEMPTS_SFL &&
-      purchase.purchasedAt >= startOfTodayUTC &&
-      purchase.purchasedAt < endOfTodayUTC,
-  );
+  // const hasUnlimitedAttempts = purchases.some(
+  //   (purchase) =>
+  //     purchase.sfl === UNLIMITED_ATTEMPTS_SFL &&
+  //     purchase.purchasedAt >= startOfTodayUTC &&
+  //     purchase.purchasedAt < endOfTodayUTC,
+  // );
 
-  if (hasUnlimitedAttempts) return Infinity;
+  // if (hasUnlimitedAttempts) return Infinity;
 
-  const restockedCount = purchases.filter(
-    (purchase) =>
-      purchase.sfl === RESTOCK_ATTEMPTS_SFL &&
-      purchase.purchasedAt >= startOfTodayUTC &&
-      purchase.purchasedAt < endOfTodayUTC,
-  ).length;
+  let restockAttempts = 0;
+  RESTOCK_ATTEMPTS.forEach((option) => {
+    const restockedCount = purchases.filter(
+      (purchase) =>
+        purchase.sfl === option.sfl &&
+        purchase.purchasedAt >= startOfTodayUTC &&
+        purchase.purchasedAt < endOfTodayUTC,
+    ).length;
+
+    restockAttempts += option.attempts * restockedCount;
+  });
+
+  // More attempts
+  if (moreAttemptsDay.includes(now.toISOString().substring(0, 10))) {
+    dailyAttempts = 2;
+  }
 
   const attemptsToday = history[dateKey]?.attempts ?? 0;
-  const attemptsLeft =
-    DAILY_ATTEMPTS - attemptsToday + RESTOCK_ATTEMPTS * restockedCount;
+  const attemptsLeft = dailyAttempts - attemptsToday + restockAttempts;
 
   return attemptsLeft;
 };

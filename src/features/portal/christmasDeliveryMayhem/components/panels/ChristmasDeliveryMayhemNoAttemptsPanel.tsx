@@ -12,8 +12,6 @@ import { CloseButtonPanel } from "features/game/components/CloseablePanel";
 import {
   CHRITSMAS_NPC_WEARABLES,
   RESTOCK_ATTEMPTS,
-  RESTOCK_ATTEMPTS_SFL,
-  UNLIMITED_ATTEMPTS_SFL,
 } from "../../ChristmasDeliveryMayhemConstants";
 import { purchase } from "features/portal/lib/portalUtil";
 import { SUNNYSIDE } from "assets/sunnyside";
@@ -40,7 +38,7 @@ export const ChristmasDeliveryMayhemNoAttemptsPanel: React.FC = () => {
           </Label>
           <Label
             icon={sfl}
-            type={sflBalance.lt(RESTOCK_ATTEMPTS_SFL) ? "danger" : "default"}
+            type={sflBalance.lt(RESTOCK_ATTEMPTS[0].sfl) ? "danger" : "default"}
           >
             {t("christmas-delivery-mayhem.sflRequired")}
           </Label>
@@ -68,21 +66,24 @@ export const ChristmasDeliveryMayhemNoAttemptsPanel: React.FC = () => {
         <Button onClick={() => portalService.send("CANCEL_PURCHASE")}>
           {t("back")}
         </Button>
-        <Button
-          disabled={sflBalance.lt(RESTOCK_ATTEMPTS_SFL)}
-          onClick={() =>
-            purchase({
-              sfl: RESTOCK_ATTEMPTS_SFL,
-              items: {},
-            })
-          }
-        >
-          {t("christmas-delivery-mayhem.buyAttempts", {
-            attempts: RESTOCK_ATTEMPTS,
-            sfl: RESTOCK_ATTEMPTS_SFL,
-          })}
-        </Button>
-        <Button
+        {RESTOCK_ATTEMPTS.map((option, index) => (
+          <Button
+            key={index}
+            disabled={sflBalance.lt(option.sfl)}
+            onClick={() =>
+              purchase({
+                sfl: option.sfl,
+                items: {},
+              })
+            }
+          >
+            {t("christmas-delivery-mayhem.buyAttempts", {
+              attempts: option.attempts,
+              sfl: option.sfl,
+            })}
+          </Button>
+        ))}
+        {/* <Button
           disabled={sflBalance.lt(UNLIMITED_ATTEMPTS_SFL)}
           onClick={() =>
             purchase({
@@ -94,7 +95,7 @@ export const ChristmasDeliveryMayhemNoAttemptsPanel: React.FC = () => {
           {t("christmas-delivery-mayhem.unlockAttempts", {
             sfl: UNLIMITED_ATTEMPTS_SFL,
           })}
-        </Button>
+        </Button> */}
       </div>
     </CloseButtonPanel>
   );

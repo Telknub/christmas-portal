@@ -19,10 +19,14 @@ export const EVENTS_NAMES = ["storm", "krampus", "grit"] as const;
 
 export type Events = (typeof EVENTS_NAMES)[number] | "";
 
-export const UNLIMITED_ATTEMPTS_SFL = 25;
-export const RESTOCK_ATTEMPTS_SFL = 10;
+// export const UNLIMITED_ATTEMPTS_SFL = 25;
 export const DAILY_ATTEMPTS = 1;
-export const RESTOCK_ATTEMPTS = 3;
+// export const RESTOCK_ATTEMPTS_SFL = 10;
+export const RESTOCK_ATTEMPTS = [
+  { attempts: 1, sfl: 3 },
+  { attempts: 5, sfl: 12 },
+  { attempts: 10, sfl: 20 },
+];
 
 export const GAME_SECONDS = 300;
 export const GAME_LIVES = 5;

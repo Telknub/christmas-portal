@@ -3,8 +3,8 @@ import { assign, createMachine, Interpreter, State } from "xstate";
 import { CONFIG } from "lib/config";
 import { decodeToken } from "features/auth/actions/login";
 import {
-  RESTOCK_ATTEMPTS_SFL,
-  UNLIMITED_ATTEMPTS_SFL,
+  // RESTOCK_ATTEMPTS_SFL,
+  // UNLIMITED_ATTEMPTS_SFL,
   DAILY_ATTEMPTS,
   GAME_SECONDS,
   GAME_LIVES,
@@ -61,6 +61,11 @@ type SetJoystickActiveEvent = {
   isJoystickActive: boolean;
 };
 
+type PurchaseRestockEvent = {
+  type: "PURCHASED_RESTOCK";
+  sfl: number;
+};
+
 type CollectGiftEvent = {
   type: "COLLECT_GIFT";
   gift: Gifts;
@@ -98,7 +103,7 @@ export type PortalEvent =
   | { type: "START" }
   | { type: "CLAIM" }
   | { type: "CANCEL_PURCHASE" }
-  | { type: "PURCHASED_RESTOCK" }
+  | PurchaseRestockEvent
   | { type: "PURCHASED_UNLIMITED" }
   | { type: "RETRY" }
   | { type: "CONTINUE" }
@@ -258,34 +263,34 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
         },
         PURCHASED_RESTOCK: {
           target: "introduction",
-          actions: assign<Context>({
-            state: (context: Context) =>
+          actions: assign<Context, any>({
+            state: (context: Context, event: PurchaseRestockEvent) =>
               purchaseMinigameItem({
                 state: context.state!,
                 action: {
                   id: "christmas-delivery-mayhem",
-                  sfl: RESTOCK_ATTEMPTS_SFL,
+                  sfl: event.sfl,
                   type: "minigame.itemPurchased",
                   items: {},
                 },
               }),
           }) as any,
         },
-        PURCHASED_UNLIMITED: {
-          target: "introduction",
-          actions: assign<Context>({
-            state: (context: Context) =>
-              purchaseMinigameItem({
-                state: context.state!,
-                action: {
-                  id: "christmas-delivery-mayhem",
-                  sfl: UNLIMITED_ATTEMPTS_SFL,
-                  type: "minigame.itemPurchased",
-                  items: {},
-                },
-              }),
-          }) as any,
-        },
+        // PURCHASED_UNLIMITED: {
+        //   target: "introduction",
+        //   actions: assign<Context>({
+        //     state: (context: Context) =>
+        //       purchaseMinigameItem({
+        //         state: context.state!,
+        //         action: {
+        //           id: "christmas-delivery-mayhem",
+        //           sfl: UNLIMITED_ATTEMPTS_SFL,
+        //           type: "minigame.itemPurchased",
+        //           items: {},
+        //         },
+        //       }),
+        //   }) as any,
+        // },
       },
     },
 
