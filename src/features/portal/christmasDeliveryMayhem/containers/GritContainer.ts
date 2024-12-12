@@ -270,7 +270,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
   }
 
   // Deactivate the GritContainer
-  public deactivate() {
+  public desactivate() {
     if (this.isActive) {
       this.isActive = false;
       this.y = this.initialY;

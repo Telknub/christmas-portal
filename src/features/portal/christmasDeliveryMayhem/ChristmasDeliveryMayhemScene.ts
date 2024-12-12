@@ -243,23 +243,6 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   update() {
     super.update();
 
-    // if (this.snowStorm?.isActive) {
-    //   this.snowStorm.speedDirection();
-    // }
-
-    const isSnowStormActive = this.snowStorm?.isActive;
-    if (isSnowStormActive) {
-      this.snowStorm.speedDirection();
-      this.snowStorm.emotionIndicator();
-      this.snowStorm.updateEmoticonPosition();
-    }
-
-    const isGritActive = this.gritContainer?.isActive;
-    if (isGritActive) {
-      this.gritContainer.emotionIndicator();
-      this.gritContainer.updateEmoticonPosition();
-    }
-
     // Player current position
     // console.log({y: this.currentPlayer?.y, x: this.currentPlayer?.x})
 
@@ -268,6 +251,9 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       this.isCameraFading = true;
       this.time.delayedCall(1000, () => {
         this.portalService?.send("GAME_OVER");
+        this.gritContainer.desactivate();
+        this.snowStorm.desactivate();
+        this.coal.forEach((e) => e.desactivate());
       });
     } else {
       // Activate event
@@ -287,13 +273,26 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       if (millisecondsLeftInEvent >= EVENT_DURATION) {
         const event = this.christmasEvents[eventName]();
         if (!isArray(event)) {
-          event?.deactivate();
+          event?.desactivate();
         } else {
-          event?.forEach((e) => e.deactivate());
+          event?.forEach((e) => e.desactivate());
         }
         this.currentEventName = "";
         this.eventInitialDate = null;
         this.portalService?.send("UPDATE_EVENT", { event: "" });
+      }
+
+      // Activate emoticon
+      const isSnowStormActive = this.snowStorm?.isActive;
+      if (isSnowStormActive) {
+        this.snowStorm.speedDirection();
+        this.snowStorm.emotionIndicator();
+        this.snowStorm.updateEmoticonPosition();
+      }
+      const isGritActive = this.gritContainer?.isActive;
+      if (isGritActive) {
+        this.gritContainer.emotionIndicator();
+        this.gritContainer.updateEmoticonPosition();
       }
 
       if (this.isGameReady) {
@@ -323,7 +322,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       player: this.currentPlayer,
     });
     // use activate() to activate
-    this.snowStorm.deactivate();
+    this.snowStorm.desactivate();
   }
 
   private createGrit() {
@@ -336,7 +335,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
         player: this.currentPlayer,
       });
       // use activate() to activate
-      this.gritContainer.deactivate();
+      this.gritContainer.desactivate();
     });
   }
 
@@ -350,7 +349,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       });
       this.coal.push(coal);
       // use activate() to deactivate
-      coal.deactivate();
+      coal.desactivate();
     });
   }
 

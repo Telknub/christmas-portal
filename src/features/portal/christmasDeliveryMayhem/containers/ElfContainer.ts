@@ -146,23 +146,14 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     const emoticonContainer = this.scene.add.container(10, -3);
     const sign = amount > 0 ? "+" : "-";
 
-    const shadowBottomLabel = this.scene.add.bitmapText(
-      -6.5,
-      -1.5,
-      "Teeny Tiny Pixls",
-      `${sign}${Math.abs(amount)}`,
-      4,
-    );
-    emoticonContainer.add(shadowBottomLabel);
-
-    const label = this.scene.add.bitmapText(
-      -7,
-      -2,
-      "Teeny Tiny Pixls",
-      `${sign}${Math.abs(amount)}`,
-      4,
-    );
-    label.setTintFill(0xffffff);
+    const label = this.scene.add.text(-8, -3, `${sign}${Math.abs(amount)}`, {
+      fontSize: "3.5px",
+      fontFamily: "Teeny",
+      color: "#FFFFFF",
+      resolution: 10,
+      stroke: "#000000",
+      strokeThickness: 1.5,
+    });
     emoticonContainer.add(label);
 
     const emoticon = this.scene.add.sprite(3, 0, spriteName);

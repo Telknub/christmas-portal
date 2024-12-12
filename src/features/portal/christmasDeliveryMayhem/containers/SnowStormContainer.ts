@@ -59,7 +59,7 @@ export class NewSnowStormContainer extends Phaser.GameObjects.Container {
   }
 
   // Deactivate the snowstorm event
-  deactivate() {
+  desactivate() {
     this.isActive = false;
     this.scene.velocity = WALKING_SPEED;
     this.scene.sound.stopByKey("snow-storm");

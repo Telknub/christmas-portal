@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useSelector } from "@xstate/react";
 import { PortalContext } from "../../lib/PortalProvider";
 import { SUNNYSIDE } from "assets/sunnyside";
@@ -12,6 +12,7 @@ import {
   EVENTS_NAMES,
   Events,
   EVENT_SELECTION_TIME,
+  INITIAL_EVENT_START_TIME,
 } from "../../ChristmasDeliveryMayhemConstants";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 
@@ -56,7 +57,9 @@ export const ChristmasDeliveryMayhemTimer: React.FC = () => {
     return <></>;
   }
 
-  const millisecondsPassed = (GAME_SECONDS - secondsLeft) * 1000;
+  const millisecondsPassed =
+    (GAME_SECONDS - secondsLeft) * 1000 +
+    (EVENT_INTERVAL - INITIAL_EVENT_START_TIME);
   const completedEvents = Math.floor(millisecondsPassed / EVENT_INTERVAL);
 
   // console.log(millisecondsPassed / EVENT_INTERVAL, nextGoal);

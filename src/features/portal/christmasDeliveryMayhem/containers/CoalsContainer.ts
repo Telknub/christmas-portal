@@ -3,7 +3,6 @@ import { BaseScene } from "features/world/scenes/BaseScene";
 import { MachineInterpreter } from "../lib/christmasDeliveryMayhemMachine";
 import { GiftContainer } from "./GiftContainer";
 
-
 interface Props {
   x: number;
   y: number;
@@ -17,7 +16,6 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
   scene: BaseScene;
   public isActive = true; // Flag to track active
   private overlapHandler?: Phaser.Physics.Arcade.Collider;
-
 
   constructor({ x, y, scene, player }: Props) {
     super(scene, x, y);
@@ -184,7 +182,7 @@ export class CoalsContainer extends Phaser.GameObjects.Container {
   }
 
   // Deactivate function
-  public deactivate() {
+  public desactivate() {
     this.isActive = false;
     // Clear any active overlap handler and other states
     if (this.overlapHandler) {
