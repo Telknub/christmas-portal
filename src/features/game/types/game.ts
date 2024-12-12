@@ -85,6 +85,7 @@ import {
 } from "../lib/crafting";
 import { AnimalBuildingLevel } from "../events/landExpansion/upgradeBuilding";
 import { SeasonalCollectibleName } from "./megastore";
+import { TradeFood } from "../events/landExpansion/redeemTradeReward";
 
 export type Reward = {
   coins?: number;
@@ -221,6 +222,7 @@ export type Coupons =
   | "Farmhand"
   | "Prize Ticket"
   | "Mark"
+  | "Trade Point"
   | Keys
   | SeasonalTicket
   | FactionEmblem;
@@ -333,6 +335,9 @@ export const COUPONS: Record<Coupons, { description: string }> = {
   Horseshoe: {
     description: translate("description.horseshoe"),
   },
+  "Trade Point": {
+    description: translate("description.trade.points"),
+  },
 };
 
 export type Purchase = {
@@ -367,6 +372,7 @@ export type Bumpkin = {
   achievements?: Partial<Record<AchievementName, number>>;
   activity: Partial<Record<BumpkinActivityName, number>>;
   previousSkillsResetAt?: number;
+  previousPowerUseAt?: Partial<Record<BumpkinRevampSkillName, number>>;
 };
 
 export type SpecialEvent = "Chef Apron" | "Chef Hat";
@@ -464,7 +470,8 @@ export type InventoryItemName =
   | LoveAnimalItem
   | BedName
   | RecipeCraftableName
-  | SeasonalCollectibleName;
+  | SeasonalCollectibleName
+  | TradeFood;
 
 export type Inventory = Partial<Record<InventoryItemName, Decimal>>;
 
@@ -819,7 +826,9 @@ export type Party = {
 export type Order = {
   id: string;
   from: NPCName;
-  items: Partial<Record<InventoryItemName | "coins" | "sfl", number>>;
+  items: Partial<
+    Record<InventoryItemName | BumpkinItem | "coins" | "sfl", number>
+  >;
   reward: {
     sfl?: number;
     coins?: number;
@@ -1026,6 +1035,7 @@ export type TradeListing = {
   signature?: string;
   fulfilledAt?: number;
   fulfilledById?: number;
+  initiatedAt?: number;
 };
 
 export type TradeOffer = {
@@ -1036,6 +1046,7 @@ export type TradeOffer = {
   fulfilledAt?: number;
   fulfilledById?: number;
   signature?: string;
+  initiatedAt?: number;
 };
 
 type FishingSpot = {
@@ -1256,7 +1267,6 @@ export type Animal = {
   type: AnimalType;
   state: AnimalState;
   createdAt: number;
-  coordinates: Coordinates;
   experience: number;
   asleepAt: number;
   awakeAt: number;
@@ -1425,12 +1435,13 @@ export interface GameState {
   trades: {
     listings?: Record<string, TradeListing>;
     offers?: Record<string, TradeOffer>;
+    tradePoints?: number;
     dailyListings?: { date: number; count: number };
     dailyPurchases?: { date: number; count: number };
   };
   buds?: Record<number, Bud>;
 
-  christmas?: Christmas;
+  christmas2024?: Christmas;
   flowerShop?: FlowerShop;
   megastore: MegaStore;
   specialEvents: SpecialEvents;

@@ -39,10 +39,12 @@ import { DynamicClouds } from "./components/DynamicClouds";
 import { StaticClouds } from "./components/StaticClouds";
 import { BackgroundIslands } from "./components/BackgroundIslands";
 import { SUNNYSIDE } from "assets/sunnyside";
-import { Marketplace } from "features/marketplace/Marketplace";
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router";
 import { createPortal } from "react-dom";
-import { pickEmptyPosition } from "./placeable/lib/collisionDetection";
+import {
+  NON_COLLIDING_OBJECTS,
+  pickEmptyPosition,
+} from "./placeable/lib/collisionDetection";
 import { EXPANSION_ORIGINS, LAND_SIZE } from "./lib/constants";
 
 import Decimal from "decimal.js-light";
@@ -227,6 +229,7 @@ const getIslandElements = ({
               y={y}
               height={height}
               width={width}
+              canCollide={NON_COLLIDING_OBJECTS.includes(name) ? false : true}
             >
               <Collectible
                 location="farm"
@@ -239,6 +242,7 @@ const getIslandElements = ({
                 y={coordinates.y}
                 grid={grid}
                 game={game}
+                z={NON_COLLIDING_OBJECTS.includes(name) ? 0 : "unset"}
               />
             </MapPlacement>
           );
@@ -679,7 +683,7 @@ const isVisiting = (state: MachineState) => state.matches("visiting");
 const isPaused = (state: MachineState) => !!state.context.paused;
 
 export const Land: React.FC = () => {
-  const { gameService, showAnimations, showTimers } = useContext(Context);
+  const { gameService, showTimers } = useContext(Context);
 
   const paused = useSelector(gameService, isPaused);
 
@@ -822,7 +826,20 @@ export const Land: React.FC = () => {
                 airdrops,
                 beehives,
                 oilReserves,
-              }).sort((a, b) => b.props.y - a.props.y)}
+              }).sort((a, b) => {
+                if (a.props.canCollide === false) {
+                  return -1;
+                }
+
+                if (b.props.y > a.props.y) {
+                  return 1;
+                }
+                if (a.props.y > b.props.y) {
+                  return -1;
+                }
+
+                return 0;
+              })}
           </div>
 
           {landscaping && <Placeable location="farm" />}
@@ -866,7 +883,7 @@ export const Land: React.FC = () => {
               onTouchEnd={(e) => e.stopPropagation()}
               className="pointer-events-auto w-full h-full"
             >
-              <Marketplace />
+              <Outlet />
             </div>
           </div>,
           document.body,

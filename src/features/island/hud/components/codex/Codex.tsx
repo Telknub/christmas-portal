@@ -34,6 +34,7 @@ import {
 } from "features/game/types/seasons";
 import { hasFeatureAccess } from "lib/flags";
 import { ChoreBoard } from "./pages/ChoreBoard";
+import { FLOWERS } from "features/game/types/flowers";
 
 interface Props {
   show: boolean;
@@ -99,6 +100,33 @@ export const Codex: React.FC<Props> = ({ show, onHide }) => {
     gameService.state?.context?.state?.username ??
     String(gameService?.state?.context?.farmId);
 
+  const currentObsession = state.bertObsession;
+  const obsessionCompletedAt = state.npcs?.bert?.questCompletedAt;
+
+  const incompleteObsession = () => {
+    if (!currentObsession) return 0;
+    if (!obsessionCompletedAt) return 1;
+    if (
+      obsessionCompletedAt >= currentObsession.startDate &&
+      obsessionCompletedAt <= currentObsession.endDate
+    )
+      return 0;
+    return 1;
+  };
+
+  const incompleteFlowerBounties = state.bounties.requests.filter(
+    (deal) => deal.name in FLOWERS,
+  );
+  const incompleteFlowerBountiesCount = incompleteFlowerBounties.reduce(
+    (count, deal) => {
+      const isSold = !!state.bounties.completed.find(
+        (request) => request.id === deal.id,
+      );
+      return isSold ? count - 1 : count;
+    },
+    incompleteFlowerBounties.length,
+  );
+
   const incompleteDeliveries = state.delivery.orders.filter(
     (order) => !order.completedAt,
   ).length;
@@ -137,7 +165,7 @@ export const Codex: React.FC<Props> = ({ show, onHide }) => {
     {
       name: "Leaderboard" as const,
       icon: ITEM_DETAILS[getSeasonalTicket()].image,
-      count: 0,
+      count: incompleteObsession() + incompleteFlowerBountiesCount,
     },
     {
       name: "Fish",
@@ -155,7 +183,7 @@ export const Codex: React.FC<Props> = ({ show, onHide }) => {
           {
             name: "Marks" as const,
             icon: factions,
-            count: 0,
+            count: inCompleteKingdomChores,
           },
         ]
       : []),

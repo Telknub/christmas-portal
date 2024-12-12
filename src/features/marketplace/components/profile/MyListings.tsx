@@ -1,34 +1,73 @@
 import { Label } from "components/ui/Label";
 import { InnerPanel } from "components/ui/Panel";
 import React, { useContext, useState } from "react";
+import * as Auth from "features/auth/lib/Provider";
 
 import trade from "assets/icons/trade.png";
 
 import { Context } from "features/game/GameProvider";
-import { useActor } from "@xstate/react";
+import { useSelector } from "@xstate/react";
 import { getKeys } from "features/game/types/decorations";
-import { getCollectionName, getTradeableDisplay } from "../../lib/tradeables";
-import { KNOWN_IDS } from "features/game/types";
-import { ListViewCard } from "../ListViewCard";
-import Decimal from "decimal.js-light";
-import { useNavigate } from "react-router-dom";
+import { getTradeableDisplay } from "../../lib/tradeables";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { InventoryItemName } from "features/game/types/game";
-import { getItemId } from "features/marketplace/lib/offers";
-import { getTradeType } from "features/marketplace/lib/getTradeType";
 import { Modal } from "components/ui/Modal";
 import { ClaimPurchase } from "./ClaimPurchase";
+import { MachineState } from "features/game/lib/gameMachine";
+import { AuthMachineState } from "features/auth/lib/authMachine";
+import { RemoveListing } from "../RemoveListing";
+import { tradeToId } from "features/marketplace/lib/offers";
+import { TRADE_LIMITS } from "features/game/actions/tradeLimits";
+import { MyTableRow } from "./MyTableRow";
 
+const _isCancellingOffer = (state: MachineState) =>
+  state.matches("marketplaceListingCancelling");
+const _trades = (state: MachineState) => state.context.state.trades;
+const _authToken = (state: AuthMachineState) =>
+  state.context.user.rawToken as string;
+const _state = (state: MachineState) => state.context.state;
 export const MyListings: React.FC = () => {
   const { t } = useAppTranslation();
-
+  const params = useParams();
   const { gameService } = useContext(Context);
-  const [gameState] = useActor(gameService);
+  const state = useSelector(gameService, _state);
+  const { authService } = useContext(Auth.Context);
+  const isWorldRoute = useLocation().pathname.includes("/world");
+
+  const usd = gameService.getSnapshot().context.prices.sfl?.usd ?? 0.0;
 
   const [claimId, setClaimId] = useState<string>();
+  const [removeListingId, setRemoveListingId] = useState<string>();
 
-  const { trades } = gameState.context.state;
+  const isCancellingListing = useSelector(gameService, _isCancellingOffer);
+  const trades = useSelector(gameService, _trades);
+  const authToken = useSelector(authService, _authToken);
+
+  const navigate = useNavigate();
+
   const listings = trades.listings ?? {};
+
+  const filteredListings =
+    params.id && params.collection
+      ? Object.fromEntries(
+          Object.entries(listings).filter(([_, listing]) => {
+            const listingItemId = tradeToId({
+              details: {
+                collection: listing.collection,
+                items: listing.items,
+              },
+            });
+
+            return (
+              listing.collection === params.collection &&
+              listingItemId === Number(params.id)
+            );
+          }),
+        )
+      : listings;
+
+  if (getKeys(filteredListings).length === 0) return null;
 
   const claim = () => {
     const listing = listings[claimId as string];
@@ -37,13 +76,8 @@ export const MyListings: React.FC = () => {
       tradeIds: [claimId],
     });
 
-    const itemId = getItemId({ details: listing });
-
     // For on chain items let's fire a refresh
-    const tradeType = getTradeType({
-      collection: listing.collection,
-      id: itemId,
-    });
+    const tradeType = listing.signature ? "onchain" : "instant";
 
     if (tradeType === "onchain") {
       gameService.send("RESET");
@@ -52,10 +86,23 @@ export const MyListings: React.FC = () => {
     setClaimId(undefined);
   };
 
-  const navigate = useNavigate();
+  const handleHide = () => {
+    if (isCancellingListing) return;
+
+    setRemoveListingId(undefined);
+  };
 
   return (
     <>
+      <Modal show={!!removeListingId} onHide={handleHide}>
+        {!!removeListingId && (
+          <RemoveListing
+            listingId={removeListingId}
+            authToken={authToken}
+            onClose={() => setRemoveListingId(undefined)}
+          />
+        )}
+      </Modal>
       <Modal show={!!claimId} onHide={() => setClaimId(undefined)}>
         {claimId && (
           <ClaimPurchase
@@ -65,54 +112,71 @@ export const MyListings: React.FC = () => {
           />
         )}
       </Modal>
-      <InnerPanel className="mb-2">
+
+      <InnerPanel className="mb-1">
         <div className="p-2">
-          <Label className="mb-2" type="default" icon={trade}>
-            {t("marketplace.myListings")}
-          </Label>
+          <div className="flex items-center justify-between">
+            <Label className="mb-2" type="default" icon={trade}>
+              {t("marketplace.myListings")}
+            </Label>
+          </div>
           <div className="flex flex-wrap">
-            {getKeys(listings).length === 0 && (
+            {getKeys(filteredListings).length === 0 ? (
               <p className="text-sm">{t("marketplace.noMyListings")}</p>
+            ) : (
+              <div className="w-full text-xs border-collapse mb-2">
+                {getKeys(filteredListings).map((id, index) => {
+                  const listing = listings[id];
+                  const itemName = getKeys(
+                    listing.items ?? {},
+                  )[0] as InventoryItemName;
+                  const itemId = tradeToId({
+                    details: {
+                      collection: listing.collection,
+                      items: listing.items,
+                    },
+                  });
+                  const details = getTradeableDisplay({
+                    id: itemId,
+                    type: listing.collection,
+                    state,
+                  });
+
+                  const isResource =
+                    getKeys(TRADE_LIMITS).includes(itemName) &&
+                    listing.collection === "collectibles";
+
+                  const quantity = listing.items[itemName];
+                  const price = listing.sfl;
+                  const unitPrice = price / (quantity ?? 1);
+
+                  return (
+                    <MyTableRow
+                      key={id}
+                      index={index}
+                      id={id}
+                      pageItemId={params.id ?? ""}
+                      itemId={itemId}
+                      itemName={itemName}
+                      quantity={quantity ?? 0}
+                      price={price}
+                      collection={listing.collection}
+                      unitPrice={unitPrice}
+                      usdPrice={usd}
+                      isFulfilled={!!listing.fulfilledAt || !!listing.boughtAt}
+                      isResource={isResource}
+                      onCancel={() => setRemoveListingId(id)}
+                      onRowClick={() =>
+                        navigate(
+                          `${isWorldRoute ? "/world" : ""}/marketplace/${details.type}/${itemId}`,
+                        )
+                      }
+                      onClaim={() => setClaimId(id)}
+                    />
+                  );
+                })}
+              </div>
             )}
-            {getKeys(listings).map((id) => {
-              const listing = listings[id];
-
-              // TODO - more listed types. Only resources currently support
-              const itemName = getKeys(
-                listing.items ?? {},
-              )[0] as InventoryItemName;
-              const itemId = KNOWN_IDS[itemName];
-              const collection = getCollectionName(itemName);
-              const details = getTradeableDisplay({
-                id: itemId,
-                type: collection,
-              });
-
-              return (
-                <div
-                  className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 pr-1 pb-1"
-                  key={id}
-                >
-                  <ListViewCard
-                    name={details.name}
-                    hasBoost={!!details.buff}
-                    price={new Decimal(listing.sfl)}
-                    image={details.image}
-                    supply={0}
-                    type={details.type}
-                    id={itemId}
-                    isSold={!!listing.fulfilledAt}
-                    onClick={
-                      listing.fulfilledAt
-                        ? () => setClaimId(id)
-                        : () => {
-                            navigate(`/marketplace/${details.type}/${itemId}`);
-                          }
-                    }
-                  />
-                </div>
-              );
-            })}
           </div>
         </div>
       </InnerPanel>

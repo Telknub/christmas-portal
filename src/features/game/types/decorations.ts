@@ -114,7 +114,16 @@ export type EventDecorationName =
   | "Earn Alliance Banner"
   | "Halloween Scarecrow"
   | "Vampire Bear"
-  | "Super Totem";
+  | "Super Totem"
+  | "Christmas Stocking"
+  | "Golden Christmas Stocking"
+  | "Cozy Fireplace"
+  | "Christmas Rug"
+  | "Christmas Candle"
+  | "Santa Penguin"
+  | "Penguin Pool"
+  | "Snowman"
+  | "Festive Toy Train";
 
 export type PotionHouseDecorationName =
   | "Giant Potato"
@@ -722,6 +731,42 @@ export const DECORATION_DIMENSIONS: Record<DecorationName, Dimensions> = {
   "Super Totem": {
     width: 1,
     height: 1,
+  },
+  "Christmas Stocking": {
+    width: 1,
+    height: 1,
+  },
+  "Golden Christmas Stocking": {
+    width: 1,
+    height: 1,
+  },
+  "Cozy Fireplace": {
+    width: 2,
+    height: 1,
+  },
+  "Christmas Rug": {
+    width: 3,
+    height: 2,
+  },
+  "Christmas Candle": {
+    width: 1,
+    height: 1,
+  },
+  "Santa Penguin": {
+    width: 1,
+    height: 1,
+  },
+  "Penguin Pool": {
+    width: 2,
+    height: 2,
+  },
+  Snowman: {
+    width: 1,
+    height: 1,
+  },
+  "Festive Toy Train": {
+    width: 2,
+    height: 2,
   },
 };
 

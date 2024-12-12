@@ -1,6 +1,9 @@
 import { produce } from "immer";
 import { GameState } from "../types/game";
 import { getKeys } from "../types/decorations";
+import Decimal from "decimal.js-light";
+import { MARKETPLACE_TAX } from "../types/marketplace";
+import { addTradePoints } from "./landExpansion/addTradePoints";
 
 export type ClaimPurchaseAction = {
   type: "purchase.claimed";
@@ -25,7 +28,10 @@ export function claimPurchase({ state, action }: Options) {
 
     if (
       purchaseIds.some(
-        (purchaseId) => !game.trades.listings?.[purchaseId].fulfilledAt,
+        (purchaseId) =>
+          !game.trades.listings?.[purchaseId].fulfilledAt &&
+          // To handle old trade system
+          !game.trades.listings?.[purchaseId].boughtAt,
       )
     ) {
       throw new Error("One or more purchases have not been fulfilled");
@@ -36,12 +42,20 @@ export function claimPurchase({ state, action }: Options) {
     });
 
     instantPurchases.forEach((purchaseId) => {
-      game.balance = game.balance.plus(
-        game.trades.listings?.[purchaseId].sfl ?? 0,
-      );
-    });
+      let sfl = new Decimal(game.trades.listings?.[purchaseId].sfl ?? 0);
+      sfl = sfl.mul(1 - MARKETPLACE_TAX);
 
-    purchaseIds.forEach((purchaseId) => {
+      game.balance = game.balance.plus(sfl);
+
+      game.bank.taxFreeSFL = game.bank.taxFreeSFL + sfl.toNumber();
+      // Add points to seller for instant trade
+      game = addTradePoints({
+        state: game,
+        points: 1,
+        sfl: game.trades.listings?.[purchaseId].sfl ?? 0,
+        items: game.trades.listings?.[purchaseId].items,
+      });
+
       delete game.trades.listings?.[purchaseId];
     });
 
