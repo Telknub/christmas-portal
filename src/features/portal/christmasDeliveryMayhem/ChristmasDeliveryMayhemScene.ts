@@ -176,6 +176,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     //sounds
     this.load.audio("coal-sound", "world/sound-effects/coal-sound.mp3"); // done
     this.load.audio("grit-spawn", "world/sound-effects/grit-spawn.mp3"); // done
+    this.load.audio("grit-die", "world/sound-effects/grit-die.mp3"); // done
     this.load.audio("gift-pickup", "world/sound-effects/gift-pickup.mp3"); // done
     this.load.audio("snow-storm", "world/sound-effects/snow-storm.mp3"); // doneddd
     this.load.audio("bad-sound", "world/sound-effects/bad-sound.mp3"); //done
