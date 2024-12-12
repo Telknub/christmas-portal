@@ -93,7 +93,7 @@ export class GritContainer extends Phaser.GameObjects.Container {
 
   private handleOverlap() {
     if (!this.isActive) return;
-    this.scene.sound.play("grit-spawn", { volume: 0.3 });
+    this.scene.sound.play("grit-die", { volume: 0.3 });
     this.GritScapeAnim();
     this.scene.tweens.killTweensOf(this);
     this.collision();
