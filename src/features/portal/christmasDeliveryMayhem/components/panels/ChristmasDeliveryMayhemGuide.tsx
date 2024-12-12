@@ -3,15 +3,20 @@ import React from "react";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { SquareIcon } from "components/ui/SquareIcon";
-import { ITEM_DETAILS } from "features/game/types/images";
 import { Label } from "components/ui/Label";
-import {
-  RESOURCES_TABLE,
-  ELVES_TABLE,
-  EVENTS_TABLE,
-} from "../../ChristmasDeliveryMayhemConstants";
+import { EVENTS_TABLE } from "../../ChristmasDeliveryMayhemConstants";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { useSound } from "lib/utils/hooks/useSound";
+
+import Gift1 from "public/world/_gift_1.png";
+import GritIcon from "public/world/grit_icon.png";
+import Gift3 from "public/world/_gift_3.png";
+import Gift4 from "public/world/_gift_4.png";
+import Gift5 from "public/world/_gift_5.png";
+import Gift6 from "public/world/_gift_6.png";
+import Elf from "public/world/elfl.gif";
+import Pad from "public/world/greenpad.png";
+import Bonfire from "public/world/Fogueira.gif";
 
 type Props = {
   onBack: () => void;
@@ -68,102 +73,78 @@ export const ChristmasDeliveryMayhemGuide: React.FC<Props> = ({ onBack }) => {
         </Label>
         <div>
           <div className="flex items-center mb-3 mx-2">
-            <SquareIcon
-              icon={ITEM_DETAILS["Abandoned Bear"].image}
-              width={10}
-            />
+            <SquareIcon icon={Elf} width={10} />
             <p className="text-xs ml-3 flex-1">
-              {t("christmas-delivery-mayhem.instructions1")}
-            </p>
-          </div>
-
-          <div className="flex items-center mb-3 mx-2">
-            <SquareIcon icon={SUNNYSIDE.icons.stopwatch} width={10} />
-            <p className="text-xs ml-3 flex-1">
-              {t("christmas-delivery-mayhem.instructions2")}
-            </p>
-          </div>
-
-          <div className="flex items-center mb-3 mx-2">
-            <SquareIcon
-              icon={ITEM_DETAILS["Abandoned Bear"].image}
-              width={10}
-            />
-            <p className="text-xs ml-3 flex-1">
-              {t("christmas-delivery-mayhem.instructions3")}
-            </p>
-          </div>
-
-          <div className="flex items-center mb-3 mx-2">
-            <SquareIcon icon={SUNNYSIDE.icons.stopwatch} width={10} />
-            <p className="text-xs ml-3 flex-1">
-              {t("christmas-delivery-mayhem.instructions4")}
-            </p>
-          </div>
-
-          <div className="flex items-center mb-3 mx-2">
-            <SquareIcon icon={SUNNYSIDE.decorations.skull} width={10} />
-            <p className="text-xs ml-3 flex-1">
-              {t("christmas-delivery-mayhem.instructions5")}
+              {t("christmas.guide.instructions1")}
             </p>
           </div>
         </div>
-        {/* resources */}
-        <Label type="default">{t("christmas-delivery-mayhem.resources")}</Label>
-        <table className="w-full text-xs table-fixed border-collapse">
-          <tbody>
-            {Object.values(RESOURCES_TABLE).map(
-              ({ item, description }, index) => (
-                <tr key={index}>
-                  <td
-                    style={{ border: "1px solid #b96f50" }}
-                    className="p-1.5 w-1/6"
-                  >
-                    <div className="flex items-center justify-center">
-                      {<SquareIcon icon={item} width={13} />}
-                    </div>
-                  </td>
-                  <td
-                    style={{ border: "1px solid #b96f50" }}
-                    className="p-1.5 w-5/6"
-                  >
-                    {t("christmas-delivery-mayhem.scoreDescription", {
-                      description: description,
-                    })}
-                  </td>
-                </tr>
-              ),
-            )}
-          </tbody>
-        </table>
-        {/* enemies */}
-        <Label type="default">{t("christmas-delivery-mayhem.enemies")}</Label>
-        <table className="w-full text-xs table-fixed border-collapse">
-          <tbody>
-            {Object.values(ELVES_TABLE).map(({ item, description }, index) => (
-              <tr key={index}>
-                <td
-                  style={{ border: "1px solid #b96f50" }}
-                  className="p-1.5 w-1/6"
-                >
-                  <div className="flex items-center justify-center">
-                    {<SquareIcon icon={item} width={13} />}
-                  </div>
-                </td>
-                <td
-                  style={{ border: "1px solid #b96f50" }}
-                  className="p-1.5 w-5/6"
-                >
-                  {t("christmas-delivery-mayhem.scoreDescription", {
-                    description: description,
-                  })}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div>
+          <div className="flex items-center mb-3 mx-2">
+            <SquareIcon icon={Gift1} width={10} />
+            <p className="text-xs ml-3 flex-1">
+              {t("christmas.guide.instructions2")}
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center mb-3 mx-2">
+            <SquareIcon icon={GritIcon} width={10} />
+            <p className="text-xs ml-3 flex-1">
+              {t("christmas.guide.instructions3")}
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center mb-3 mx-2">
+            <SquareIcon icon={Gift3} width={10} />
+            <p className="text-xs ml-3 flex-1">
+              {t("christmas.guide.instructions4")}
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center mb-3 mx-2">
+            <SquareIcon icon={Pad} width={10} />
+            <p className="text-xs ml-3 flex-1">
+              {t("christmas.guide.instructions5")}
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center mb-3 mx-2">
+            <SquareIcon icon={Bonfire} width={10} />
+            <p className="text-xs ml-3 flex-1">
+              {t("christmas.guide.instructions6")}
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center mb-3 mx-2">
+            <SquareIcon icon={Gift4} width={10} />
+            <p className="text-xs ml-3 flex-1">
+              {t("christmas.guide.instructions7")}
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center mb-3 mx-2">
+            <SquareIcon icon={Gift5} width={10} />
+            <p className="text-xs ml-3 flex-1">
+              {t("christmas.guide.instructions8")}
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center mb-3 mx-2">
+            <SquareIcon icon={Gift6} width={10} />
+            <p className="text-xs ml-3 flex-1">
+              {t("christmas.guide.instructions9")}
+            </p>
+          </div>
+        </div>
         {/* signs */}
-        <Label type="default">{t("christmas-delivery-mayhem.signs")}</Label>
+        <Label type="default">{t("christmas.guide.event0")}</Label>
         <table className="w-full text-xs table-fixed border-collapse">
           <tbody>
             {Object.values(EVENTS_TABLE).map(({ item, description }, index) => (

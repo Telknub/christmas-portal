@@ -188,7 +188,7 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     const points = this.portalService?.state.context.streak || 0;
     const emoticon = this.createEmoticon(points, "sad");
     this.portalService?.send("LOSE_LIFE");
-    this.scene.sound.play("bad-sound");
+    this.scene.sound.play("bad-sound", { volume: 0.1 });
 
     this.scene.time.delayedCall(REQUEST_COOLDOWN, () => {
       emoticon.destroy();

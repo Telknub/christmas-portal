@@ -1,8 +1,12 @@
 import { Equipped } from "features/game/types/bumpkin";
-import { ITEM_DETAILS } from "features/game/types/images";
 import { translate } from "lib/i18n/translate";
 import { NPC_WEARABLES } from "lib/npcs";
 import { SQUARE_WIDTH } from "features/game/lib/constants";
+
+import GritIcon from "public/world/grit_icon.png";
+import Event from "public/world/roullete icon.gif";
+import SnowIcon from "public/world/snowflake_icon.png";
+import CoalIcon from "public/world/coal.png";
 
 export const GIFTS_NAMES = [
   "gift_1",
@@ -149,34 +153,6 @@ export const DROP_ANIMATION_GIFT_CONFIGURATION: {
   2: { x: 28, y: 5 },
 };
 
-export const RESOURCES_TABLE: {
-  [key: number]: {
-    item: string;
-    description: string;
-  };
-} = {
-  0: {
-    item: ITEM_DETAILS["Abandoned Bear"].image,
-    description: translate("christmas-delivery-mayhem.torchDescription"),
-  },
-  1: {
-    item: ITEM_DETAILS["Abandoned Bear"].image,
-    description: translate("christmas-delivery-mayhem.torchDescription"),
-  },
-};
-
-export const ELVES_TABLE: {
-  [key: number]: {
-    item: string;
-    description: string;
-  };
-} = {
-  0: {
-    item: ITEM_DETAILS["Abandoned Bear"].image,
-    description: translate("christmas-delivery-mayhem.wearSignDescription"),
-  },
-};
-
 export const EVENTS_TABLE: {
   [key: number]: {
     item: string;
@@ -184,16 +160,20 @@ export const EVENTS_TABLE: {
   };
 } = {
   0: {
-    item: ITEM_DETAILS["Abandoned Bear"].image,
-    description: translate("christmas-delivery-mayhem.ghostEnemyDescription"),
+    item: Event,
+    description: translate("christmas.guide.event"),
   },
   1: {
-    item: ITEM_DETAILS["Abandoned Bear"].image,
-    description: translate("christmas-delivery-mayhem.zombieEnemyDescription"),
+    item: GritIcon,
+    description: translate("christmas.guide.event1"),
   },
   2: {
-    item: ITEM_DETAILS["Abandoned Bear"].image,
-    description: translate("christmas-delivery-mayhem.zombieEnemyDescription"),
+    item: SnowIcon,
+    description: translate("christmas.guide.event2"),
+  },
+  3: {
+    item: CoalIcon,
+    description: translate("christmas.guide.event3"),
   },
 };
 

@@ -4415,5 +4415,21 @@
 
   "npcDialogues.corale.chore1": "The coral reefs are buzzing with news about strange sea creatures!",
   "npcDialogues.corale.chore2": "Something big is disturbing the ocean's natural balance...",
-  "npcDialogues.corale.chore3": "The fish say they've seen cow-like shadows in deeper waters!"
+  "npcDialogues.corale.chore3": "The fish say they've seen cow-like shadows in deeper waters!",
+
+  "christmas.guide.instructions1":"Help the elves by delivering gifts before Christmas arrives!",
+  "christmas.guide.instructions2":"You have 5 minutes to deliver the biggest amount of gifts possible!",
+  "christmas.guide.instructions3":"But beware that certain beings are trying to disrupt and ruin Christmas!",
+  "christmas.guide.instructions4":"Get the gifts with the corresponding colors and give them to the elves before time runs out!",
+  "christmas.guide.instructions5":"Collect and deliver the gifts by stepping on the green panels, the order of the gifts delivered does not matter, just the colors!",
+  "christmas.guide.instructions6":"If you collected a wrong gift you can discard all your gifts at the bonfire by getting close to it!",
+  "christmas.guide.instructions7":"Even with the time limit you only have 5 lives and can lose earlier if you miss too much deliveries, so complete all of them!",
+  "christmas.guide.instructions8":"You will also lose a life if you deliver the wrong gifts!",
+  "christmas.guide.instructions9":"Making multiple deliveries can make you score even more points with the streak, with each delivery being worth more points for a bigger score!",
+  "christmas.guide.event":"From time to time, a random event can happen to disrupt your deliveries!",
+  "christmas.guide.event1":"The Grit will appear and try to steal all gifts, catch him or you will lose a life and the gifts will take a long time to respawn!",
+  "christmas.guide.event2":"A snowstorm will happen, which will make it harder to move on one direction, but easier to move on the other!",
+  "christmas.guide.event3":"The Krampus will throw coal all over the place making it difficult for you to move! If you step on a coal you lose a life and lose the gifts you are carrying!",
+  "christmas.guide.event0":"Events"
+
 }
