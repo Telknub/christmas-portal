@@ -4341,7 +4341,6 @@
   "marketplace.itemSold": "Artículo vendido",
   "marketplace.congratulationsItemSold": "¡Enhorabuena, tu artículo se ha vendido!",
   "withdraw.taxFree": "Los duendes te cobran impuestos por el SFL ganado en el juego. Esto excluye los depósitos y el mercado.",
-<<<<<<< HEAD
   "bounties.board.ticketAmount": "La cantidad de {{seasonalTicket}} variará cada semana en función de las solicitudes.",
   "marketplace.listing.cancelling": "Cancelación del anuncio",
   "marketplace.listing.cancelling.success": "¡Enhorabuena, has cancelado correctamente tu anuncio!",
@@ -4694,7 +4693,3 @@
   "christmas.guide.event3": "¡El Krampus arrojará carbón por todos lados, lo que te dificultará moverte! ¡Si pisas un carbón, pierdes una vida y pierdes los regalos que llevas contigo!",
   "christmas.guide.event0": "Eventos"
 }
-=======
-  "marketplace.youHaveHadSales": "¡Tu (s) artículo (s) se vendió (n) mientras estabas fuera!"
-}
->>>>>>> parent of 04f39f2bc (Merge remote-tracking branch 'sunflower-land/main')

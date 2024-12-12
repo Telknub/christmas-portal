@@ -4341,7 +4341,6 @@
   "marketplace.itemSold": "物品已售出",
   "marketplace.congratulationsItemSold": "恭喜，你的物品已售出！",
   "withdraw.taxFree": "哥布林会根据游戏中获得的 SFL 向你征税。这不包括存款和市场。",
-<<<<<<< HEAD
   "bounties.board.ticketAmount": "{{seasonalTicket}} 的金额每周将根据请求而有所不同。",
   "marketplace.listing.cancelling": "取消清单",
   "marketplace.listing.cancelling.success": "恭喜，您已成功取消房源！",
@@ -4694,7 +4693,3 @@
   "christmas.guide.event3": "Krampus 会把煤炭扔到各处，让你难以移动！如果你踏上煤炭，你就会失去生命，失去你携带的礼物！",
   "christmas.guide.event0": "活动"
 }
-=======
-  "marketplace.youHaveHadSales": "你不在的时候卖掉了物品！"
-}
->>>>>>> parent of 04f39f2bc (Merge remote-tracking branch 'sunflower-land/main')

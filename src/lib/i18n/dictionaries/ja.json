@@ -4341,7 +4341,6 @@
   "marketplace.itemSold": "商品が販売されました",
   "marketplace.congratulationsItemSold": "おめでとうございます。商品は売れました。",
   "withdraw.taxFree": "ゴブリンはゲーム内で獲得したSFLに課税します。これにはデポジットとマーケットプレイスは含まれません。",
-<<<<<<< HEAD
   "bounties.board.ticketAmount": "{{seasonalTicket}} の金額は、リクエストに応じて毎週異なります。",
   "marketplace.listing.cancelling": "出品をキャンセルする",
   "marketplace.listing.cancelling.success": "おめでとうございます。出品は正常にキャンセルされました。",
@@ -4694,7 +4693,3 @@
   "christmas.guide.event3": "クランプスはあちこちに石炭を投げつけるので、動きにくくなります！石炭を踏むと命を失い、持っている贈り物を失います！",
   "christmas.guide.event0": "[イベント]"
 }
-=======
-  "marketplace.youHaveHadSales": "留守中に商品が売れました！"
-}
->>>>>>> parent of 04f39f2bc (Merge remote-tracking branch 'sunflower-land/main')

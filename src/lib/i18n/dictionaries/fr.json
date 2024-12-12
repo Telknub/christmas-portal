@@ -4341,7 +4341,6 @@
   "marketplace.itemSold": "Article vendu",
   "marketplace.congratulationsItemSold": "Félicitations, votre article est vendu !",
   "withdraw.taxFree": "Les gobelins vous taxent sur la SFL gagnée en jeu. Cela exclut les dépôts et le marché.",
-<<<<<<< HEAD
   "bounties.board.ticketAmount": "Le montant de {{seasonalTicket}} s variera chaque semaine en fonction des demandes.",
   "marketplace.listing.cancelling": "Annulation de l'annonce",
   "marketplace.listing.cancelling.success": "Félicitations, vous avez annulé votre annonce avec succès !",
@@ -4694,7 +4693,3 @@
   "christmas.guide.event3": "Le Krampus jettera du charbon partout, ce qui vous empêchera de vous déplacer ! Si vous marchez sur un charbon, vous perdez une vie et vous perdez les cadeaux que vous transportez !",
   "christmas.guide.event0": "Évènements"
 }
-=======
-  "marketplace.youHaveHadSales": "Vos articles ont été vendus pendant votre absence !"
-}
->>>>>>> parent of 04f39f2bc (Merge remote-tracking branch 'sunflower-land/main')

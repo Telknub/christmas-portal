@@ -4341,7 +4341,6 @@
   "marketplace.itemSold": "Товар продан",
   "marketplace.congratulationsItemSold": "Поздравляем, ваш товар продан!",
   "withdraw.taxFree": "Гоблины облагают вас налогом на SFL, заработанные в игре. Сюда не входят депозиты и рынок.",
-<<<<<<< HEAD
   "bounties.board.ticketAmount": "Сумма {{seasonalTicket}} будет меняться каждую неделю в зависимости от запросов.",
   "marketplace.listing.cancelling": "Отмена объявления",
   "marketplace.listing.cancelling.success": "Поздравляем, вы успешно отменили объявление!",
@@ -4694,7 +4693,3 @@
   "christmas.guide.event3": "«Крампус» будет разбрасывать уголь повсюду, что затруднит вам передвижение! Если вы нажмете на уголь, вы потеряете жизнь и подарки, которые несете с собой!",
   "christmas.guide.event0": "События"
 }
-=======
-  "marketplace.youHaveHadSales": "Ваш товар (ы) продан, пока вас не было!"
-}
->>>>>>> parent of 04f39f2bc (Merge remote-tracking branch 'sunflower-land/main')

@@ -4341,7 +4341,6 @@
   "marketplace.itemSold": "Barang terjual",
   "marketplace.congratulationsItemSold": "Selamat, barang Anda telah terjual!",
   "withdraw.taxFree": "Goblin mengenakan pajak atas SFL yang diperoleh dalam game. Ini tidak termasuk deposito & pasar.",
-<<<<<<< HEAD
   "bounties.board.ticketAmount": "Jumlah {{seasonalTicket}} s akan bervariasi setiap minggu berdasarkan permintaan.",
   "marketplace.listing.cancelling": "Membatalkan listing",
   "marketplace.listing.cancelling.success": "Selamat, Anda telah berhasil membatalkan iklan Anda!",
@@ -4694,7 +4693,3 @@
   "christmas.guide.event3": "Krampus akan melemparkan batu bara ke mana-mana sehingga sulit bagi Anda untuk bergerak! Jika Anda menginjak batu bara, Anda kehilangan nyawa dan kehilangan hadiah yang Anda bawa!",
   "christmas.guide.event0": "Kegiatan"
 }
-=======
-  "marketplace.youHaveHadSales": "Barang Anda dijual saat Anda pergi!"
-}
->>>>>>> parent of 04f39f2bc (Merge remote-tracking branch 'sunflower-land/main')
