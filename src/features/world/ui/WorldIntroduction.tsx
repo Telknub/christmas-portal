@@ -18,21 +18,17 @@ interface Props {
 
 export const WorldIntroduction: React.FC<Props> = ({ onClose }) => {
   const { gameService } = useContext(Context);
-  const [
-    {
-      context: { state },
-    },
-  ] = useActor(gameService);
+  const [gameState] = useActor(gameService);
 
   const [showNPCFind, setShowNPCFind] = useState(false);
 
   const { t } = useAppTranslation();
 
-  const { balance, coins, inventory } = state;
+  const { balance, coins, inventory } = gameState.context.state;
 
   // Find a delivery that is ready
-  const delivery = state.delivery.orders.find((order) =>
-    hasOrderRequirements({ order, sfl: balance, coins, inventory, state }),
+  const delivery = gameState.context.state.delivery.orders.find((order) =>
+    hasOrderRequirements({ order, sfl: balance, coins, inventory }),
   );
 
   if (showNPCFind && delivery) {

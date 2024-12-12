@@ -1,14 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { Context } from "features/game/GameProvider";
+import {
+  plantAudio,
+  harvestAudio,
+  treeFallAudio,
+  loadAudio,
+} from "lib/utils/sfx";
 import { PatchFruitName } from "features/game/types/fruits";
 import { FruitTree } from "./FruitTree";
 import Decimal from "decimal.js-light";
-import {
-  getRequiredAxeAmount,
-  getWoodReward,
-} from "features/game/events/landExpansion/fruitTreeRemoved";
+import { getRequiredAxeAmount } from "features/game/events/landExpansion/fruitTreeRemoved";
 import { useSelector } from "@xstate/react";
 import { MachineState } from "features/game/lib/gameMachine";
 import {
@@ -23,7 +26,6 @@ import { ResourceDropAnimator } from "components/animation/ResourceDropAnimator"
 import powerup from "assets/icons/level_up.png";
 import { getBumpkinLevel } from "features/game/lib/level";
 import { FRUIT_PATCH_VARIANTS } from "../lib/alternateArt";
-import { useSound } from "lib/utils/hooks/useSound";
 
 const HasAxes = (
   inventory: Partial<Record<InventoryItemName, Decimal>>,
@@ -85,9 +87,9 @@ export const FruitPatch: React.FC<Props> = ({ id, index }) => {
   );
   const island = useSelector(gameService, _island);
 
-  const { play: harvestAudio } = useSound("harvest");
-  const { play: plantAudio } = useSound("plant");
-  const { play: treeFallAudio } = useSound("tree_fall");
+  useEffect(() => {
+    loadAudio([harvestAudio, plantAudio, treeFallAudio]);
+  }, []);
 
   const hasAxes = HasAxes(inventory, game, fruit);
 
@@ -104,7 +106,7 @@ export const FruitPatch: React.FC<Props> = ({ id, index }) => {
       });
 
       if (!newState.matches("hoarding")) {
-        plantAudio();
+        plantAudio.play();
       }
     } catch {
       undefined;
@@ -134,7 +136,7 @@ export const FruitPatch: React.FC<Props> = ({ id, index }) => {
       setCollectedFruitName(fruit?.name);
       setCollectedFruitAmount(fruit?.amount);
 
-      harvestAudio();
+      harvestAudio.play();
       setPlayShakingAnimation(true);
 
       await new Promise((res) => setTimeout(res, 3000));
@@ -161,11 +163,10 @@ export const FruitPatch: React.FC<Props> = ({ id, index }) => {
     });
 
     if (!newState.matches("hoarding")) {
-      const { woodReward } = getWoodReward({ state: game });
       setCollectingWood(true);
-      setCollectedWoodAmount(woodReward);
+      setCollectedWoodAmount(1);
 
-      treeFallAudio();
+      treeFallAudio.play();
 
       await new Promise((res) => setTimeout(res, 3000));
 

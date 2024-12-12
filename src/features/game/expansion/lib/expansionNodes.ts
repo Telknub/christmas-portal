@@ -19,24 +19,6 @@ export interface Nodes {
   "Oil Reserve": number;
 }
 
-export function isNode(value: string): value is keyof Nodes {
-  const nodeTypes: Array<keyof Nodes> = [
-    "Crop Plot",
-    "Tree",
-    "Stone Rock",
-    "Iron Rock",
-    "Gold Rock",
-    "Crimstone Rock",
-    "Sunstone Rock",
-    "Fruit Patch",
-    "Flower Bed",
-    "Beehive",
-    "Oil Reserve",
-  ];
-
-  return nodeTypes.includes(value as keyof Nodes);
-}
-
 export function getEnabledNodeCount(
   bumpkinLevel: BumpkinLevel,
   nodeType: string,

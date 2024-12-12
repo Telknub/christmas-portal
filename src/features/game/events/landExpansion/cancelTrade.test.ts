@@ -14,59 +14,6 @@ describe("cancelTrade", () => {
       }),
     ).toThrow("Trade #123 does not exist");
   });
-
-  it("throws if not collectible", () => {
-    expect(() =>
-      cancelTrade({
-        action: {
-          tradeId: "123",
-          type: "trade.cancelled",
-        },
-        state: {
-          ...TEST_FARM,
-          trades: {
-            listings: {
-              "123": {
-                collection: "wearables",
-                createdAt: 1000000,
-                sfl: 5,
-                items: {
-                  Parsnip: 10,
-                },
-              },
-            },
-          },
-        },
-      }),
-    ).toThrow("Trade #123 is not a collectible");
-  });
-
-  it("does not throw if trade is resources", () => {
-    expect(() =>
-      cancelTrade({
-        action: {
-          tradeId: "123",
-          type: "trade.cancelled",
-        },
-        state: {
-          ...TEST_FARM,
-          trades: {
-            listings: {
-              "123": {
-                collection: "resources",
-                createdAt: 1000000,
-                sfl: 5,
-                items: {
-                  Parsnip: 10,
-                },
-              },
-            },
-          },
-        },
-      }),
-    ).not.toThrow();
-  });
-
   it("enures trade is not bought", () => {
     expect(() =>
       cancelTrade({
@@ -79,7 +26,7 @@ describe("cancelTrade", () => {
           trades: {
             listings: {
               "123": {
-                collection: "collectibles",
+                collection: "resources",
                 createdAt: 1000000,
                 sfl: 5,
                 items: {
@@ -107,7 +54,7 @@ describe("cancelTrade", () => {
         trades: {
           listings: {
             "123": {
-              collection: "collectibles",
+              collection: "resources",
               createdAt: 1000000,
               sfl: 5,
               items: {
@@ -132,7 +79,7 @@ describe("cancelTrade", () => {
         trades: {
           listings: {
             "123": {
-              collection: "collectibles",
+              collection: "resources",
               createdAt: 1000000,
               sfl: 5,
               items: {

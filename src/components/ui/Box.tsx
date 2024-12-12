@@ -1,17 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import classNames from "classnames";
 import Decimal from "decimal.js-light";
 
-import { LabelType } from "./Label";
+import { Label, LabelType } from "./Label";
 import { useLongPress } from "lib/utils/hooks/useLongPress";
-import { setPrecision } from "lib/utils/formatNumber";
+import { setPrecision, shortenCount } from "lib/utils/formatNumber";
 import { isMobile } from "mobile-device-detect";
 import { pixelChristmasDarkBorderStyle } from "features/game/lib/style";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { SquareIcon } from "./SquareIcon";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { ProgressType, ResizableBar } from "./ProgressBar";
-import { CountLabel } from "./CountLabel";
 
 const LABEL_RIGHT_SHIFT_PX = -5 * PIXEL_SCALE;
 const LABEL_TOP_SHIFT_PX = -5 * PIXEL_SCALE;
@@ -84,8 +83,19 @@ export const Box: React.FC<BoxProps> = ({
   onDrop,
 }) => {
   const [isHover, setIsHover] = useState(false);
+  const [showHiddenCountLabel, setShowHiddenCountLabel] = useState(false);
+  const [shortCount, setShortCount] = useState("");
+
+  const labelRef = useRef<HTMLDivElement>(null);
+  const labelCheckerRef = useRef<HTMLDivElement>(null);
 
   const precisionCount = setPrecision(count ?? 0, 2);
+
+  // re-execute function on count change
+  useEffect(
+    () => setShortCount(shortenCount(precisionCount)),
+    [precisionCount],
+  );
 
   const canClick = !locked && !disabled && !!onClick;
 
@@ -104,10 +114,57 @@ export const Box: React.FC<BoxProps> = ({
 
   const showCountLabel = !locked && !hideCount && precisionCount.greaterThan(0);
 
+  // shift count label position to right if out of parent div or viewport bounds on hover
+  // restore count label position when not on hover
+  // hidden count label is needed to prevent flickering of the visible count label on hover
+  useEffect(() => {
+    setShowHiddenCountLabel(false);
+
+    // restore count label position when not on hover
+    if (!isHover && labelRef.current) {
+      labelRef.current.style.right = `${LABEL_RIGHT_SHIFT_PX}px`;
+      return;
+    }
+
+    // null check
+    if (!labelRef.current || !labelCheckerRef.current) {
+      return;
+    }
+
+    // get hidden count label and parent div/viewport bounding
+    const hiddenCountLabelBounding =
+      labelCheckerRef.current.getBoundingClientRect();
+    const parentDivBounding = parentDivRef?.current?.getBoundingClientRect();
+
+    // if parent div is defined,
+    // shift count label to the right so left most bounds for count label touches that of the parent div
+    if (
+      parentDivBounding &&
+      hiddenCountLabelBounding.left < parentDivBounding.left
+    ) {
+      labelRef.current.style.right = `${
+        LABEL_RIGHT_SHIFT_PX +
+        hiddenCountLabelBounding.left -
+        parentDivBounding.left
+      }px`;
+      return;
+    }
+
+    // else shift count label to the right so left most bounds for count label touches that of the viewport
+    if (hiddenCountLabelBounding?.left < 0) {
+      labelRef.current.style.right = `${
+        LABEL_RIGHT_SHIFT_PX + hiddenCountLabelBounding.left
+      }px`;
+    }
+  }, [isHover]);
+
   return (
     <div
       className={`relative ${className}`}
-      onMouseEnter={() => setIsHover(true)}
+      onMouseEnter={() => {
+        setShowHiddenCountLabel(true);
+        setIsHover(true);
+      }}
       onMouseLeave={() => setIsHover(false)}
     >
       <div
@@ -187,26 +244,75 @@ export const Box: React.FC<BoxProps> = ({
 
         {/* Count label */}
         {showCountLabel && (
-          <CountLabel
-            isHover={isHover}
-            count={precisionCount}
-            labelType={countLabelType}
-            rightShiftPx={LABEL_RIGHT_SHIFT_PX}
-            topShiftPx={LABEL_TOP_SHIFT_PX}
-            parentDivRef={parentDivRef}
-          />
+          <div
+            ref={labelRef}
+            className={classNames("absolute", {
+              "z-10": !isHover,
+              "z-20": isHover,
+            })}
+            style={{
+              right: `${LABEL_RIGHT_SHIFT_PX}px`,
+              top: `${LABEL_TOP_SHIFT_PX}px`,
+              pointerEvents: "none",
+            }}
+          >
+            <Label
+              type={countLabelType}
+              style={{
+                padding: "0 2.5",
+                height: "24px",
+              }}
+            >
+              {isHover && !showHiddenCountLabel
+                ? precisionCount.toString()
+                : shortCount}
+            </Label>
+          </div>
+        )}
+
+        {/* Transparent long count label to adjust the visible count label position on hover */}
+        {showCountLabel && showHiddenCountLabel && (
+          <div
+            ref={labelCheckerRef}
+            className="absolute opacity-0"
+            style={{
+              right: `${LABEL_RIGHT_SHIFT_PX}px`,
+              top: `${LABEL_TOP_SHIFT_PX}px`,
+              pointerEvents: "none",
+            }}
+          >
+            <Label
+              type="default"
+              style={{
+                padding: "0 2.5",
+                height: "24px",
+              }}
+            >
+              {precisionCount.toString()}
+            </Label>
+          </div>
         )}
 
         {/** Show alternate Icon */}
         {!showCountLabel && alternateIcon && (
-          <CountLabel
-            isHover={isHover}
-            count={precisionCount}
-            labelType={countLabelType}
-            rightShiftPx={LABEL_RIGHT_SHIFT_PX}
-            topShiftPx={LABEL_TOP_SHIFT_PX}
-            parentDivRef={parentDivRef}
-          />
+          <div
+            ref={labelRef}
+            className={classNames("absolute", {
+              "z-10": !isHover,
+              "z-20": isHover,
+            })}
+            style={{
+              right: `${LABEL_RIGHT_SHIFT_PX}px`,
+              top: `${LABEL_TOP_SHIFT_PX}px`,
+              pointerEvents: "none",
+            }}
+          >
+            <SquareIcon
+              icon={alternateIcon}
+              width={INNER_CANVAS_WIDTH}
+              className={iconClassName}
+            />
+          </div>
         )}
 
         {/** Overlay icon */}

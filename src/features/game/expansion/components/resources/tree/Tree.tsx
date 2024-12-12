@@ -4,6 +4,7 @@ import { TREE_RECOVERY_TIME } from "features/game/lib/constants";
 import { Context } from "features/game/GameProvider";
 
 import { getTimeLeft } from "lib/utils/time";
+import { loadAudio, treeFallAudio } from "lib/utils/sfx";
 import {
   GameState,
   InventoryItemName,
@@ -25,8 +26,7 @@ import { DepletingTree } from "./components/DepletingTree";
 import { RecoveredTree } from "./components/RecoveredTree";
 import { gameAnalytics } from "lib/gameAnalytics";
 import { getBumpkinLevel } from "features/game/lib/level";
-import { hasVipAccess } from "features/game/lib/vipAccess";
-import { useSound } from "lib/utils/hooks/useSound";
+import { hasActiveSeasonBanner } from "features/game/lib/collectibleBuilt";
 
 const HITS = 3;
 const tool = "Axe";
@@ -64,7 +64,7 @@ const isSeasonedPlayer = (state: MachineState) =>
   // - verified (personhood verification)
   state.context.verified &&
   // - has active seasonal banner
-  hasVipAccess(state.context.state.inventory);
+  hasActiveSeasonBanner({ game: state.context.state });
 
 interface Props {
   id: string;
@@ -85,7 +85,9 @@ export const Tree: React.FC<Props> = ({ id }) => {
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  const { play: treeFallAudio } = useSound("tree_fall");
+  useEffect(() => {
+    loadAudio([treeFallAudio]);
+  }, []);
 
   // Reset the shake count when clicking outside of the component
   useEffect(() => {
@@ -181,7 +183,7 @@ export const Tree: React.FC<Props> = ({ id }) => {
         setCollectedAmount(resource.wood.amount);
       }
 
-      treeFallAudio();
+      treeFallAudio.play();
 
       if (showAnimations) {
         await new Promise((res) => setTimeout(res, 3000));

@@ -63,8 +63,7 @@ describe("harvestCropMachine", () => {
                     amount: 10,
                     crop: "Sunflower",
                     growTimeRemaining: 0,
-                    totalGrowTime:
-                      (60 * 10 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE),
+                    totalGrowTime: (60 * 10 * 1000) / CROP_MACHINE_PLOTS,
                     seeds: 10,
                   },
                 ],
@@ -98,8 +97,7 @@ describe("harvestCropMachine", () => {
                     amount: 10,
                     crop: "Sunflower",
                     growTimeRemaining: 100,
-                    totalGrowTime:
-                      (60 * 10 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE),
+                    totalGrowTime: (60 * 10 * 1000) / CROP_MACHINE_PLOTS,
                     seeds: 10,
                   },
                 ],
@@ -134,8 +132,7 @@ describe("harvestCropMachine", () => {
                   crop: "Sunflower",
                   growTimeRemaining: 0,
                   readyAt: dateNow - 1000,
-                  totalGrowTime:
-                    (60 * 10 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE),
+                  totalGrowTime: (60 * 10 * 1000) / CROP_MACHINE_PLOTS,
                   seeds: 10,
                 },
               ],
@@ -175,8 +172,7 @@ describe("harvestCropMachine", () => {
                   crop: "Sunflower",
                   growTimeRemaining: 0,
                   readyAt: dateNow - 1000,
-                  totalGrowTime:
-                    (60 * 10 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE),
+                  totalGrowTime: (60 * 10 * 1000) / CROP_MACHINE_PLOTS,
                   seeds: 10,
                 },
               ],
@@ -215,8 +211,7 @@ describe("harvestCropMachine", () => {
                   crop: "Sunflower",
                   growTimeRemaining: 0,
                   readyAt: dateNow - 1000,
-                  totalGrowTime:
-                    (60 * 10 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE),
+                  totalGrowTime: (60 * 10 * 1000) / CROP_MACHINE_PLOTS,
                   seeds: 10,
                 },
                 {
@@ -224,8 +219,7 @@ describe("harvestCropMachine", () => {
                   crop: "Sunflower",
                   growTimeRemaining: 0,
                   readyAt: dateNow - 2000,
-                  totalGrowTime:
-                    (60 * 10 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE),
+                  totalGrowTime: (60 * 10 * 1000) / CROP_MACHINE_PLOTS,
                   seeds: 10,
                 },
               ],

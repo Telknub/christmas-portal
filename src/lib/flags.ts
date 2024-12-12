@@ -1,10 +1,6 @@
 import type { GameState } from "features/game/types/game";
 import { CONFIG } from "lib/config";
 
-const adminFeatureFlag = ({ wardrobe, inventory }: GameState) =>
-  CONFIG.NETWORK === "amoy" ||
-  (!!((wardrobe["Gift Giver"] ?? 0) > 0) && !!inventory["Beta Pass"]?.gt(0));
-
 const defaultFeatureFlag = ({ inventory }: GameState) =>
   CONFIG.NETWORK === "amoy" || !!inventory["Beta Pass"]?.gt(0);
 
@@ -28,7 +24,7 @@ export const ADMIN_IDS = [1, 3, 51, 39488, 128727];
  * Elias: 128727
  */
 
-export type FeatureFlag = (game: GameState) => boolean;
+type FeatureFlag = (game: GameState) => boolean;
 
 export type ExperimentName = "ONBOARDING_CHALLENGES" | "GEM_BOOSTS";
 
@@ -39,19 +35,17 @@ export type ExperimentName = "ONBOARDING_CHALLENGES" | "GEM_BOOSTS";
  *
  * Do not delete JEST_TEST.
  */
-const featureFlags = {
+const featureFlags: Record<string, FeatureFlag> = {
   CHORE_BOARD: betaTimeBasedFeatureFlag(new Date("2024-11-01T00:00:00Z")),
   ONBOARDING_REWARDS: (game: GameState) =>
     game.experiments.includes("ONBOARDING_CHALLENGES"),
   SEASONAL_TIERS: timeBasedFeatureFlag(new Date("2024-11-01T00:00:00Z")),
-  MARKETPLACE: defaultFeatureFlag,
-  MARKETPLACE_ADMIN: adminFeatureFlag,
-  MARKETPLACE_REWARDS: defaultFeatureFlag,
+  MARKETPLACE: testnetFeatureFlag,
   CROP_QUICK_SELECT: () => false,
   PORTALS: testnetFeatureFlag,
   JEST_TEST: defaultFeatureFlag,
   EASTER: () => false, // To re-enable next easter
-  SKILLS_REVAMP: adminFeatureFlag,
+  SKILLS_REVAMP: testnetFeatureFlag,
   FSL: betaTimeBasedFeatureFlag(new Date("2024-10-10T00:00:00Z")),
   NEW_RESOURCES_GE: defaultFeatureFlag,
   ANIMAL_BUILDINGS: betaTimeBasedFeatureFlag(new Date("2024-11-04T00:00:00Z")),
@@ -66,19 +60,7 @@ const featureFlags = {
   CHRISTMANS_DELIVERY_MAYHEM: betaTimeBasedFeatureFlag(
     new Date("2024-12-20T00:00:00Z"),
   ),
-  HALLOWEEN_2024: defaultFeatureFlag,
-  CHRISTMAS_2024: (game: GameState) => {
-    if (Date.now() > new Date("2024-12-28").getTime()) {
-      return false;
-    }
-
-    if (Date.now() > new Date("2024-12-12").getTime()) {
-      return true;
-    }
-
-    return defaultFeatureFlag(game);
-  },
-} satisfies Record<string, FeatureFlag>;
+};
 
 export type FeatureName = keyof typeof featureFlags;
 

@@ -31,7 +31,7 @@ import { secondsToString } from "lib/utils/time";
 import { getKeys } from "features/game/types/decorations";
 import { MapPlacement } from "./MapPlacement";
 import { hasFeatureAccess } from "lib/flags";
-import { NPCPlaceable } from "features/island/bumpkin/components/NPC";
+import { NPC } from "features/island/bumpkin/components/NPC";
 import { NPC_WEARABLES } from "lib/npcs";
 
 import levelUp from "assets/icons/level_up.png";
@@ -118,7 +118,7 @@ export const Richie: React.FC = () => {
           }}
         />
         <div className="absolute left-16 top-14 pointer-events-none">
-          <NPCPlaceable parts={NPC_WEARABLES.richie} />
+          <NPC parts={NPC_WEARABLES.richie} />
         </div>
       </MapPlacement>
       <Modal show={showModal} onHide={onClose}>

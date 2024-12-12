@@ -11,35 +11,23 @@ import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { OuterPanel } from "components/ui/Panel";
 import fishingLure from "assets/composters/fishing_lure.png";
 
-const host = window.location.host.replace(/^www\./, "");
-const LOCAL_STORAGE_KEY = `finn-read.${host}-${window.location.pathname}`;
-
-function acknowledgeIntroRead() {
-  localStorage.setItem(LOCAL_STORAGE_KEY, new Date().toString());
-}
-
-function hasReadIntro() {
-  return !!localStorage.getItem(LOCAL_STORAGE_KEY);
-}
-
 interface Props {
   onClose: () => void;
 }
 
 export const Finn: React.FC<Props> = ({ onClose }) => {
   const [tab, setTab] = useState(0);
-  const [showIntro, setShowIntro] = useState(!hasReadIntro());
+  const [confirmAction, setConfirmAction] = useState(false);
   const dialogue = npcDialogues.finn || defaultDialogue;
   const intro = useRandomItem(dialogue.intro);
   const { t } = useAppTranslation();
 
-  const handleIntro = (tab: number) => {
-    setShowIntro(false);
-    acknowledgeIntroRead();
+  const handleConfirm = (tab: number) => {
+    setConfirmAction(true);
     setTab(tab);
   };
 
-  if (showIntro) {
+  if (!confirmAction) {
     return (
       <SpeakingModal
         onClose={onClose}
@@ -49,12 +37,12 @@ export const Finn: React.FC<Props> = ({ onClose }) => {
             text: intro,
             actions: [
               {
-                text: t("buy"),
-                cb: () => handleIntro(1),
+                text: t("delivery"),
+                cb: () => handleConfirm(0),
               },
               {
-                text: t("delivery"),
-                cb: () => handleIntro(0),
+                text: t("buy"),
+                cb: () => handleConfirm(1),
               },
             ],
           },

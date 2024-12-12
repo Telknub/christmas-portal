@@ -81,7 +81,6 @@ export type StockableName = Extract<
   | "Radish Seed"
   | "Wheat Seed"
   | "Kale Seed"
-  | "Barley Seed"
   | "Grape Seed"
   | "Olive Seed"
   | "Rice Seed"
@@ -107,8 +106,8 @@ export const INITIAL_STOCK = (
     "Stone Pickaxe": new Decimal(20),
     "Iron Pickaxe": new Decimal(5),
     "Gold Pickaxe": new Decimal(5),
-    Rod: new Decimal(50),
     "Oil Drill": new Decimal(5),
+    Rod: new Decimal(50),
   };
 
   // increase in 50% tool stock if you have a toolshed
@@ -119,9 +118,9 @@ export const INITIAL_STOCK = (
     );
   }
 
-  // increase Axe stock by 50 if player has More Axes skill
+  // increase Axe stock by 20% if player has More Axes skill
   if (state?.bumpkin?.skills["More Axes"]) {
-    tools.Axe = new Decimal(Math.ceil(tools.Axe.toNumber() + 50));
+    tools.Axe = new Decimal(Math.ceil(tools.Axe.toNumber() * 1.2));
   }
 
   if (state?.bumpkin?.skills["More Picks"]) {
@@ -177,11 +176,11 @@ export const INITIAL_STOCK = (
   return {
     // Tools
     ...tools,
+    // Seeds
+    ...seeds,
 
     "Sand Shovel": new Decimal(50),
     "Sand Drill": new Decimal(10),
-    // Seeds
-    ...seeds,
   };
 };
 
@@ -220,19 +219,15 @@ export const INVENTORY_LIMIT = (state?: GameState): Inventory => {
   };
 
   if (
-    state?.buildings["Warehouse"] &&
-    isBuildingReady(state?.buildings["Warehouse"])
+    state?.buildings.Warehouse &&
+    isBuildingReady(state.buildings.Warehouse)
   ) {
-    // Multiply each seed quantity by 1.2 and round up
-    getKeys(seeds).forEach(
-      (seed) =>
-        (seeds[seed] = new Decimal(Math.ceil(seeds[seed].mul(1.2).toNumber()))),
-    );
-  }
-
-  if (state?.bumpkin.skills["Crime Fruit"]) {
-    seeds["Tomato Seed"] = seeds["Tomato Seed"].add(10);
-    seeds["Lemon Seed"] = seeds["Lemon Seed"].add(10);
+    // Multiply each seed quantity by 1.2
+    for (const seed in seeds) {
+      seeds[seed as keyof typeof seeds] = new Decimal(
+        Math.ceil(seeds[seed as keyof typeof seeds].toNumber() * 1.2),
+      );
+    }
   }
 
   return seeds;

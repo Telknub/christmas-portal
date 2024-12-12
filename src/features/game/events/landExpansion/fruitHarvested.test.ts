@@ -1,9 +1,5 @@
 import Decimal from "decimal.js-light";
-import {
-  INITIAL_BUMPKIN,
-  INITIAL_FARM,
-  TEST_FARM,
-} from "features/game/lib/constants";
+import { INITIAL_BUMPKIN, TEST_FARM } from "features/game/lib/constants";
 import { PATCH_FRUIT, PATCH_FRUIT_SEEDS } from "features/game/types/fruits";
 import { GameState, FruitPatch } from "features/game/types/game";
 import {
@@ -890,6 +886,40 @@ describe("fruitHarvested", () => {
       });
     });
 
+    it("gives +.1 Tomato & Lemon yield with Red Sour skill", () => {
+      const amount = getFruitYield({
+        game: {
+          ...TEST_FARM,
+          bumpkin: {
+            ...TEST_FARM.bumpkin,
+            skills: {
+              "Red Sour": 1,
+            },
+          },
+        },
+        name: "Tomato",
+      });
+
+      expect(amount).toEqual(1.1);
+    });
+
+    it("does not give Red Sour skill bonus if not a Tomato or Lemon", () => {
+      const amount = getFruitYield({
+        game: {
+          ...TEST_FARM,
+          bumpkin: {
+            ...TEST_FARM.bumpkin,
+            skills: {
+              "Red Sour": 1,
+            },
+          },
+        },
+        name: "Blueberry",
+      });
+
+      expect(amount).toEqual(1);
+    });
+
     it("gives +.1 basic fruit yield with Fruitful Fumble skill", () => {
       const amount = getFruitYield({
         game: {
@@ -906,19 +936,33 @@ describe("fruitHarvested", () => {
 
       expect(amount).toEqual(1.1);
     });
-    it("give +0.1 fruit yield when macaw is placed", () => {
+
+    it("does not give Fruitful Fumble skill bonus if not a basic fruit", () => {
       const amount = getFruitYield({
         game: {
-          ...INITIAL_FARM,
-          collectibles: {
-            Macaw: [
-              {
-                coordinates: { x: 1, y: 1 },
-                createdAt: 0,
-                id: "123",
-                readyAt: 0,
-              },
-            ],
+          ...TEST_FARM,
+          bumpkin: {
+            ...TEST_FARM.bumpkin,
+            skills: {
+              "Fruitful Fumble": 1,
+            },
+          },
+        },
+        name: "Apple",
+      });
+
+      expect(amount).toEqual(1);
+    });
+
+    it("gives +.1 advanced fruit yield with Tropical Orchard skill", () => {
+      const amount = getFruitYield({
+        game: {
+          ...TEST_FARM,
+          bumpkin: {
+            ...TEST_FARM.bumpkin,
+            skills: {
+              "Tropical Orchard": 1,
+            },
           },
         },
         name: "Apple",
@@ -926,29 +970,22 @@ describe("fruitHarvested", () => {
 
       expect(amount).toEqual(1.1);
     });
-    it("gives +0.2 fruit yield when macaw is placed AND has Loyal Macaw Skill", () => {
+
+    it("does not give Tropical Orchard skill bonus if not a basic fruit", () => {
       const amount = getFruitYield({
         game: {
-          ...INITIAL_FARM,
+          ...TEST_FARM,
           bumpkin: {
-            ...INITIAL_FARM.bumpkin,
-            skills: { "Loyal Macaw": 1 },
-          },
-          collectibles: {
-            Macaw: [
-              {
-                coordinates: { x: 1, y: 1 },
-                createdAt: 0,
-                id: "123",
-                readyAt: 0,
-              },
-            ],
+            ...TEST_FARM.bumpkin,
+            skills: {
+              "Tropical Orchard": 1,
+            },
           },
         },
-        name: "Apple",
+        name: "Blueberry",
       });
 
-      expect(amount).toEqual(1.2);
+      expect(amount).toEqual(1);
     });
   });
 });

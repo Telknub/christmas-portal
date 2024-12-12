@@ -118,7 +118,11 @@ export const Basket: React.FC<Prop> = ({ gameState, selected, onSelect }) => {
     }
 
     if (isPatchFruitSeed(seedName)) {
-      return getFruitPatchTime(seedName, gameState);
+      return getFruitPatchTime(
+        seedName,
+        gameState,
+        (gameState.bumpkin as Bumpkin)?.equipped ?? {},
+      );
     }
     if (seedName in GREENHOUSE_SEEDS || seedName in GREENHOUSE_FRUIT_SEEDS()) {
       const plant = SEED_TO_PLANT[seedName as GreenHouseCropSeedName];

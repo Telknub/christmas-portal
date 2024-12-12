@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 
 import * as Auth from "features/auth/lib/Provider";

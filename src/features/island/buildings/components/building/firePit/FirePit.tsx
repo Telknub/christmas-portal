@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import classNames from "classnames";
 import { FirePitModal } from "./FirePitModal";
@@ -11,6 +11,7 @@ import { BuildingImageWrapper } from "../BuildingImageWrapper";
 import { setImageWidth } from "lib/images";
 import { Context } from "features/game/GameProvider";
 import { useSelector } from "@xstate/react";
+import { bakeryAudio, loadAudio } from "lib/utils/sfx";
 import { gameAnalytics } from "lib/gameAnalytics";
 
 import { SUNNYSIDE } from "assets/sunnyside";
@@ -18,7 +19,6 @@ import { FIRE_PIT_VARIANTS } from "features/island/lib/alternateArt";
 import shadow from "assets/npcs/shadow.png";
 import { MachineState } from "features/game/lib/gameMachine";
 import Decimal from "decimal.js-light";
-import { useSound } from "lib/utils/hooks/useSound";
 
 type Props = BuildingProps & Partial<CraftingMachineChildProps>;
 
@@ -48,7 +48,9 @@ export const FirePit: React.FC<Props> = ({
   const experience = useSelector(gameService, _experience);
   const potatoCount = useSelector(gameService, _potatoCount);
 
-  const { play: bakeryAudio } = useSound("bakery");
+  useEffect(() => {
+    loadAudio([bakeryAudio]);
+  }, []);
 
   const handleCook = (item: CookableName) => {
     craftingService?.send({
@@ -84,7 +86,7 @@ export const FirePit: React.FC<Props> = ({
     if (isBuilt) {
       // Add future on click actions here
       if (idle || crafting) {
-        bakeryAudio();
+        bakeryAudio.play();
         setShowModal(true);
         return;
       }

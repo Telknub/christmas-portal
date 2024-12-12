@@ -27,7 +27,6 @@ import { ItemsList } from "./components/ItemList";
 import { CONSUMABLES, FACTION_FOOD } from "features/game/types/consumables";
 import { Context } from "features/game/GameProvider";
 import { useActor } from "@xstate/react";
-import { GameState } from "features/game/types/game";
 
 interface Props {
   onClose: () => void;
@@ -70,7 +69,6 @@ export const getItemImage = (item: FactionShopItem | null): string => {
 
 export const getItemBuffLabel = (
   item: FactionShopItem | null,
-  state: GameState,
 ): BuffLabel | undefined => {
   if (!item) return;
 
@@ -85,7 +83,7 @@ export const getItemBuffLabel = (
     return BUMPKIN_ITEM_BUFF_LABELS[item.name];
   }
 
-  return COLLECTIBLE_BUFF_LABELS(state)[item.name];
+  return COLLECTIBLE_BUFF_LABELS[item.name];
 };
 
 export const FactionShop: React.FC<Props> = ({ onClose }) => {
@@ -175,7 +173,7 @@ export const FactionShop: React.FC<Props> = ({ onClose }) => {
             isVisible={isVisible}
             item={selectedItem}
             image={getItemImage(selectedItem)}
-            buff={getItemBuffLabel(selectedItem, state)}
+            buff={getItemBuffLabel(selectedItem)}
             isWearable={selectedItem ? isWearablesItem(selectedItem) : false}
             onClose={() => setSelectedItem(null)}
           />

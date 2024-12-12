@@ -36,12 +36,6 @@ type Response = {
   discordId?: string;
   fslId?: string;
   oauthNonce: string;
-  prices: {
-    sfl: {
-      usd: number;
-      timestamp: number;
-    };
-  };
 };
 
 const API_URL = CONFIG.API_URL;
@@ -113,7 +107,6 @@ export async function loadSession(request: Request): Promise<Response> {
     discordId,
     fslId,
     oauthNonce,
-    prices,
   } = await sanitizeHTTPResponse<{
     farm: any;
     startedAt: string;
@@ -135,12 +128,6 @@ export async function loadSession(request: Request): Promise<Response> {
     discordId?: string;
     fslId?: string;
     oauthNonce: string;
-    prices: {
-      sfl: {
-        usd: number;
-        timestamp: number;
-      };
-    };
   }>(response);
 
   saveSession(farm.id);
@@ -164,7 +151,6 @@ export async function loadSession(request: Request): Promise<Response> {
     fslId,
     discordId,
     oauthNonce,
-    prices,
   };
 }
 

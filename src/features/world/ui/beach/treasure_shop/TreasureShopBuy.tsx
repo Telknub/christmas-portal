@@ -10,6 +10,7 @@ import { getKeys } from "features/game/types/decorations";
 import { ITEM_DETAILS } from "features/game/types/images";
 import { TREASURE_TOOLS, TreasureToolName } from "features/game/types/tools";
 import { makeBulkBuyTools } from "features/island/buildings/components/building/market/lib/makeBulkBuyAmount";
+import { Restock } from "features/island/buildings/components/building/market/Restock";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import {
   TREASURE_COLLECTIBLE_ITEM,
@@ -33,7 +34,6 @@ import lightning from "assets/icons/lightning.png";
 import { getToolPrice } from "features/game/events/landExpansion/craftTool";
 import { Keys } from "features/game/types/game";
 import { isMobile } from "mobile-device-detect";
-import { Restock } from "features/island/buildings/components/building/market/restock/Restock";
 
 interface ToolContentProps {
   selectedName: TreasureToolName;
@@ -88,7 +88,7 @@ const ToolContent: React.FC<ToolContentProps> = ({ selectedName }) => {
       actionView={
         <>
           {stock.equals(0) ? (
-            <Restock npc={"jafar"} />
+            <Restock />
           ) : (
             <div className="flex space-x-1 sm:space-x-0 sm:space-y-1 sm:flex-col w-full">
               <Button
@@ -150,8 +150,7 @@ const CollectibleContent: React.FC<CollectibleContentProps> = ({
       selected.ingredients[name]?.greaterThan(inventory[name] || 0),
     );
   const isAlreadyCrafted = inventory[selectedName]?.greaterThanOrEqualTo(1);
-  const isBoost =
-    COLLECTIBLE_BUFF_LABELS(state)[selectedName]?.shortDescription;
+  const isBoost = COLLECTIBLE_BUFF_LABELS[selectedName]?.shortDescription;
 
   const craft = () => {
     gameService.send("collectible.crafted", {
@@ -397,7 +396,7 @@ export const TreasureShopBuy: React.FC = () => {
                 isSelected={selectedName === name}
                 secondaryImage={SUNNYSIDE.icons.stopwatch}
                 alternateIcon={
-                  COLLECTIBLE_BUFF_LABELS(state)[name] ? lightning : undefined
+                  COLLECTIBLE_BUFF_LABELS[name] ? lightning : undefined
                 }
                 key={name}
                 onClick={() => setSelectedName(name)}
@@ -411,7 +410,7 @@ export const TreasureShopBuy: React.FC = () => {
                   isSelected={selectedName === name}
                   key={name}
                   alternateIcon={
-                    COLLECTIBLE_BUFF_LABELS(state)[name] ? lightning : undefined
+                    COLLECTIBLE_BUFF_LABELS[name] ? lightning : undefined
                   }
                   onClick={() => setSelectedName(name)}
                   count={inventory[name]}
@@ -459,7 +458,7 @@ export const TreasureShopBuy: React.FC = () => {
                   isSelected={selectedName === name}
                   key={name}
                   alternateIcon={
-                    COLLECTIBLE_BUFF_LABELS(state)[name] ? lightning : undefined
+                    COLLECTIBLE_BUFF_LABELS[name] ? lightning : undefined
                   }
                   onClick={() => setSelectedName(name)}
                   count={inventory[name]}

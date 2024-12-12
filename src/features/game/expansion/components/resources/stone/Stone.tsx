@@ -4,6 +4,7 @@ import { STONE_RECOVERY_TIME } from "features/game/lib/constants";
 import { Context } from "features/game/GameProvider";
 
 import { getTimeLeft } from "lib/utils/time";
+import { loadAudio, miningFallAudio } from "lib/utils/sfx";
 import { InventoryItemName, Rock } from "features/game/types/game";
 import useUiRefresher from "lib/utils/hooks/useUiRefresher";
 import { useActor, useSelector } from "@xstate/react";
@@ -14,7 +15,6 @@ import { DepletingStone } from "./components/DepletingStone";
 import { RecoveredStone } from "./components/RecoveredStone";
 import { canMine } from "features/game/expansion/lib/utils";
 import { getBumpkinLevel } from "features/game/lib/level";
-import { useSound } from "lib/utils/hooks/useSound";
 
 const HITS = 3;
 const tool = "Pickaxe";
@@ -52,7 +52,9 @@ export const Stone: React.FC<Props> = ({ id, index }) => {
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  const { play: miningFallAudio } = useSound("mining_fall");
+  useEffect(() => {
+    loadAudio([miningFallAudio]);
+  }, []);
 
   // Reset the touch count when clicking outside of the component
   useEffect(() => {
@@ -118,7 +120,7 @@ export const Stone: React.FC<Props> = ({ id, index }) => {
         setCollectedAmount(resource.stone.amount);
       }
 
-      miningFallAudio();
+      miningFallAudio.play();
 
       if (showAnimations) {
         await new Promise((res) => setTimeout(res, 3000));

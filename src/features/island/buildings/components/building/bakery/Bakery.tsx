@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 
 import { SUNNYSIDE } from "assets/sunnyside";
@@ -12,8 +12,8 @@ import { BakeryModal } from "./BakeryModal";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { BuildingImageWrapper } from "../BuildingImageWrapper";
 import { setImageWidth } from "lib/images";
+import { bakeryAudio, loadAudio } from "lib/utils/sfx";
 import { BAKERY_VARIANTS } from "features/island/lib/alternateArt";
-import { useSound } from "lib/utils/hooks/useSound";
 
 type Props = BuildingProps & Partial<CraftingMachineChildProps>;
 
@@ -30,7 +30,9 @@ export const Bakery: React.FC<Props> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const { play: bakeryAudio } = useSound("bakery");
+  useEffect(() => {
+    loadAudio([bakeryAudio]);
+  }, []);
 
   const handleCook = (item: CookableName) => {
     craftingService?.send({
@@ -60,7 +62,7 @@ export const Bakery: React.FC<Props> = ({
     if (isBuilt) {
       // Add future on click actions here
       if (idle || crafting) {
-        bakeryAudio();
+        bakeryAudio.play();
         setShowModal(true);
         return;
       }

@@ -22,7 +22,6 @@ import classNames from "classnames";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { SpringValue } from "@react-spring/web";
 import { useSound } from "lib/utils/hooks/useSound";
-import { hasFeatureAccess } from "lib/flags";
 
 const DIMENSIONS = {
   original: 80,
@@ -222,9 +221,7 @@ export const BumpkinProfile: React.FC<{
 
   const handleShowHomeModal = () => {
     profile.play();
-    setViewSkillsPage(
-      !hasFeatureAccess(state, "SKILLS_REVAMP") ? showSkillPointAlert : false,
-    );
+    setViewSkillsPage(showSkillPointAlert);
     setShowModal(true);
     if (showSkillPointAlert) {
       acknowledgeSkillPoints(state.bumpkin);

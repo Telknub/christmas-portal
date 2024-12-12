@@ -3,7 +3,6 @@ import {
   BumpkinSkillRevamp,
   BumpkinRevampSkillTree,
   createRevampSkillPath,
-  BumpkinRevampSkillName,
 } from "features/game/types/bumpkinSkills";
 import { useActor } from "@xstate/react";
 import { Context } from "features/game/GameProvider";
@@ -18,16 +17,11 @@ import { SquareIcon } from "components/ui/SquareIcon";
 import { ConfirmationModal } from "components/ui/ConfirmationModal";
 
 // Function imports
-import {
-  getAvailableBumpkinSkillPoints,
-  getUnlockedTierForTree,
-} from "features/game/events/landExpansion/choseSkill";
+import { getAvailableBumpkinSkillPoints } from "features/game/events/landExpansion/choseSkill";
 import { gameAnalytics } from "lib/gameAnalytics";
 
 // Icon imports
 import { SUNNYSIDE } from "assets/sunnyside";
-import { useAppTranslation } from "lib/i18n/useAppTranslations";
-import { isMobile } from "mobile-device-detect";
 
 interface Props {
   selectedSkillPath: BumpkinRevampSkillTree;
@@ -42,7 +36,6 @@ export const SkillPathDetails: React.FC<Props> = ({
   readonly,
   onBack,
 }) => {
-  const { t } = useAppTranslation();
   const { gameService } = useContext(Context);
   const [gameState] = useActor(gameService);
   const {
@@ -58,13 +51,16 @@ export const SkillPathDetails: React.FC<Props> = ({
 
   // Functions
   const availableSkillPoints = getAvailableBumpkinSkillPoints(bumpkin);
-  const availableTier = getUnlockedTierForTree(selectedSkill.tree, bumpkin);
-  const hasSelectedSkill =
-    !!bumpkin?.skills[selectedSkill.name as BumpkinRevampSkillName];
+  const hasSelectedSkill = !!bumpkin?.skills[selectedSkill.name];
+  const claimedSkillsFromPath = Object.keys(bumpkin?.skills || {}).filter(
+    (skill) => {
+      return skillsInPath.find((pathSkill) => pathSkill.name === skill);
+    },
+  );
   const missingPointRequirement =
     selectedSkill.requirements.points > availableSkillPoints;
   const missingSkillsRequirement =
-    selectedSkill.requirements.tier > availableTier;
+    selectedSkill.requirements.skill > claimedSkillsFromPath.length;
 
   // Claim
   const handleClaim = () => {
@@ -85,9 +81,24 @@ export const SkillPathDetails: React.FC<Props> = ({
     }
   };
 
+  const confirmationModal: React.ReactNode = (
+    <ConfirmationModal
+      show={showConfirmationModal}
+      onHide={() => setShowConfirmationModal(false)}
+      messages={[
+        `Are you sure you want to claim ${selectedSkill.name}?`,
+        `This will cost ${selectedSkill.requirements.points} skill points.`,
+      ]}
+      onCancel={() => setShowConfirmationModal(false)}
+      onConfirm={handleClaim}
+      confirmButtonLabel="Claim Skill"
+      disabled={missingPointRequirement || missingSkillsRequirement}
+    />
+  );
+
   const renderSkillTier = (skills: BumpkinSkillRevamp[]) => {
     return skills.map((skill) => {
-      const hasSkill = !!bumpkin?.skills[skill.name as BumpkinRevampSkillName];
+      const hasSkill = !!bumpkin?.skills[skill.name];
 
       return (
         <Box
@@ -122,18 +133,6 @@ export const SkillPathDetails: React.FC<Props> = ({
           {/* Header */}
           <div className="flex flex-col h-full px-1 py-0">
             <div className="flex space-x-2 justify-start items-center sm:flex-col-reverse md:space-x-0 sm:py-0 py-2">
-              {isMobile && (
-                <img
-                  src={SUNNYSIDE.icons.arrow_left}
-                  className="cursor-pointer"
-                  alt="back"
-                  style={{
-                    width: `${PIXEL_SCALE * 11}px`,
-                    marginRight: `${PIXEL_SCALE * 1}px`,
-                  }}
-                  onClick={onBack}
-                />
-              )}
               <div className="sm:mt-2">
                 <SquareIcon icon={selectedSkill.image} width={14} />
               </div>
@@ -169,21 +168,19 @@ export const SkillPathDetails: React.FC<Props> = ({
                 {"Claimed"}
               </Button>
             )}
+
+            {hasSelectedSkill && selectedSkill.power && (
+              <Button
+                disabled={true}
+                onClick={() => setShowConfirmationModal(true)}
+              >
+                {"Use"}
+              </Button>
+            )}
           </div>
 
           {/* Confirmation Modal */}
-          <ConfirmationModal
-            show={showConfirmationModal}
-            onHide={() => setShowConfirmationModal(false)}
-            messages={[
-              `Are you sure you want to claim ${selectedSkill.name}?`,
-              `This will cost ${selectedSkill.requirements.points} skill points.`,
-            ]}
-            onCancel={() => setShowConfirmationModal(false)}
-            onConfirm={handleClaim}
-            confirmButtonLabel="Claim Skill"
-            disabled={missingPointRequirement || missingSkillsRequirement}
-          />
+          {confirmationModal}
         </div>
       }
       content={
@@ -193,40 +190,48 @@ export const SkillPathDetails: React.FC<Props> = ({
             className="flex flex-row my-2 items-center"
             style={{ margin: `${PIXEL_SCALE * 2}px` }}
           >
-            {!isMobile && (
-              <img
-                src={SUNNYSIDE.icons.arrow_left}
-                className="cursor-pointer"
-                alt="back"
-                style={{
-                  width: `${PIXEL_SCALE * 11}px`,
-                  marginRight: `${PIXEL_SCALE * 4}px`,
-                }}
-                onClick={onBack}
-              />
-            )}
+            <img
+              src={SUNNYSIDE.icons.arrow_left}
+              className="cursor-pointer"
+              alt="back"
+              style={{
+                width: `${PIXEL_SCALE * 11}px`,
+                marginRight: `${PIXEL_SCALE * 4}px`,
+              }}
+              onClick={onBack}
+            />
             <Label type="default">{selectedSkillPath + " Skills"}</Label>
-            <Label type="default" className="ml-1">
-              {`${t("skillPts")} ${availableSkillPoints}`}
-            </Label>
           </div>
 
           {/* Skills */}
           {Object.entries(createRevampSkillPath(skillsInPath)).map(
             ([tier, skills]) => {
-              const requirements = skills[0].requirements.tier;
-              const tierUnlocked = requirements <= availableTier;
+              const requirements = skills[0].requirements.skill;
+              const tierUnlocked = requirements <= claimedSkillsFromPath.length;
 
               return (
                 <div key={tier} className="flex flex-col">
-                  <Label
-                    type={tierUnlocked ? "default" : "warning"}
-                    className={tierUnlocked ? "ml-1" : "ml-2"}
-                    icon={tierUnlocked ? undefined : SUNNYSIDE.icons.lock}
-                  >
-                    {`Tier ${tier}`}
-                  </Label>
-
+                  {requirements !== 0 && !tierUnlocked && (
+                    <Label
+                      type="warning"
+                      icon={SUNNYSIDE.icons.lock}
+                      className="ml-2"
+                    >
+                      {requirements +
+                        " " +
+                        selectedSkillPath +
+                        " Skills Required"}
+                    </Label>
+                  )}
+                  {requirements !== 0 && tierUnlocked && (
+                    <Label
+                      type="default"
+                      icon={SUNNYSIDE.icons.confirm}
+                      className="ml-2"
+                    >
+                      {`Tier ${tier} unlocked`}
+                    </Label>
+                  )}
                   <div className="flex flex-wrap mb-2">
                     {renderSkillTier(skills)}
                   </div>

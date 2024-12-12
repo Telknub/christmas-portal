@@ -57,10 +57,6 @@ export const getFlowerTime = (seed: FlowerSeedName, game: GameState) => {
     seconds *= 0.8;
   }
 
-  if (bumpkin.skills["Flowery Abode"]) {
-    seconds *= 1.5;
-  }
-
   return seconds;
 };
 

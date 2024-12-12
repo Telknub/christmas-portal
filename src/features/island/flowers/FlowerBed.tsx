@@ -12,7 +12,6 @@ import {
   FLOWER_LIFECYCLE,
   FLOWER_SEEDS,
   FlowerName,
-  FlowerGrowthStage,
 } from "features/game/types/flowers";
 import { TimerPopover } from "../common/TimerPopover";
 import { ITEM_DETAILS } from "features/game/types/images";
@@ -63,23 +62,6 @@ const FlowerCongratulations: React.FC<{ flowerName: FlowerName }> = ({
     ))}
   </div>
 );
-
-const getGrowthStage = (
-  growPercentage: number,
-  dirty: boolean,
-): FlowerGrowthStage => {
-  // It's possible with boosts that the initial growth stage is not sprout.
-  // Always render a sprout if the flower is dirt (i.e. data not from backend).
-  if (dirty) return "sprout";
-
-  return growPercentage >= 100
-    ? "ready"
-    : growPercentage >= 66
-      ? "almost"
-      : growPercentage >= 44
-        ? "halfway"
-        : "sprout";
-};
 
 export const FlowerBed: React.FC<Props> = ({ id }) => {
   const { t } = useAppTranslation();
@@ -135,7 +117,16 @@ export const FlowerBed: React.FC<Props> = ({ id }) => {
 
   const isGrowing = timeLeft > 0;
 
-  const stage = getGrowthStage(growPercentage, !!flower.dirty);
+  const stage =
+    growPercentage >= 100
+      ? "ready"
+      : growPercentage >= 66
+        ? "almost"
+        : growPercentage >= 44
+          ? "halfway"
+          : growPercentage >= 22
+            ? "sprout"
+            : "seedling";
 
   const hasHarvestedBefore = !!farmActivity[`${flower.name} Harvested`];
   const reward = flower.reward;
@@ -261,7 +252,7 @@ export const FlowerBed: React.FC<Props> = ({ id }) => {
                     {t("reward")}
                   </Label>
                   {(reward.items ?? []).map((item) => {
-                    const boost = COLLECTIBLE_BUFF_LABELS(state)[item.name];
+                    const boost = COLLECTIBLE_BUFF_LABELS[item.name];
 
                     return (
                       <>

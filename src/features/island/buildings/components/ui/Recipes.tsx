@@ -24,20 +24,18 @@ import {
   getCookingTime,
   getFoodExpBoost,
 } from "features/game/expansion/lib/boosts";
-import { GameState } from "features/game/types/game";
+import { Bumpkin, GameState } from "features/game/types/game";
 import { SplitScreenView } from "components/ui/SplitScreenView";
 import { CraftingRequirements } from "components/ui/layouts/CraftingRequirements";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import {
   FLAGGED_RECIPES,
   getCookingOilBoost,
-  getCookingRequirements,
 } from "features/game/events/landExpansion/cook";
 import { FeatureName, hasFeatureAccess } from "lib/flags";
 import { BuildingName } from "features/game/types/buildings";
 import { BuildingOilTank } from "../building/BuildingOilTank";
 import pumpkinSoup from "assets/food/pumpkin_soup.png";
-import powerup from "assets/icons/level_up.png";
 import { InnerPanel } from "components/ui/Panel";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { ResizableBar } from "components/ui/ProgressBar";
@@ -89,7 +87,7 @@ export const Recipes: React.FC<Props> = ({
       context: { state },
     },
   ] = useActor(gameService);
-  const { inventory, buildings, bumpkin, buds } = state;
+  const inventory = state.inventory;
 
   const [hideCooking, setHideCooking] = useState(false);
 
@@ -145,9 +143,8 @@ export const Recipes: React.FC<Props> = ({
     );
   });
 
-  const isOilBoosted = buildings?.[buildingName]?.[0].crafting?.boost?.["Oil"];
-
-  const hasDoubleNom = !!bumpkin.skills["Double Nom"];
+  const isOilBoosted =
+    state.buildings?.[buildingName]?.[0].crafting?.boost?.["Oil"];
 
   const hasGemExperiment = hasFeatureAccess(state, "GEM_BOOSTS");
 
@@ -174,24 +171,24 @@ export const Recipes: React.FC<Props> = ({
             }}
             hideDescription
             requirements={{
-              resources: getCookingRequirements({ state, item: selected.name }),
+              resources: selected.ingredients,
               xp: new Decimal(
-                getFoodExpBoost(selected, bumpkin, state, buds ?? {}),
+                getFoodExpBoost(
+                  selected,
+                  state.bumpkin as Bumpkin,
+                  state,
+                  state.buds ?? {},
+                ),
               ),
               timeSeconds: getCookingTime(
                 getCookingOilBoost(selected.name, state, buildingId).timeToCook,
                 selected.name,
-                bumpkin,
+                state.bumpkin,
                 state,
               ),
             }}
             actionView={
               <>
-                {hasDoubleNom && (
-                  <Label type="info" icon={powerup}>
-                    {`Double Nom Boost: 2x Food`}
-                  </Label>
-                )}
                 <Button
                   disabled={lessIngredients() || crafting || selected.disabled}
                   className="text-xxs sm:text-sm mt-1 whitespace-nowrap"
@@ -244,6 +241,7 @@ export const Recipes: React.FC<Props> = ({
             <BuildingOilTank
               buildingName={buildingName}
               buildingId={buildingId}
+              currentlyCooking={currentlyCooking}
             />
           ) : null}
         </>
@@ -265,8 +263,6 @@ export const Cooking: React.FC<{
       context: { secondsTillReady, readyAt, buildingId },
     },
   ] = useActor(craftingService);
-
-  const { bumpkin, buds, inventory } = state;
 
   const { cookingSeconds } = COOKABLES[name];
 
@@ -296,7 +292,12 @@ export const Cooking: React.FC<{
             <div className="flex items-center">
               <img src={xpIcon} className="h-4 mr-0.5" />
               <p className="text-xs">
-                {getFoodExpBoost(CONSUMABLES[name], bumpkin, state, buds ?? {})}
+                {getFoodExpBoost(
+                  CONSUMABLES[name],
+                  state.bumpkin,
+                  state,
+                  state.buds ?? {},
+                )}
               </p>
             </div>
           </div>
@@ -312,13 +313,13 @@ export const Cooking: React.FC<{
         </div>
       </div>
       <Button
-        disabled={!inventory.Gem?.gte(gems)}
+        disabled={!state.inventory.Gem?.gte(gems)}
         className="relative"
         onClick={() => onInstantCooked(gems)}
       >
         {t("gems.speedUp")}
         <Label
-          type={inventory.Gem?.gte(gems) ? "default" : "danger"}
+          type={state.inventory.Gem?.gte(gems) ? "default" : "danger"}
           icon={ITEM_DETAILS.Gem.image}
           className="flex absolute right-0 top-0.5"
         >

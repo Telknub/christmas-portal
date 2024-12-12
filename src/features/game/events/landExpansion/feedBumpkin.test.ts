@@ -429,7 +429,7 @@ describe("feedBumpkin", () => {
       CONSUMABLES["Fermented Carrots"].experience * 2,
     );
   });
-  it("provides 10% more experience when Seasonal Banner is in inventory", () => {
+  it("provides 10% more experience when Seasonal Banner is placed", () => {
     const result = feedBumpkin({
       state: {
         ...TEST_FARM,
@@ -438,7 +438,16 @@ describe("feedBumpkin", () => {
         },
         inventory: {
           "Boiled Eggs": new Decimal(2),
-          [getSeasonalBanner()]: new Decimal(1),
+        },
+        collectibles: {
+          [getSeasonalBanner()]: [
+            {
+              coordinates: { x: 0, y: 0 },
+              createdAt: 0,
+              id: "123",
+              readyAt: 0,
+            },
+          ],
         },
       },
       action: {
@@ -453,7 +462,7 @@ describe("feedBumpkin", () => {
     );
   });
 
-  it("provides 10% more experience when Lifetime Farmer Banner is in inventory", () => {
+  it("provides 10% more experience when Lifetime Farmer Banner is placed", () => {
     const result = feedBumpkin({
       state: {
         ...TEST_FARM,
@@ -462,7 +471,16 @@ describe("feedBumpkin", () => {
         },
         inventory: {
           "Boiled Eggs": new Decimal(2),
-          "Lifetime Farmer Banner": new Decimal(1),
+        },
+        collectibles: {
+          "Lifetime Farmer Banner": [
+            {
+              coordinates: { x: 0, y: 0 },
+              createdAt: 0,
+              id: "123",
+              readyAt: 0,
+            },
+          ],
         },
       },
       action: {

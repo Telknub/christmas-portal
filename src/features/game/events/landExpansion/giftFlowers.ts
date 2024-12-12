@@ -20,10 +20,7 @@ type Options = {
   createdAt?: number;
 };
 
-export const calculateRelationshipPoints = (
-  points: number,
-  game: GameState,
-) => {
+const calculateRelationshipPoints = (points: number, game: GameState) => {
   const { bumpkin } = game;
 
   let total = points;

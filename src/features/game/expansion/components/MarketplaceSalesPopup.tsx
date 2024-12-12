@@ -11,13 +11,8 @@ import { Box } from "components/ui/Box";
 import trade from "assets/icons/trade.png";
 import token from "assets/icons/sfl.webp";
 import { formatNumber } from "lib/utils/formatNumber";
-import { InventoryItemName } from "features/game/types/game";
-import { tradeToId } from "features/marketplace/lib/offers";
-import { getTradeableDisplay } from "features/marketplace/lib/tradeables";
-import Decimal from "decimal.js-light";
-import { MARKETPLACE_TAX } from "features/game/types/marketplace";
-import { calculateTradePoints } from "features/game/events/landExpansion/addTradePoints";
 import { ITEM_DETAILS } from "features/game/types/images";
+import { InventoryItemName } from "features/game/types/game";
 
 /**
  * Display listings that have been fulfilled
@@ -33,7 +28,15 @@ export const MarketplaceSalesPopup: React.FC = () => {
     (id) => !!trades.listings?.[id].fulfilledAt,
   );
 
-  if (soldListingIds.length === 0) return null;
+  if (soldListingIds.length === 0) {
+    return (
+      <div>
+        <Button onClick={() => gameService.send("RESET")}>
+          {t("continue")}
+        </Button>
+      </div>
+    );
+  }
 
   const claimAll = () => {
     gameService.send("purchase.claimed", {
@@ -42,7 +45,6 @@ export const MarketplaceSalesPopup: React.FC = () => {
 
     if (soldListingIds.some((id) => trades.listings?.[id].signature)) {
       gameService.send("RESET");
-      return;
     }
 
     gameService.send("CLOSE");
@@ -61,23 +63,15 @@ export const MarketplaceSalesPopup: React.FC = () => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const listing = trades.listings![listingId];
           const itemName = getKeys(listing.items)[0];
-          const itemId = tradeToId({ details: listing });
-          const details = getTradeableDisplay({
-            id: itemId,
-            type: listing.collection,
-            state: state.context.state,
-          });
           const amount = listing.items[itemName as InventoryItemName];
-          const sfl = new Decimal(listing.sfl).mul(1 - MARKETPLACE_TAX);
-          const estTradePoints = calculateTradePoints({
-            sfl: listing.sfl,
-            points: !listing.signature ? 1 : 5,
-          }).multipliedPoints;
+          const sfl = listing.sfl;
           return (
             <div className="flex flex-col space-y-1" key={listingId}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center w-3/4 space-x-2">
-                  <Box image={details.image} />
+                  <Box
+                    image={ITEM_DETAILS[itemName as InventoryItemName].image}
+                  />
                   <div className="flex flex-col">
                     <div>
                       <p className="text-xs mt-0.5">{`${amount} x ${itemName}`}</p>
@@ -88,18 +82,6 @@ export const MarketplaceSalesPopup: React.FC = () => {
                       })} SFL`}</p>
                       <img src={token} className="w-4" />
                     </div>
-                    <div className="flex items-center">
-                      <span className="text-xs">
-                        {`${formatNumber(estTradePoints, {
-                          decimalPlaces: 2,
-                          showTrailingZeros: false,
-                        })} Trade Points`}
-                      </span>
-                      <img
-                        src={ITEM_DETAILS["Trade Point"].image}
-                        className="h-6 ml-1"
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
@@ -107,14 +89,7 @@ export const MarketplaceSalesPopup: React.FC = () => {
           );
         })}
       </div>
-      <div className="flex space-x-1">
-        <Button className="w-full" onClick={() => gameService.send("CLOSE")}>
-          {t("close")}
-        </Button>
-        <Button className="w-full" onClick={() => claimAll()}>
-          {t("claim")}
-        </Button>
-      </div>
+      <Button onClick={() => claimAll()}>{t("claim")}</Button>
     </>
   );
 };

@@ -1,25 +1,27 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 
 import Spritesheet, {
   SpriteSheetInstance,
 } from "components/animation/SpriteAnimator";
+import { burningSound, loadAudio } from "lib/utils/sfx";
 
 import wickerManFire from "assets/sfts/wicker_man_fire.png";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { ZoomContext } from "components/ZoomProvider";
-import { useSound } from "lib/utils/hooks/useSound";
 
 export const WickerMan: React.FC = () => {
   const { scale } = useContext(ZoomContext);
   const wickerManGif = useRef<SpriteSheetInstance>();
 
-  const { play: burningSound } = useSound("burning");
+  useEffect(() => {
+    loadAudio([burningSound]);
+  }, []);
 
   const burn = () => {
     const isPlaying = wickerManGif.current?.getInfo("isPlaying");
 
     if (!isPlaying) {
-      burningSound();
+      burningSound.play();
       wickerManGif.current?.goToAndPlay(0);
     }
   };

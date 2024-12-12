@@ -1,20 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Modal } from "components/ui/Modal";
 
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { HenHouseModal } from "./components/HenHouseModal";
 import { BuildingImageWrapper } from "../BuildingImageWrapper";
 import { BuildingProps } from "../Building";
+import { barnAudio, loadAudio } from "lib/utils/sfx";
 import { HEN_HOUSE_VARIANTS } from "features/island/lib/alternateArt";
 import { hasFeatureAccess } from "lib/flags";
 import { Context } from "features/game/GameProvider";
 import { MachineState } from "features/game/lib/gameMachine";
 import { GameState } from "features/game/types/game";
 import { useSelector } from "@xstate/react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { AnimalBuildingLevel } from "features/game/events/landExpansion/upgradeBuilding";
-import { useSound } from "lib/utils/hooks/useSound";
 
 const _betaInventory = (state: MachineState) => {
   const pass = state.context.state.inventory["Beta Pass"];
@@ -51,7 +51,7 @@ export const ChickenHouse: React.FC<BuildingProps> = ({
   onRemove,
   island,
 }) => {
-  const { gameService, showAnimations } = useContext(Context);
+  const { gameService } = useContext(Context);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -60,8 +60,9 @@ export const ChickenHouse: React.FC<BuildingProps> = ({
   const hasAwakeSickChickens = useSelector(gameService, _hasAwakeSickChickens);
   const chickensNeedLove = useSelector(gameService, _chickensNeedLove);
   const buildingLevel = useSelector(gameService, _buildingLevel);
-
-  const { play: barnAudio } = useSound("barn");
+  useEffect(() => {
+    loadAudio([barnAudio]);
+  }, []);
 
   const handleClick = () => {
     if (onRemove) {
@@ -71,7 +72,7 @@ export const ChickenHouse: React.FC<BuildingProps> = ({
 
     if (isBuilt) {
       // Add future on click actions here
-      barnAudio();
+      barnAudio.play();
 
       if (hasFeatureAccess(betaInventory, "ANIMAL_BUILDINGS")) {
         navigate("/hen-house");
@@ -93,10 +94,7 @@ export const ChickenHouse: React.FC<BuildingProps> = ({
         {(hasHungryChickens || chickensNeedLove || hasAwakeSickChickens) && (
           <img
             src={SUNNYSIDE.icons.expression_alerted}
-            className={
-              "absolute -top-2 left-1/2 transform -translate-x-1/2 z-20" +
-              (showAnimations ? " ready" : "")
-            }
+            className="absolute -top-2 ready left-1/2 transform -translate-x-1/2 z-20"
             style={{ width: `${PIXEL_SCALE * 4}px` }}
           />
         )}

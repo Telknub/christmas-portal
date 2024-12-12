@@ -28,73 +28,12 @@ import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { setImageWidth } from "lib/images";
 import { Loading } from "features/auth/components";
 import { ConfirmationModal } from "components/ui/ConfirmationModal";
-import {
-  getCompostAmount,
-  getReadyAt,
-} from "features/game/events/landExpansion/startComposter";
-import { isWearableActive } from "features/game/lib/wearables";
-import {
-  getSpeedUpCost,
-  getSpeedUpTime,
-} from "features/game/events/landExpansion/accelerateComposter";
-import { isCollectibleActive } from "features/game/lib/collectibleBuilt";
 
-const WORM_OUTPUT: Record<ComposterName, { min: number; max: number }> = {
-  "Compost Bin": { min: 2, max: 4 },
-  "Turbo Composter": { min: 2, max: 3 },
-  "Premium Composter": { min: 1, max: 3 },
+const WORM_OUTPUT: Record<ComposterName, string> = {
+  "Compost Bin": "2-4",
+  "Turbo Composter": "2-3",
+  "Premium Composter": "1-3",
 };
-
-function getWormOutput({
-  state,
-  building,
-}: {
-  state: GameState;
-  building: ComposterName;
-}) {
-  const { skills } = state.bumpkin;
-  let { min, max } = WORM_OUTPUT[building];
-  if (isWearableActive({ name: "Bucket O' Worms", game: state })) {
-    min += 1;
-    max += 1;
-  }
-
-  // +1 Worm if the player has Wormy Treat skill
-  if (skills["Wormy Treat"]) {
-    min += 1;
-    max += 1;
-  }
-
-  // +2 Bait if the player has Composting Overhaul skill
-  if (skills["Composting Overhaul"]) {
-    min += 2;
-    max += 2;
-  }
-
-  // -1 bait if player has More with less skill (in exchange for +10 fishing limit)
-  if (skills["More With Less"]) {
-    min -= 1;
-    max -= 1;
-  }
-
-  // -3 worms with Composting Revamp
-  if (skills["Composting Revamp"]) {
-    min -= 3;
-    max -= 3;
-  }
-
-  // If min/max somehow goes negative, show as 0
-  if (min < 0) {
-    min = 0;
-  }
-
-  if (max < 0) {
-    max = 0;
-  }
-
-  return { min, max };
-}
-
 export const COMPOSTER_IMAGES: Record<
   ComposterName,
   {
@@ -180,52 +119,27 @@ export const ComposterModal: React.FC<Props> = ({
   onBoost,
 }) => {
   const { gameService } = useContext(Context);
+  const [gameState] = useActor(gameService);
 
   const { t } = useAppTranslation();
 
   const [tab, setTab] = useState(0);
 
-  const [
-    {
-      context: { state },
-    },
-  ] = useActor(gameService);
+  const state = gameState.context.state;
 
-  const { inventory, bumpkin, buildings } = state;
-
-  const { produce, worm } = composterDetails[composterName];
-
-  const { resourceBoostMilliseconds } = getSpeedUpTime({
-    state,
-    composter: composterName,
-  });
-
-  const { resourceBoostRequirements } = getSpeedUpCost(state, composterName);
-
-  const { produceAmount } = getCompostAmount({
-    skills: bumpkin.skills,
-    building: composterName,
-  });
-
-  const { min, max } = getWormOutput({ state, building: composterName });
-  const { timeToFinishMilliseconds } = getReadyAt({
-    gameState: state,
-    composter: composterName,
-  });
+  const composterInfo = composterDetails[composterName];
 
   const composting = !!readyAt && readyAt > Date.now();
   const isReady = readyAt && readyAt < Date.now();
 
-  const produces = buildings[composterName]?.[0].producing?.items ?? {};
-  const requires = buildings[composterName]?.[0].requires ?? {};
-  const boost = buildings[composterName]?.[0].boost;
-
-  const boostResource = bumpkin.skills["Feathery Business"] ? "Feather" : "Egg";
+  const produces = state.buildings[composterName]?.[0].producing?.items ?? {};
+  const requires = state.buildings[composterName]?.[0].requires ?? {};
+  const boost = state.buildings[composterName]?.[0].boost;
 
   const hasRequirements = getKeys(requires).every((name) => {
     const amount = requires[name] || new Decimal(0);
 
-    const count = inventory[name] || new Decimal(0);
+    const count = state.inventory[name] || new Decimal(0);
 
     return count.gte(amount);
   });
@@ -328,73 +242,57 @@ export const ComposterModal: React.FC<Props> = ({
               <OuterPanel className="!p-1">
                 <div className="flex justify-between mb-1">
                   <Label type="info" icon={SUNNYSIDE.icons.stopwatch}>
-                    {`${secondsToString(resourceBoostMilliseconds / 1000, {
-                      length: "short",
-                    })} Boost`}
+                    {`${secondsToString(
+                      composterInfo.eggBoostMilliseconds / 1000,
+                      {
+                        length: "short",
+                      },
+                    )} Boost`}
                   </Label>
                   <RequirementLabel
                     type="item"
-                    item={boostResource}
-                    requirement={new Decimal(resourceBoostRequirements)}
-                    balance={inventory[boostResource] ?? new Decimal(0)}
+                    item="Egg"
+                    requirement={
+                      new Decimal(composterInfo.eggBoostRequirements)
+                    }
+                    balance={state.inventory.Egg ?? new Decimal(0)}
                   />
                 </div>
                 <p className="text-xs mb-2">
-                  {t(
-                    bumpkin.skills["Feathery Business"]
-                      ? "guide.compost.addFeathers.speed"
-                      : "guide.compost.addEggs.speed",
-                  )}
+                  {t("guide.compost.addEggs.speed")}
+                  {"."}
                 </p>
                 <Button
                   disabled={
                     !boost &&
-                    !(inventory[boostResource] ?? new Decimal(0)).gte(
-                      resourceBoostRequirements,
+                    !state.inventory.Egg?.gte(
+                      composterInfo.eggBoostRequirements,
                     )
                   }
                   onClick={() => showConfirmBoostModal(true)}
                 >
-                  {t(
-                    bumpkin.skills["Feathery Business"]
-                      ? "guide.compost.addFeathers"
-                      : "guide.compost.addEggs",
-                  )}
+                  {t("guide.compost.addEggs")}
                 </Button>
                 <ConfirmationModal
                   show={isConfirmBoostModalOpen}
                   onHide={() => showConfirmBoostModal(false)}
                   messages={[
-                    bumpkin.skills["Feathery Business"]
-                      ? t("guide.compost.addFeathers.confirmation", {
-                          noFeathers: resourceBoostRequirements,
-                          time: secondsToString(
-                            resourceBoostMilliseconds / 1000,
-                            {
-                              length: "short",
-                            },
-                          ),
-                        })
-                      : t("guide.compost.addEggs.confirmation", {
-                          noEggs: resourceBoostRequirements,
-                          time: secondsToString(
-                            resourceBoostMilliseconds / 1000,
-                            {
-                              length: "short",
-                            },
-                          ),
-                        }),
+                    t("guide.compost.addEggs.confirmation", {
+                      noEggs: composterInfo.eggBoostRequirements,
+                      time: secondsToString(
+                        composterInfo.eggBoostMilliseconds / 1000,
+                        {
+                          length: "short",
+                        },
+                      ),
+                    }),
                   ]}
                   onCancel={() => showConfirmBoostModal(false)}
                   onConfirm={applyBoost}
-                  confirmButtonLabel={t(
-                    bumpkin.skills["Feathery Business"]
-                      ? "guide.compost.addFeathers"
-                      : "guide.compost.addEggs",
-                  )}
+                  confirmButtonLabel={t("guide.compost.addEggs")}
                   disabled={
-                    !(inventory[boostResource] ?? new Decimal(0)).gte(
-                      resourceBoostRequirements,
+                    !state.inventory.Egg?.gte(
+                      composterInfo.eggBoostRequirements,
                     )
                   }
                 />
@@ -409,17 +307,15 @@ export const ComposterModal: React.FC<Props> = ({
                   icon={SUNNYSIDE.icons.stopwatch}
                   secondaryIcon={SUNNYSIDE.icons.confirm}
                 >
-                  {`${secondsToString(resourceBoostMilliseconds / 1000, {
-                    length: "short",
-                  })} Boosted`}
+                  {`${secondsToString(
+                    composterInfo.eggBoostMilliseconds / 1000,
+                    {
+                      length: "short",
+                    },
+                  )} Boosted`}
                 </Label>
-                <Label type="default" icon={ITEM_DETAILS[boostResource].image}>
-                  {resourceBoostRequirements}{" "}
-                  {t(
-                    bumpkin.skills["Feathery Business"]
-                      ? "guide.compost.feathers"
-                      : "guide.compost.eggs",
-                  )}
+                <Label type="default" icon={ITEM_DETAILS.Egg.image}>
+                  {composterInfo.eggBoostRequirements} {t("guide.compost.eggs")}
                 </Label>
               </div>
             </OuterPanel>
@@ -447,7 +343,7 @@ export const ComposterModal: React.FC<Props> = ({
     }
 
     const FertiliserLabel = () => {
-      const fertiliser = produce;
+      const fertiliser = composterDetails[composterName].produce;
 
       if (fertiliser === "Sprout Mix") {
         return (
@@ -457,10 +353,7 @@ export const ComposterModal: React.FC<Props> = ({
             type="success"
             className="text-xs whitespace-pre-line"
           >
-            {isCollectibleActive({ name: "Knowledge Crab", game: state })
-              ? "+0.4"
-              : "+0.2"}{" "}
-            {t("crops")}
+            {"+0.2"} {t("crops")}
           </Label>
         );
       }
@@ -500,19 +393,29 @@ export const ComposterModal: React.FC<Props> = ({
           <div className="flex flex-col h-full px-1 py-0">
             <div className="flex flex-wrap my-1">
               <div className="flex space-x-2 justify-start mr-2">
-                <SquareIcon icon={ITEM_DETAILS[produce].image} width={14} />
+                <SquareIcon
+                  icon={
+                    ITEM_DETAILS[composterDetails[composterName].produce].image
+                  }
+                  width={14}
+                />
                 <div className="block">
                   <p className="text-xs mb-1">
-                    {`${produceAmount} ${produce}`}
+                    {`${composterDetails[composterName].produceAmount} ${composterDetails[composterName].produce}`}
                   </p>
                   <FertiliserLabel />
                 </div>
               </div>
               <div className="flex space-x-1 justify-start">
-                <SquareIcon icon={ITEM_DETAILS[worm].image} width={14} />
+                <SquareIcon
+                  icon={
+                    ITEM_DETAILS[composterDetails[composterName].worm].image
+                  }
+                  width={14}
+                />
                 <div className="block">
                   <p className="text-xs mb-1">
-                    {max === 0 ? `0 ${worm}s` : `${min}-${max} ${worm}s`}
+                    {`${WORM_OUTPUT[composterName]} ${composterDetails[composterName].worm}s`}
                   </p>
                   <Label
                     icon={SUNNYSIDE.tools.fishing_rod}
@@ -531,14 +434,17 @@ export const ComposterModal: React.FC<Props> = ({
                   key={index}
                   type="item"
                   item={ingredientName}
-                  balance={inventory[ingredientName] ?? new Decimal(0)}
+                  balance={
+                    gameState.context.state.inventory[ingredientName] ??
+                    new Decimal(0)
+                  }
                   requirement={new Decimal(requires[ingredientName] ?? 0)}
                 />
               ))}
 
               <RequirementLabel
                 type="time"
-                waitSeconds={timeToFinishMilliseconds / 1000}
+                waitSeconds={composterInfo.timeToFinishMilliseconds / 1000}
               />
             </div>
           </div>

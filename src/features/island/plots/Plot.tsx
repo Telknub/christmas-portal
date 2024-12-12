@@ -9,6 +9,7 @@ import {
 } from "features/game/types/game";
 import { CROPS, CROP_SEEDS } from "features/game/types/crops";
 import { PIXEL_SCALE, TEST_FARM } from "features/game/lib/constants";
+import { harvestAudio, plantAudio } from "lib/utils/sfx";
 import {
   getCompletedWellCount,
   isPlotFertile,
@@ -36,8 +37,7 @@ import { Transition } from "@headlessui/react";
 import { QuickSelect } from "features/greenhouse/QuickSelect";
 import { formatNumber } from "lib/utils/formatNumber";
 import { hasFeatureAccess } from "lib/flags";
-import { hasVipAccess } from "features/game/lib/vipAccess";
-import { useSound } from "lib/utils/hooks/useSound";
+import { hasActiveSeasonBanner } from "features/game/lib/collectibleBuilt";
 
 export function getYieldColour(yieldAmount: number) {
   if (yieldAmount < 2) {
@@ -92,7 +92,7 @@ const isSeasonedPlayer = (state: MachineState) =>
   // - verified (personhood verification)
   state.context.verified &&
   // - has active seasonal banner
-  hasVipAccess(state.context.state.inventory);
+  hasActiveSeasonBanner({ game: state.context.state });
 
 interface Props {
   id: string;
@@ -129,9 +129,6 @@ export const Plot: React.FC<Props> = ({ id, index }) => {
 
   const { openModal } = useContext(ModalContext);
 
-  const { play: plantAudio } = useSound("plant");
-  const { play: harvestAudio } = useSound("harvest");
-
   const crop = crops?.[id]?.crop;
   const fertiliser = crops?.[id]?.fertiliser;
 
@@ -161,7 +158,7 @@ export const Plot: React.FC<Props> = ({ id, index }) => {
 
     if (newState.matches("hoarding")) return;
 
-    harvestAudio();
+    harvestAudio.play();
 
     // firework animation
     if (showAnimations && crop.amount && crop.amount >= 10) {
@@ -275,7 +272,7 @@ export const Plot: React.FC<Props> = ({ id, index }) => {
         cropId: uuidv4().slice(0, 8),
       });
 
-      plantAudio();
+      plantAudio.play();
 
       const planted =
         newState.context.state.bumpkin?.activity?.["Sunflower Planted"] ?? 0;

@@ -176,8 +176,7 @@ describe("supplyCropMachine", () => {
   });
 
   it("throws and error if the oil capacity is exceeded with queue items", () => {
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
 
     const state: GameState = {
       ...GAME_STATE,
@@ -281,7 +280,7 @@ describe("supplyCropMachine", () => {
       createdAt: now,
     });
 
-    const sunflowerTime = (60 * 1000 * 5) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerTime = (60 * 1000 * 5) / CROP_MACHINE_PLOTS;
 
     const pack = newState.buildings["Crop Machine"]?.[0]
       .queue?.[0] as CropMachineQueueItem;
@@ -338,8 +337,8 @@ describe("supplyCropMachine", () => {
       createdAt: now + 1000,
     });
 
-    const sunflowerTime = (60 * 1000 * 5) / CROP_MACHINE_PLOTS(GAME_STATE);
-    const potatoTime = (60 * 5 * 1000 * 5) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerTime = (60 * 1000 * 5) / CROP_MACHINE_PLOTS;
+    const potatoTime = (60 * 5 * 1000 * 5) / CROP_MACHINE_PLOTS;
     expect(result.buildings["Crop Machine"]?.[0].queue).toStrictEqual([
       {
         crop: "Sunflower",
@@ -501,8 +500,7 @@ describe("supplyCropMachine", () => {
   });
 
   it("recalculates one item in queue when supplying oil", () => {
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
 
     const now = Date.now();
     const state: GameState = {
@@ -543,7 +541,7 @@ describe("supplyCropMachine", () => {
       createdAt: now,
     });
 
-    const sunflowerTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE); // 5 plots;
+    const sunflowerTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS; // 5 plots;
     const oilTimeRemain =
       (10 / OIL_PER_HOUR_CONSUMPTION(GAME_STATE)) * 60 * 60 * 1000;
     const pack = result.buildings["Crop Machine"]?.[0]
@@ -557,11 +555,9 @@ describe("supplyCropMachine", () => {
 
   it("recalculates multiple items in queue when supplying oil", () => {
     //  100 Sunflower Seed Pack takes 20 minutes to grow
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     // 100 Potato Seed Pack takes 100 minutes to grow
-    const potatoPackGrowTime =
-      (60 * 5 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const potatoPackGrowTime = (60 * 5 * 100 * 1000) / CROP_MACHINE_PLOTS;
 
     const now = Date.now();
     const state: GameState = {
@@ -635,7 +631,7 @@ describe("supplyCropMachine", () => {
 
   it("recalculates queue when supplying half of the oil needed to finish first seed pack", () => {
     const now = Date.now();
-    const sunflowerTime = (60 * 600 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerTime = (60 * 600 * 1000) / CROP_MACHINE_PLOTS;
 
     const state: GameState = {
       ...GAME_STATE,
@@ -692,8 +688,7 @@ describe("supplyCropMachine", () => {
 
   it("recalculates queue when supplying oil for the first pack and half of the oil needed to finish the second seed pack", () => {
     const now = Date.now();
-    const sunflowerTimeForThreeHundred =
-      (60 * 300 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE); // 30 minutes;
+    const sunflowerTimeForThreeHundred = (60 * 300 * 1000) / CROP_MACHINE_PLOTS; // 30 minutes;
     const sunflowerTimeForSixHundred = sunflowerTimeForThreeHundred * 2; // 60 minutes;
 
     const state: GameState = {
@@ -766,8 +761,8 @@ describe("supplyCropMachine", () => {
 
   it("allocates enough oil to finish all packs in queue", () => {
     const now = Date.now();
-    const sunflowerTime = (60 * 300 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
-    const potatoTime = (60 * 5 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerTime = (60 * 300 * 1000) / CROP_MACHINE_PLOTS;
+    const potatoTime = (60 * 5 * 100 * 1000) / CROP_MACHINE_PLOTS;
 
     const state: GameState = {
       ...GAME_STATE,
@@ -883,7 +878,7 @@ describe("supplyCropMachine", () => {
       createdAt: now,
     });
 
-    const sunflowerTime = (60 * 1000 * 5) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerTime = (60 * 1000 * 5) / CROP_MACHINE_PLOTS;
 
     expect(newState.buildings["Crop Machine"]?.[0].queue).toStrictEqual([
       {
@@ -899,8 +894,7 @@ describe("supplyCropMachine", () => {
 
   it("allocates oil when 1 oil is added and there is one pack in queue with no oil allocated", () => {
     const now = Date.now();
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     const state: GameState = {
       ...GAME_STATE,
       inventory: {
@@ -951,8 +945,7 @@ describe("supplyCropMachine", () => {
 
   it("adds a new crop pack and allocates the unallocated oil time to pack", () => {
     const now = Date.now();
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     const oneHour = 60 * 60 * 1000;
     const state: GameState = {
       ...GAME_STATE,
@@ -1015,11 +1008,10 @@ describe("supplyCropMachine", () => {
 
   it("allocates the remaining half oil needed if the second pack is half short on oil", () => {
     const now = Date.now();
-    const packOneGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const packOneGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     const packOneStartTime = now;
     const packOneReadyAt = packOneStartTime + packOneGrowTime;
-    const packTwoGrowTime =
-      (5 * 60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const packTwoGrowTime = (5 * 60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     const packTwoStartTime = packOneReadyAt;
 
     const state: GameState = {
@@ -1089,7 +1081,7 @@ describe("supplyCropMachine", () => {
   it("updates the readyAt on an unfinished pack where the growsUntil has passed", () => {
     const now = Date.now();
     const oneHourPast = Date.now() - 60 * 60 * 1000;
-    const packOneGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const packOneGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     const packOneStartTime = oneHourPast;
 
     const state: GameState = {
@@ -1218,7 +1210,7 @@ describe("supplyCropMachine", () => {
   it("updates the growsUntil on an unfinished pack that stopped growing 1 hour ago", () => {
     const now = Date.now();
     const oneHourAgo = Date.now() - 60 * 60 * 1000;
-    const packOneGrowTime = (1000 * 60 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE); // 100 minutes
+    const packOneGrowTime = (1000 * 60 * 1000) / CROP_MACHINE_PLOTS; // 100 minutes
     const packOneStartTime = oneHourAgo;
 
     const state: GameState = {
@@ -1276,8 +1268,7 @@ describe("supplyCropMachine", () => {
 
   it("can add oil when the queue is full", () => {
     const now = Date.now();
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
 
     const state: GameState = {
       ...GAME_STATE,
@@ -1422,7 +1413,7 @@ describe("supplyCropMachine", () => {
             createdAt: 0,
             readyAt: 0,
             id: "0",
-            unallocatedOilTime: MAX_OIL_CAPACITY_IN_MILLIS(GAME_STATE),
+            unallocatedOilTime: MAX_OIL_CAPACITY_IN_MILLIS,
             queue: [],
           },
         ],
@@ -1638,7 +1629,7 @@ describe("supplyCropMachine", () => {
             createdAt: 0,
             readyAt: 0,
             id: "0",
-            unallocatedOilTime: MAX_OIL_CAPACITY_IN_MILLIS(GAME_STATE),
+            unallocatedOilTime: MAX_OIL_CAPACITY_IN_MILLIS,
             queue: [],
           },
         ],
@@ -1809,7 +1800,7 @@ describe("calculateCropTime", () => {
       { type: "Sunflower Seed", amount: 10 },
       GAME_STATE,
     );
-    expect(result).toBe((60 * 10 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE));
+    expect(result).toBe((60 * 10 * 1000) / CROP_MACHINE_PLOTS);
   });
 
   it("reduces crop machine growth time by 5% with Crop Processor Unit", () => {
@@ -1826,9 +1817,7 @@ describe("calculateCropTime", () => {
       },
     );
 
-    expect(result).toBe(
-      (60 * 10 * 1000 * 0.95) / CROP_MACHINE_PLOTS(GAME_STATE),
-    );
+    expect(result).toBe((60 * 10 * 1000 * 0.95) / CROP_MACHINE_PLOTS);
   });
 
   it("reduces crop machine growth time by 20% with Rapid Rig", () => {
@@ -1845,9 +1834,7 @@ describe("calculateCropTime", () => {
       },
     );
 
-    expect(result).toBe(
-      (60 * 10 * 1000 * 0.8) / CROP_MACHINE_PLOTS(GAME_STATE),
-    );
+    expect(result).toBe((60 * 10 * 1000 * 0.8) / CROP_MACHINE_PLOTS);
   });
   it("reduces crop machine growth time by 24% with Crop Processor Unit and Rapid Rig", () => {
     const result = calculateCropTime(
@@ -1864,9 +1851,7 @@ describe("calculateCropTime", () => {
       },
     );
 
-    expect(result).toBe(
-      (60 * 10 * 1000 * 0.76) / CROP_MACHINE_PLOTS(GAME_STATE),
-    );
+    expect(result).toBe((60 * 10 * 1000 * 0.76) / CROP_MACHINE_PLOTS);
   });
 });
 
@@ -1899,8 +1884,7 @@ describe("getTotalOilMillisInMachine", () => {
 
   it("returns the allocated oil for one pack in the queue starts now when there is no unallocated oil", () => {
     const now = Date.now();
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     const state: GameState = {
       ...GAME_STATE,
       buildings: {
@@ -1937,8 +1921,7 @@ describe("getTotalOilMillisInMachine", () => {
 
   it("does not return the allocated oil for a pack that has reached its readyAt time", () => {
     const now = Date.now();
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     const state: GameState = {
       ...GAME_STATE,
       buildings: {
@@ -1975,8 +1958,7 @@ describe("getTotalOilMillisInMachine", () => {
 
   it("does not return the allocated oil for a pack that has reached its readyAt time", () => {
     const now = Date.now();
-    const sunflowerPackGrowTime =
-      (60 * 100 * 1000) / CROP_MACHINE_PLOTS(GAME_STATE);
+    const sunflowerPackGrowTime = (60 * 100 * 1000) / CROP_MACHINE_PLOTS;
     const state: GameState = {
       ...GAME_STATE,
       buildings: {

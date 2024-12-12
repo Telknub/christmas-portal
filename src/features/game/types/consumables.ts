@@ -6,7 +6,6 @@ import { Inventory } from "./game";
 import { FishName } from "./fishing";
 import { translate } from "lib/i18n/translate";
 import { FactionShopFoodName } from "./factionShop";
-import { TradeFood } from "../events/landExpansion/redeemTradeReward";
 
 type FirePitCookableName =
   | "Rapid Roast"
@@ -114,8 +113,7 @@ export type ConsumableName =
   | CookableName
   | "Pirate Cake"
   | FishName
-  | FactionShopFoodName
-  | TradeFood;
+  | FactionShopFoodName;
 
 export type Cookable = {
   experience: number;
@@ -1254,20 +1252,12 @@ export const FACTION_FOOD: Record<FactionShopFoodName, Consumable> = {
     experience: 10000,
   },
 };
-export const TRADE_FOOD: Record<TradeFood, Consumable> = {
-  "Trade Cake": {
-    name: "Trade Cake",
-    description: "",
-    experience: 10000,
-  },
-};
 
 export const CONSUMABLES: Record<ConsumableName, Consumable> = {
   ...COOKABLES,
   ...PIRATE_CAKE,
   ...FISH,
   ...FACTION_FOOD,
-  ...TRADE_FOOD,
 };
 
 export const FISH_CONSUMABLES: Record<FishName | FishCookableName, Consumable> =

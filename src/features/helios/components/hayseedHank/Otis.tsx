@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 
 import { Modal } from "components/ui/Modal";
-import { NPCPlaceable } from "features/island/bumpkin/components/NPC";
+import { NPC } from "features/island/bumpkin/components/NPC";
 import { CloseButtonPanel } from "features/game/components/CloseablePanel";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { useActor } from "@xstate/react";
@@ -109,7 +109,7 @@ export const Otis: React.FC = () => {
             transform: "scaleX(-1)",
           }}
         >
-          <NPCPlaceable parts={NPC_WEARABLES.otis} onClick={handleClick} />
+          <NPC parts={NPC_WEARABLES.otis} onClick={handleClick} />
         </div>
         {lastAcknowledgedTask() !== activeTask && (
           <img

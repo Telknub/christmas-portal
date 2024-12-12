@@ -1,15 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import { BuildingImageWrapper } from "../BuildingImageWrapper";
 import { BuildingProps } from "../Building";
-import { useNavigate } from "react-router";
+import { barnAudio, loadAudio } from "lib/utils/sfx";
+import { useNavigate } from "react-router-dom";
 import { MachineState } from "features/game/lib/gameMachine";
 import { useSelector } from "@xstate/react";
 import { Context } from "features/game/GameProvider";
 import { SUNNYSIDE } from "assets/sunnyside";
 import { AnimalBuildingLevel } from "features/game/events/landExpansion/upgradeBuilding";
-import { useSound } from "lib/utils/hooks/useSound";
 
 export const BARN_IMAGES: Record<AnimalBuildingLevel, string> = {
   1: SUNNYSIDE.building.barnLevel1,
@@ -42,7 +42,7 @@ const _barnLevel = (state: MachineState) => {
 };
 
 export const Barn: React.FC<BuildingProps> = ({ isBuilt, onRemove }) => {
-  const { gameService, showAnimations } = useContext(Context);
+  const { gameService } = useContext(Context);
   const buildingLevel = useSelector(
     gameService,
     _barnLevel,
@@ -50,7 +50,9 @@ export const Barn: React.FC<BuildingProps> = ({ isBuilt, onRemove }) => {
 
   const navigate = useNavigate();
 
-  const { play: barnAudio } = useSound("barn");
+  useEffect(() => {
+    loadAudio([barnAudio]);
+  }, []);
 
   const hasHungryAnimals = useSelector(gameService, _hasHungryAnimals);
   const animalsNeedLove = useSelector(gameService, _animalsNeedLove);
@@ -64,7 +66,7 @@ export const Barn: React.FC<BuildingProps> = ({ isBuilt, onRemove }) => {
 
     if (isBuilt) {
       // Add future on click actions here
-      barnAudio();
+      barnAudio.play();
       navigate("/barn");
     }
   };
@@ -75,10 +77,7 @@ export const Barn: React.FC<BuildingProps> = ({ isBuilt, onRemove }) => {
         {(hasHungryAnimals || animalsNeedLove || hasAwakeSickAnimals) && (
           <img
             src={SUNNYSIDE.icons.expression_alerted}
-            className={
-              "absolute -top-2 -ml-[5px] left-1/2 transform -translate-x-1/2 z-20" +
-              (showAnimations ? " ready" : "")
-            }
+            className="absolute -top-2 ready -ml-[5px] left-1/2 transform -translate-x-1/2 z-20"
             style={{ width: `${PIXEL_SCALE * 4}px` }}
           />
         )}

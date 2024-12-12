@@ -32,7 +32,7 @@ const HARVEST_PROC_SPRITES: Record<CropName, any> = {
   Wheat: wheatProc,
   Kale: kaleProc,
   Soybean: soybeanProc,
-  Barley: potatoProc,
+  Barley: "",
 };
 
 export const HARVEST_PROC_ANIMATION = {

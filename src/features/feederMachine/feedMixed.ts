@@ -20,26 +20,6 @@ type Options = {
   action: FeedMixedAction;
 };
 
-export function getIngredients({
-  state,
-  name,
-}: {
-  state: GameState;
-  name: AnimalFoodName | AnimalMedicineName;
-}) {
-  const { ingredients } = ANIMAL_FOODS[name];
-
-  if (state.bumpkin.skills["Kale Mix"] && name === "Mixed Grain") {
-    return {
-      ingredients: {
-        Kale: new Decimal(3),
-      },
-    };
-  }
-
-  return { ingredients };
-}
-
 export function feedMixed({ state, action }: Options) {
   return produce(state, (copy) => {
     const { bumpkin } = copy;
@@ -48,27 +28,25 @@ export function feedMixed({ state, action }: Options) {
       throw new Error("Bumpkin not found");
     }
 
-    const { item, amount = 1 } = action;
+    const { item: feed, amount = 1 } = action;
 
-    const selectedItem = ANIMAL_FOODS[item];
+    const selectedItem = ANIMAL_FOODS[feed];
+
     if (!selectedItem) {
       throw new Error("Item is not a feed!");
     }
 
-    const { coins } = selectedItem;
-    const price = (coins ?? 0) * amount;
+    const price = selectedItem.coins ?? 0;
 
     if (price && copy.coins < price) {
       throw new Error("Insufficient Coins");
     }
 
-    const { ingredients } = getIngredients({ state: copy, name: item });
-
-    const subtractedInventory = getKeys(ingredients)?.reduce(
+    const subtractedInventory = getKeys(selectedItem.ingredients)?.reduce(
       (inventory, ingredient) => {
         const count = inventory[ingredient] ?? new Decimal(0);
         const requiredIngredients = new Decimal(
-          ingredients[ingredient] ?? 0,
+          selectedItem.ingredients[ingredient] ?? 0,
         ).mul(amount);
 
         if (count.lessThan(requiredIngredients)) {
@@ -82,7 +60,7 @@ export function feedMixed({ state, action }: Options) {
       copy.inventory,
     );
 
-    const oldAmount = copy.inventory[item] ?? new Decimal(0);
+    const oldAmount = copy.inventory[feed] ?? new Decimal(0);
 
     bumpkin.activity = trackActivity(
       "Coins Spent",
@@ -90,14 +68,14 @@ export function feedMixed({ state, action }: Options) {
       new Decimal(price),
     );
     bumpkin.activity = trackActivity(
-      `${item} Mixed`,
+      `${feed} Mixed`,
       bumpkin?.activity,
       new Decimal(amount ?? 0),
     );
     copy.coins -= price;
     copy.inventory = {
       ...subtractedInventory,
-      [item]: oldAmount.add(amount ?? 0),
+      [feed]: oldAmount.add(amount ?? 0),
     };
 
     return copy;

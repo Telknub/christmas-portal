@@ -10,9 +10,10 @@ import {
   PATCH_FRUIT_SEEDS,
   PatchFruitSeedName,
 } from "features/game/types/fruits";
-import { GameState } from "features/game/types/game";
+import { Bumpkin, GameState } from "features/game/types/game";
 import { randomInt } from "lib/utils/random";
 import { getFruitYield } from "./fruitHarvested";
+import { BumpkinParts } from "lib/utils/tokenUriBuilder";
 import { isWearableActive } from "features/game/lib/wearables";
 import { produce } from "immer";
 
@@ -21,54 +22,21 @@ export type PlantFruitAction = {
   index: string;
   seed: PatchFruitSeedName;
 };
-function getDefaultHarvestsLeft() {
+
+function getHarvestsLeft() {
   return randomInt(3, 6);
-}
-
-function getHarvestsLeft({
-  state,
-  harvestsLeft = getDefaultHarvestsLeft,
-}: {
-  state: GameState;
-  harvestsLeft?: () => number;
-}) {
-  let harvestCount = harvestsLeft();
-
-  if (isCollectibleBuilt({ name: "Immortal Pear", game: state })) {
-    if (state.bumpkin.skills["Pear Turbocharge"]) {
-      harvestCount += 2;
-    } else {
-      harvestCount += 1;
-    }
-  }
-  return { harvestCount };
-}
-
-function getHarvestRange({ state }: { state: GameState }) {
-  let minHarvest = 3;
-  let maxHarvest = 6;
-  if (isCollectibleBuilt({ name: "Immortal Pear", game: state })) {
-    if (state.bumpkin.skills["Pear Turbocharge"]) {
-      minHarvest += 2;
-      maxHarvest += 2;
-    } else {
-      minHarvest += 1;
-      maxHarvest += 1;
-    }
-  }
-
-  return { minHarvest, maxHarvest };
 }
 
 export function getPlantedAt(
   patchFruitSeedName: PatchFruitSeedName,
+  wearables: BumpkinParts,
   game: GameState,
   createdAt: number,
 ) {
   if (!patchFruitSeedName) return createdAt;
 
   const fruitTime = PATCH_FRUIT_SEEDS()[patchFruitSeedName].plantSeconds;
-  const boostedTime = getFruitPatchTime(patchFruitSeedName, game);
+  const boostedTime = getFruitPatchTime(patchFruitSeedName, game, wearables);
 
   const offset = fruitTime - boostedTime;
 
@@ -105,9 +73,9 @@ export function getFruitTime({
     seconds = seconds * 0.75;
   }
 
-  // Vine Velocity: 10% reduction
+  // Vine Velocity: 20% reduction
   if (name === "Grape Seed" && game.bumpkin.skills["Vine Velocity"]) {
-    seconds = seconds * 0.9;
+    seconds = seconds * 0.8;
   }
 
   return seconds;
@@ -119,6 +87,7 @@ export function getFruitTime({
 export const getFruitPatchTime = (
   patchFruitSeedName: PatchFruitSeedName,
   game: GameState,
+  _: BumpkinParts,
 ) => {
   const { bumpkin } = game;
   let seconds = PATCH_FRUIT_SEEDS()[patchFruitSeedName]?.plantSeconds ?? 0;
@@ -183,25 +152,28 @@ export const getFruitPatchTime = (
   }
 
   // Catchup Skill: 10% reduction
-  if (bumpkin.skills["Catchup"]) {
+  if (
+    (patchFruitSeedName === "Tomato Seed" ||
+      patchFruitSeedName === "Lemon Seed") &&
+    bumpkin.skills["Catchup"]
+  ) {
     seconds = seconds * 0.9;
   }
 
-  // Long Pickings - -50% growth in Apple and Banana, but 2x in the rest
-  if (bumpkin.skills["Long Pickings"]) {
-    if (isAdvancedFruitSeed(patchFruitSeedName)) {
-      seconds = seconds * 0.5;
-    } else {
-      seconds = seconds * 2;
-    }
+  // Fruit Turbocharge Skill: 10% reduction
+  if (
+    isBasicFruitSeed(patchFruitSeedName) &&
+    bumpkin.skills["Fruit Turbocharge"]
+  ) {
+    seconds = seconds * 0.9;
   }
 
-  if (bumpkin.skills["Short Pickings"]) {
-    if (isBasicFruitSeed(patchFruitSeedName)) {
-      seconds = seconds * 0.5;
-    } else {
-      seconds = seconds * 2;
-    }
+  // Prime Produce Skill: 10% reduction
+  if (
+    isAdvancedFruitSeed(patchFruitSeedName) &&
+    bumpkin.skills["Prime Produce"]
+  ) {
+    seconds = seconds * 0.9;
   }
 
   return seconds;
@@ -218,7 +190,7 @@ export function plantFruit({
   state,
   action,
   createdAt = Date.now(),
-  harvestsLeft = getDefaultHarvestsLeft,
+  harvestsLeft = getHarvestsLeft,
 }: Options): GameState {
   return produce(state, (stateCopy) => {
     const { fruitPatches, bumpkin } = stateCopy;
@@ -247,18 +219,15 @@ export function plantFruit({
       throw new Error("Not enough seeds");
     }
 
-    const { harvestCount } = getHarvestsLeft({
-      state: stateCopy,
-      harvestsLeft,
-    });
-
-    const { minHarvest, maxHarvest } = getHarvestRange({ state: stateCopy });
-
-    const invalidAmount =
-      harvestCount > maxHarvest || harvestCount < minHarvest;
+    let harvestCount = harvestsLeft();
+    const invalidAmount = harvestCount > 6 || harvestCount < 3;
 
     if (invalidAmount) {
       throw new Error("Invalid harvests left amount");
+    }
+
+    if (isCollectibleBuilt({ name: "Immortal Pear", game: stateCopy })) {
+      harvestCount += 1;
     }
 
     stateCopy.inventory[action.seed] =
@@ -268,7 +237,12 @@ export function plantFruit({
 
     patch.fruit = {
       name: fruitName,
-      plantedAt: getPlantedAt(action.seed, stateCopy, createdAt),
+      plantedAt: getPlantedAt(
+        action.seed,
+        (stateCopy.bumpkin as Bumpkin).equipped,
+        stateCopy,
+        createdAt,
+      ),
       amount: getFruitYield({
         name: fruitName,
         game: stateCopy,

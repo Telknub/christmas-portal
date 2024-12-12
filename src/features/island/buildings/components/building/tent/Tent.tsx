@@ -7,7 +7,7 @@ import { BuildingProps } from "../Building";
 import { BuildingImageWrapper } from "../BuildingImageWrapper";
 import { Modal } from "components/ui/Modal";
 import { TentModal } from "./TentModal";
-import { NPCPlaceable } from "features/island/bumpkin/components/NPC";
+import { NPC } from "features/island/bumpkin/components/NPC";
 import { interpretTokenUri } from "lib/utils/tokenUriBuilder";
 import { useSelector } from "@xstate/react";
 import { Context } from "features/game/GameProvider";
@@ -83,9 +83,7 @@ export const Tent: React.FC<BuildingProps> = ({
               ...(placeOnRight ? { right: `${PIXEL_SCALE * 5}px` } : {}),
             }}
           >
-            <NPCPlaceable
-              parts={interpretTokenUri(bumpkin.tokenURI).equipped}
-            />
+            <NPC parts={interpretTokenUri(bumpkin.tokenURI).equipped} />
           </div>
         )}
       </BuildingImageWrapper>

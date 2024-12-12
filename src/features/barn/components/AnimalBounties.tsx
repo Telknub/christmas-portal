@@ -6,10 +6,7 @@ import { HudContainer } from "components/ui/HudContainer";
 import { Label } from "components/ui/Label";
 import { ButtonPanel, InnerPanel, Panel } from "components/ui/Panel";
 import { getSickAnimalRewardAmount } from "features/game/events/landExpansion/sellAnimal";
-import {
-  generateBountyCoins,
-  generateBountyTicket,
-} from "features/game/events/landExpansion/sellBounty";
+import { generateBountyTicket } from "features/game/events/landExpansion/sellBounty";
 import { Context } from "features/game/GameProvider";
 import { getAnimalLevel } from "features/game/lib/animals";
 import { PIXEL_SCALE } from "features/game/lib/constants";
@@ -74,10 +71,7 @@ export const AnimalBounties: React.FC<Props> = ({ type, onExchanging }) => {
             const isSold = !!state.bounties.completed.find(
               (request) => request.id === deal.id,
             );
-            const { coins } = generateBountyCoins({
-              game: state,
-              bounty: deal,
-            });
+
             return (
               <div
                 key={deal.id}
@@ -101,7 +95,7 @@ export const AnimalBounties: React.FC<Props> = ({ type, onExchanging }) => {
                   <Label
                     type="formula"
                     className="absolute -top-3.5  -left-2"
-                  >{`Lvl ${deal.level}+`}</Label>
+                  >{`Lvl ${deal.level}`}</Label>
 
                   {!!isSold && (
                     <Label
@@ -129,7 +123,7 @@ export const AnimalBounties: React.FC<Props> = ({ type, onExchanging }) => {
                         height: "25px",
                       }}
                     >
-                      {coins}
+                      {deal.coins}
                     </Label>
                   )}
 
@@ -161,16 +155,6 @@ export const AnimalBounties: React.FC<Props> = ({ type, onExchanging }) => {
             );
           })}
         </div>
-
-        {hasDeals && (
-          <div className="flex items-center">
-            <p className="text-xs">
-              {t("bounties.board.ticketAmount", {
-                seasonalTicket: getSeasonalTicket(),
-              })}
-            </p>
-          </div>
-        )}
       </div>
     </InnerPanel>
   );

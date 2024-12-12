@@ -53,7 +53,6 @@ class GameAnalyticTracker {
       GameAnalytics.configureAvailableResourceCurrencies([
         "SFL",
         "BlockBuck",
-        "Gem",
         "SeasonalTicket",
         // TODO add future seasonal tickets
       ]);

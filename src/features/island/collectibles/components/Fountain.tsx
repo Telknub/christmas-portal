@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { PIXEL_SCALE } from "features/game/lib/constants";
 import fountain from "assets/sfts/fountain.gif";
-import { useSound } from "lib/utils/hooks/useSound";
+import { fountainAudio, loadAudio } from "lib/utils/sfx";
 
 export const Fountain: React.FC = () => {
-  const { play: fountainAudio, isPlaying } = useSound("fountain");
+  useEffect(() => {
+    loadAudio([fountainAudio]);
+  }, []);
 
   return (
     <div
       className="absolute w-full h-full hover:img-highlight cursor-pointer"
       onClick={() => {
-        if (!isPlaying()) {
-          fountainAudio();
+        if (!fountainAudio.playing()) {
+          fountainAudio.play();
         }
       }}
     >
@@ -23,8 +25,8 @@ export const Fountain: React.FC = () => {
           left: `${PIXEL_SCALE * 3}px`,
         }}
         onClick={() => {
-          if (!isPlaying()) {
-            fountainAudio();
+          if (!fountainAudio.playing()) {
+            fountainAudio.play();
           }
         }}
         className="absolute pointer-events-none"

@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { SUNNYSIDE } from "assets/sunnyside";
 import { Button } from "components/ui/Button";
 import { Label } from "components/ui/Label";
 import { Modal } from "components/ui/Modal";
@@ -9,6 +10,7 @@ import {
   Tradeable,
 } from "features/game/types/marketplace";
 import { useAppTranslation } from "lib/i18n/useAppTranslations";
+import { getTradeableDisplay, TradeableDisplay } from "../lib/tradeables";
 
 import sflIcon from "assets/icons/sfl.webp";
 import walletIcon from "assets/icons/wallet.png";
@@ -18,60 +20,100 @@ import confetti from "canvas-confetti";
 import {
   BlockchainEvent,
   Context as ContextType,
-  MachineState,
 } from "features/game/lib/gameMachine";
 import { useOnMachineTransition } from "lib/utils/hooks/useOnMachineTransition";
-import { PurchaseModalContent } from "./PurchaseModalContent";
-import { TradeableDisplay } from "../lib/tradeables";
-import { formatNumber } from "lib/utils/formatNumber";
-import { KNOWN_ITEMS } from "features/game/types";
-import { useSelector } from "@xstate/react";
-import { useParams } from "react-router";
-import { getKeys } from "features/game/types/craftables";
-import { TRADE_LIMITS } from "features/game/actions/tradeLimits";
-import { hasVipAccess } from "features/game/lib/vipAccess";
-import { ModalContext } from "features/game/components/modal/ModalProvider";
-import classNames from "classnames";
-import { ITEM_DETAILS } from "features/game/types/images";
-import { isMobile } from "mobile-device-detect";
-import Decimal from "decimal.js-light";
+import { TradeableSummary } from "./TradeableSummary";
+
+type PurchaseModalContentProps = {
+  authToken: string;
+  listingId: string;
+  tradeable: Tradeable;
+  collection: CollectionName;
+  price: number;
+  onClose: () => void;
+};
+
+const PurchaseModalContent: React.FC<PurchaseModalContentProps> = ({
+  authToken,
+  tradeable,
+  collection,
+  price,
+  listingId,
+  onClose,
+}) => {
+  const { gameService } = useContext(Context);
+  const { t } = useAppTranslation();
+
+  const display = getTradeableDisplay({
+    id: tradeable.id,
+    type: collection,
+  });
+
+  const confirm = async () => {
+    gameService.send("marketplace.listingPurchased", {
+      effect: {
+        type: "marketplace.listingPurchased",
+        id: listingId,
+      },
+      authToken,
+    });
+
+    onClose();
+  };
+
+  return (
+    <>
+      <div className="p-2">
+        <div className="flex justify-between">
+          <Label type="default" className="mb-2 -ml-1">{`Purchase`}</Label>
+          {tradeable?.type === "onchain" && (
+            <Label type="formula" icon={walletIcon} className="-mr-1 mb-2">
+              {t("marketplace.walletRequired")}
+            </Label>
+          )}
+        </div>
+        <p className="mb-3">{t("marketplace.areYouSureYouWantToBuy")}</p>
+        <TradeableSummary display={display} sfl={price} />
+      </div>
+      <div className="flex space-x-1">
+        <Button onClick={onClose}>{t("cancel")}</Button>
+        <Button onClick={() => confirm()} className="relative">
+          <span>{t("confirm")}</span>
+          {tradeable?.type === "onchain" && (
+            <img src={walletIcon} className="absolute right-1 top-0.5 h-7" />
+          )}
+        </Button>
+      </div>
+    </>
+  );
+};
 
 type TradeableHeaderProps = {
   authToken: string;
-  dailyListings: number;
   farmId: number;
   collection: CollectionName;
   display: TradeableDisplay;
   tradeable?: TradeableDetails;
   count: number;
-  pricePerUnit?: number;
   onBack: () => void;
   onListClick: () => void;
-  reload: () => void;
+  onPurchase: () => void;
 };
 
-const _balance = (state: MachineState) => state.context.state.balance;
-const _isVIP = (state: MachineState) =>
-  hasVipAccess(state.context.state.inventory);
-
 export const TradeableHeader: React.FC<TradeableHeaderProps> = ({
-  dailyListings,
   authToken,
   farmId,
+  collection,
+  onBack,
+  display,
   count,
   tradeable,
   onListClick,
-  reload,
+  onPurchase,
 }) => {
   const { gameService } = useContext(Context);
-  const { openModal } = useContext(ModalContext);
-  const balance = useSelector(gameService, _balance);
-  const isVIP = useSelector(gameService, _isVIP);
-  const params = useParams();
-
-  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-
   const { t } = useAppTranslation();
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   // Remove listings that are mine
   const filteredListings =
     tradeable?.listings.filter((listing) => listing.listedById !== farmId) ??
@@ -82,13 +124,15 @@ export const TradeableHeader: React.FC<TradeableHeaderProps> = ({
     return listing.sfl < cheapest.sfl ? listing : cheapest;
   }, filteredListings[0]);
 
+  // TODO: Remove cheapest listing conditions for buds
+
   // Handle instant purchase
   useOnMachineTransition<ContextType, BlockchainEvent>(
     gameService,
     "marketplacePurchasingSuccess",
     "playing",
-    reload,
-    cheapestListing?.type === "instant",
+    onPurchase,
+    tradeable?.type === "instant",
   );
 
   useOnMachineTransition<ContextType, BlockchainEvent>(
@@ -96,7 +140,7 @@ export const TradeableHeader: React.FC<TradeableHeaderProps> = ({
     "marketplacePurchasing",
     "marketplacePurchasingSuccess",
     confetti,
-    cheapestListing?.type === "instant",
+    tradeable?.type === "instant",
   );
 
   // Auto close this success modal because the transaction modal will be shown
@@ -108,36 +152,22 @@ export const TradeableHeader: React.FC<TradeableHeaderProps> = ({
       gameService.send("CONTINUE");
       setShowPurchaseModal(false);
     },
-    cheapestListing?.type === "onchain",
   );
-
-  const isResources =
-    getKeys(TRADE_LIMITS).includes(KNOWN_ITEMS[Number(params.id)]) &&
-    params.collection === "collectibles";
-
-  const showBuyNow = !isResources && cheapestListing && tradeable?.isActive;
-  const showWalletRequired = showBuyNow && cheapestListing?.type === "onchain";
-  const showFreeListing = !isVIP && dailyListings === 0;
-
-  const usd = gameService.getSnapshot().context.prices.sfl?.usd ?? 0.0;
 
   return (
     <>
       {cheapestListing && (
-        <Modal
-          show={showPurchaseModal}
-          onHide={() => setShowPurchaseModal(false)}
-        >
+        <Modal show={showPurchaseModal}>
           <Panel>
-            {cheapestListing.type === "onchain" ? (
+            {(tradeable as Tradeable).type === "onchain" ? (
               <GameWallet action="marketplace">
                 <PurchaseModalContent
                   authToken={authToken}
                   listingId={cheapestListing.id}
                   price={cheapestListing?.sfl ?? 0}
+                  collection={collection}
                   tradeable={tradeable as Tradeable}
                   onClose={() => setShowPurchaseModal(false)}
-                  listing={cheapestListing}
                 />
               </GameWallet>
             ) : (
@@ -145,101 +175,39 @@ export const TradeableHeader: React.FC<TradeableHeaderProps> = ({
                 authToken={authToken}
                 listingId={cheapestListing.id}
                 price={cheapestListing?.sfl ?? 0}
+                collection={collection}
                 tradeable={tradeable as Tradeable}
                 onClose={() => setShowPurchaseModal(false)}
-                listing={cheapestListing}
               />
             )}
           </Panel>
         </Modal>
       )}
       <InnerPanel className="w-full mb-1">
-        <div className="p-2 pt-1">
-          <div className="flex flex-wrap items-center justify-between mb-3 space-y-1">
+        <div className="p-2">
+          <div className="flex flex-wrap items-center justify-between">
             <div
-              className={classNames(
-                "flex items-center justify-between w-full",
-                {
-                  "w-full": isMobile && showWalletRequired,
-                },
-              )}
+              className="flex cursor-pointer items-center w-fit mb-2"
+              onClick={onBack}
             >
-              <Label
-                type="default"
-                className="mr-0 sm:mr-3"
-                icon={
-                  isResources
-                    ? ITEM_DETAILS[KNOWN_ITEMS[Number(params.id)]].image
-                    : undefined
-                }
-              >
-                {t("marketplace.youOwn", {
-                  count: Math.floor(count),
-                })}
-              </Label>
-              {showWalletRequired && (
-                <Label type="formula" icon={walletIcon}>
-                  {t("marketplace.walletRequired")}
-                </Label>
-              )}
+              <img src={SUNNYSIDE.icons.arrow_left} className="h-6 mr-2" />
+              <p className="capitalize underline">{collection}</p>
             </div>
+            {tradeable?.type === "onchain" && (
+              <Label type="formula" className="mr-2" icon={walletIcon}>
+                {t("marketplace.walletRequired")}
+              </Label>
+            )}
           </div>
-
+          <div className="flex">
+            <p className="text-lg mr-0.5 mb-1">{display.name}</p>
+          </div>
           <div className="flex items-center justify-between flex-wrap">
-            {!isResources && (
+            {cheapestListing ? (
               <div className="flex items-center mr-2 sm:mb-0.5 -ml-1">
                 <>
                   <img src={sflIcon} className="h-8 mr-2" />
-                  <div
-                    className={classNames(
-                      !tradeable ? "loading-fade-pulse" : "",
-                    )}
-                  >
-                    <p className={classNames("text-base")}>
-                      {!tradeable
-                        ? "0.00 SFL"
-                        : `${formatNumber(cheapestListing?.sfl ?? 0, {
-                            decimalPlaces: 2,
-                            showTrailingZeros: true,
-                          })} SFL`}
-                    </p>
-                    <p className="text-xs">
-                      {`$${new Decimal(usd)
-                        .mul(cheapestListing?.sfl ?? 0)
-                        .toFixed(2)}`}
-                    </p>
-                  </div>
-                </>
-              </div>
-            )}
-            {isResources ? (
-              <div className="flex h-full items-center mr-2 sm:mb-0.5 -ml-1">
-                <>
-                  <div className="flex flex-col space-y-1">
-                    <div className="flex">
-                      <img src={sflIcon} className="h-8 mr-2" />
-                      {tradeable ? (
-                        <p className="text-base">
-                          {t("marketplace.pricePerUnit", {
-                            price: tradeable.floor
-                              ? formatNumber(tradeable.floor, {
-                                  decimalPlaces: 4,
-                                  showTrailingZeros: true,
-                                })
-                              : "?",
-                          })}
-                        </p>
-                      ) : (
-                        <>
-                          <span className="text-base loading-fade-pulse">
-                            {t("marketplace.pricePerUnit", {
-                              price: "0.0000",
-                            })}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  <p className="text-base">{`${cheapestListing.sfl} SFL`}</p>
                 </>
               </div>
             ) : (
@@ -247,48 +215,42 @@ export const TradeableHeader: React.FC<TradeableHeaderProps> = ({
               <div className="flex items-center mr-2 sm:mb-0.5 -ml-1" />
             )}
             {/* Desktop display */}
-            <div className="self-end justify-between hidden sm:flex sm:visible w-full sm:w-auto">
-              {showBuyNow && (
+            <div className="items-center justify-between hidden sm:flex sm:visible w-full sm:w-auto">
+              {cheapestListing && (
                 <Button
                   onClick={() => setShowPurchaseModal(true)}
-                  disabled={!balance.gt(cheapestListing.sfl)}
                   className="mr-1 w-full sm:w-auto"
                 >
                   {t("marketplace.buyNow")}
                 </Button>
               )}
-              {tradeable?.isActive && (
-                <Button
-                  disabled={!count}
-                  onClick={onListClick}
-                  className="w-full sm:w-auto"
-                >
-                  {t("marketplace.listForSale")}
-                </Button>
-              )}
+              <Button
+                disabled={!count}
+                onClick={onListClick}
+                className="w-full sm:w-auto"
+              >
+                {t("marketplace.listForSale")}
+              </Button>
             </div>
           </div>
         </div>
         {/* Mobile display */}
         <div className="flex items-center justify-between sm:hidden w-full sm:w-auto">
-          {showBuyNow && (
+          {cheapestListing && (
             <Button
               onClick={() => setShowPurchaseModal(true)}
-              disabled={!balance.gt(cheapestListing.sfl)}
               className="mr-1 w-full sm:w-auto"
             >
               {t("marketplace.buyNow")}
             </Button>
           )}
-          {tradeable?.isActive && (
-            <Button
-              onClick={onListClick}
-              disabled={!count || (!isVIP && dailyListings >= 1)}
-              className="w-full sm:w-auto"
-            >
-              {t("marketplace.listForSale")}
-            </Button>
-          )}
+          <Button
+            onClick={onListClick}
+            disabled={!count}
+            className="w-full sm:w-auto"
+          >
+            {t("marketplace.listForSale")}
+          </Button>
         </div>
       </InnerPanel>
     </>

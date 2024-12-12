@@ -49,7 +49,7 @@ export function getMinedAt({ createdAt, game }: GetMinedAtArgs): number {
   }
 
   if (game.bumpkin.skills["Iron Hustle"]) {
-    totalSeconds = totalSeconds * 0.7;
+    totalSeconds = totalSeconds * 0.9;
   }
 
   const buff = IRON_RECOVERY_TIME - totalSeconds;

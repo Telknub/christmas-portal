@@ -64,12 +64,19 @@ export const getBasketItems = (inventory: Inventory) => {
 export const getChestBuds = (
   state: GameState,
 ): NonNullable<GameState["buds"]> => {
+  const listed = getActiveListedItems(state);
+
   return Object.fromEntries(
-    Object.entries(state.buds ?? {}).filter(([id, bud]) => !bud.coordinates),
+    Object.entries(state.buds ?? {}).filter(
+      ([id, bud]) =>
+        !bud.coordinates && !listed[`Bud #${id}` as MarketplaceTradeableName],
+    ),
   );
 };
 
-export const getChestItems = (state: GameState): Inventory => {
+export const getChestItems = (state: GameState) => {
+  const listedItems = getActiveListedItems(state);
+
   const availableItems = getKeys(state.inventory).reduce((acc, itemName) => {
     if (itemName === "Tree") {
       return {
@@ -195,6 +202,7 @@ export const getChestItems = (state: GameState): Inventory => {
             ?.minus(
               state.collectibles[itemName as CollectibleName]?.length ?? 0,
             )
+            ?.minus(listedItems[itemName] ?? 0)
             ?.minus(
               state.home.collectibles[itemName as CollectibleName]?.length ?? 0,
             ) ?? 0,

@@ -1,4 +1,5 @@
 import Decimal from "decimal.js-light";
+import { detectCollision } from "features/game/expansion/placeable/lib/collisionDetection";
 import { makeAnimalBuildingKey } from "features/game/lib/animals";
 import { isCollectibleBuilt } from "features/game/lib/collectibleBuilt";
 import { getBumpkinLevel } from "features/game/lib/level";
@@ -16,6 +17,10 @@ export type BuyAnimalAction = {
   type: "animal.bought";
   id: string;
   animal: AnimalType;
+  coordinates: {
+    x: number;
+    y: number;
+  };
 };
 
 type Options = {
@@ -71,6 +76,8 @@ export function buyAnimal({
       coins: price,
       buildingRequired,
       levelRequired,
+      height,
+      width,
     } = ANIMALS[action.animal];
 
     if (coins < price) {
@@ -100,12 +107,29 @@ export function buyAnimal({
       throw new Error("You do not have the capacity for this animal");
     }
 
+    const collides = detectCollision({
+      state: copy,
+      position: {
+        x: action.coordinates.x,
+        y: action.coordinates.y,
+        height,
+        width,
+      },
+      location: buildingKey,
+      name: action.animal,
+    });
+
+    if (collides) {
+      throw new Error(`Animal collides`);
+    }
+
     copy.coins -= price;
 
     copy[buildingKey].animals[action.id] = {
       id: action.id,
       state: "idle",
       type: action.animal,
+      coordinates: action.coordinates,
       createdAt,
       experience: 0,
       asleepAt: 0,

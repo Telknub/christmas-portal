@@ -30,8 +30,6 @@ interface GameContext {
   toggleAnimations: () => void;
   showTimers: boolean;
   toggleTimers: () => void;
-  fromRoute: string;
-  setFromRoute: (route: string) => void;
 }
 
 export const Context = React.createContext<GameContext>({} as GameContext);
@@ -50,7 +48,6 @@ export const GameProvider: React.FC = ({ children }) => {
     getShowAnimationsSetting(),
   );
   const [showTimers, setShowTimers] = useState<boolean>(getShowTimersSetting());
-  const [fromRoute, setFromRoute] = useState<string>("");
 
   const shortcutItem = useCallback((item: InventoryItemName) => {
     const originalShortcuts = getShortcuts();
@@ -92,8 +89,6 @@ export const GameProvider: React.FC = ({ children }) => {
         toggleAnimations,
         showTimers,
         toggleTimers,
-        fromRoute,
-        setFromRoute,
       }}
     >
       {children}

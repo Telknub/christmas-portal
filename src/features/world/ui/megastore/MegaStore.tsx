@@ -7,11 +7,7 @@ import { NPC_WEARABLES } from "lib/npcs";
 
 import { COLLECTIBLE_BUFF_LABELS } from "features/game/types/collectibleItemBuffs";
 import { BuffLabel } from "features/game/types";
-import {
-  WearablesItem,
-  CollectiblesItem,
-  GameState,
-} from "features/game/types/game";
+import { WearablesItem, CollectiblesItem } from "features/game/types/game";
 
 import lightning from "assets/icons/lightning.png";
 import shopIcon from "assets/icons/shop.png";
@@ -49,7 +45,6 @@ export const getItemImage = (
 
 export const getItemBuffLabel = (
   item: WearablesItem | CollectiblesItem | null,
-  state: GameState,
 ): BuffLabel | undefined => {
   if (!item) return;
 
@@ -57,7 +52,7 @@ export const getItemBuffLabel = (
     return BUMPKIN_ITEM_BUFF_LABELS[item.name];
   }
 
-  return COLLECTIBLE_BUFF_LABELS(state)[item.name];
+  return COLLECTIBLE_BUFF_LABELS[item.name];
 };
 
 export const _megastore = (state: MachineState) =>

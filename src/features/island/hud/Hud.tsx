@@ -23,14 +23,11 @@ import { MachineState } from "features/game/lib/gameMachine";
 import { useSound } from "lib/utils/hooks/useSound";
 import { SpecialEventCountdown } from "./SpecialEventCountdown";
 import { SeasonBannerCountdown } from "./SeasonBannerCountdown";
+import marketplaceIcon from "assets/icons/shop_disc.png";
 import { hasFeatureAccess } from "lib/flags";
+import { useNavigate } from "react-router-dom";
 import { TransactionCountdown } from "./Transaction";
-import { MarketplaceButton } from "./components/MarketplaceButton";
-import { PowerSkillsButton } from "./components/PowerSkillsButton";
-import {
-  BumpkinRevampSkillName,
-  getPowerSkills,
-} from "features/game/types/bumpkinSkills";
+import * as AuthProvider from "features/auth/lib/Provider";
 
 const _farmAddress = (state: MachineState) => state.context.farmAddress;
 const _showMarketplace = (state: MachineState) =>
@@ -45,12 +42,15 @@ const HudComponent: React.FC<{
   moveButtonsUp?: boolean;
   location: PlaceableLocation;
 }> = ({ isFarming, location }) => {
+  const { authService } = useContext(AuthProvider.Context);
+
   const { gameService, shortcutItem, selectedItem } = useContext(Context);
   const [gameState] = useActor(gameService);
 
   const farmAddress = useSelector(gameService, _farmAddress);
   const hasMarketplaceAccess = useSelector(gameService, _showMarketplace);
 
+  const [showMarketplace, setShowMarketplace] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showBuyCurrencies, setShowBuyCurrencies] = useState(false);
 
@@ -58,6 +58,8 @@ const HudComponent: React.FC<{
   const button = useSound("button");
 
   const autosaving = gameState.matches("autosaving");
+
+  const navigate = useNavigate();
 
   const handleDeposit = (
     args: Pick<DepositArgs, "sfl" | "itemIds" | "itemAmounts">,
@@ -71,11 +73,6 @@ const HudComponent: React.FC<{
   };
 
   const isFullUser = farmAddress !== undefined;
-  const powerSkills = getPowerSkills();
-  const { skills } = gameState.context.state.bumpkin;
-  const hasPowerSkills = powerSkills.some(
-    (skill) => (skills[skill.name as BumpkinRevampSkillName] ?? 0) > 0,
-  );
 
   return (
     <>
@@ -155,15 +152,14 @@ const HudComponent: React.FC<{
         />
 
         <div
-          className="absolute z-50 flex flex-col space-y-2.5 justify-between"
+          className="absolute z-50 flex flex-col justify-between"
           style={{
             left: `${PIXEL_SCALE * 3}px`,
             bottom: `${PIXEL_SCALE * 3}px`,
             width: `${PIXEL_SCALE * 22}px`,
+            height: `${PIXEL_SCALE * 23 * 2 + 8}px`,
           }}
         >
-          {hasPowerSkills && <PowerSkillsButton />}
-          {hasMarketplaceAccess && <MarketplaceButton />}
           <CodexButton />
           <TravelButton />
         </div>
@@ -204,6 +200,24 @@ const HudComponent: React.FC<{
           show={showBuyCurrencies}
           onClose={handleBuyCurrenciesModal}
         />
+
+        {hasMarketplaceAccess && (
+          <>
+            <img
+              src={marketplaceIcon}
+              className="cursor-pointer absolute"
+              onClick={() => {
+                navigate("/marketplace");
+              }}
+              style={{
+                width: `${PIXEL_SCALE * 22}px`,
+
+                left: `${PIXEL_SCALE * 3}px`,
+                bottom: `${PIXEL_SCALE * 55}px`,
+              }}
+            />
+          </>
+        )}
       </HudContainer>
     </>
   );

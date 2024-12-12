@@ -18,6 +18,7 @@ import {
   BUILDING_OIL_BOOSTS,
   isCookingBuilding,
 } from "features/game/events/landExpansion/cook";
+import { CookableName } from "features/game/types/consumables";
 import { Context } from "features/game/GameProvider";
 import { ModalOverlay } from "components/ui/ModalOverlay";
 import { InnerPanel } from "components/ui/Panel";
@@ -28,16 +29,18 @@ import { Box } from "components/ui/Box";
 import useUiRefresher from "lib/utils/hooks/useUiRefresher";
 
 interface OilTankProps {
+  currentlyCooking: CookableName | undefined;
   buildingName: BuildingName;
   buildingId: string;
 }
 
 const OIL_INCREMENT_AMOUNT = 1;
 
-export const BuildingOilTank: React.FC<OilTankProps> = ({
+export const BuildingOilTank = ({
+  currentlyCooking,
   buildingName,
   buildingId,
-}) => {
+}: OilTankProps) => {
   const { gameService } = useContext(Context);
   const [showAddOilModal, setShowAddOilModal] = useState<boolean>(false);
   const { t } = useAppTranslation();
@@ -49,7 +52,7 @@ export const BuildingOilTank: React.FC<OilTankProps> = ({
     (building) => building.id === buildingId,
   );
 
-  const oilRemainingInBuilding = building?.oil ?? 0;
+  const oilRemainingInBuilding = building?.oil || 0;
 
   const incrementOil = () => {
     setTotalOilToAdd((prev) => prev + OIL_INCREMENT_AMOUNT);
@@ -57,13 +60,6 @@ export const BuildingOilTank: React.FC<OilTankProps> = ({
 
   const decrementOil = () => {
     setTotalOilToAdd((prev) => Math.max(prev - OIL_INCREMENT_AMOUNT, 0));
-  };
-
-  const amountToFull =
-    BUILDING_DAILY_OIL_CAPACITY[buildingName as CookingBuildingName] -
-    oilRemainingInBuilding;
-  const incrementMaxOil = () => {
-    setTotalOilToAdd(amountToFull);
   };
 
   function getOilTimeInMillis(oil: number): number {
@@ -145,9 +141,7 @@ export const BuildingOilTank: React.FC<OilTankProps> = ({
   const oilInTank = calculatePercentageFull(buildingName);
   const runtime = calculateOilTimeRemaining();
   const boostPercentage =
-    BUILDING_OIL_BOOSTS(game.bumpkin.skills)[
-      buildingName as CookingBuildingName
-    ] * 100;
+    BUILDING_OIL_BOOSTS[buildingName as CookingBuildingName] * 100;
 
   useUiRefresher();
 
@@ -269,9 +263,7 @@ export const BuildingOilTank: React.FC<OilTankProps> = ({
                 <div className="flex w-full justify-between">
                   <div className="flex flex-col justify-center text-xs space-y-1">
                     <span>
-                      {t("cropMachine.oilToAdd", {
-                        amount: formatNumber(totalOilToAdd),
-                      })}
+                      {t("cropMachine.oilToAdd", { amount: totalOilToAdd })}
                     </span>
                     <span>
                       {t("cropMachine.totalRuntime", {
@@ -297,9 +289,6 @@ export const BuildingOilTank: React.FC<OilTankProps> = ({
                       onClick={incrementOil}
                       disabled={!canIncrementOil()}
                     >{`+${OIL_INCREMENT_AMOUNT}`}</Button>
-                    <Button className="w-auto" onClick={incrementMaxOil}>
-                      {t("max")}
-                    </Button>
                   </div>
                 </div>
               </div>

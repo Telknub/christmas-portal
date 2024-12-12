@@ -86,7 +86,7 @@ type Rank = {
 const RANK_DATA: Record<FactionRank, Omit<Rank, "icon">> = {
   // Bumpkins
   forager: {
-    name: "forager",
+    name: "rancher",
     faction: "bumpkins",
     emblemsRequired: 0,
   },

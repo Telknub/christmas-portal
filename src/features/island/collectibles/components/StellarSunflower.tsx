@@ -1,6 +1,6 @@
 import React from "react";
 
-import sunflowerMutant from "assets/sfts/sunflower_mutant.webp";
+import sunflowerMutant from "assets/sfts/sunflower_mutant.gif";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 
 export const StellarSunflower: React.FC = () => {

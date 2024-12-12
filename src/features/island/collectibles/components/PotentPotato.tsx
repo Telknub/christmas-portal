@@ -1,6 +1,6 @@
 import React from "react";
 
-import potatoMutant from "assets/sfts/potato_mutant.webp";
+import potatoMutant from "assets/sfts/potato_mutant.gif";
 import { PIXEL_SCALE } from "features/game/lib/constants";
 
 export const PotentPotato: React.FC = () => {

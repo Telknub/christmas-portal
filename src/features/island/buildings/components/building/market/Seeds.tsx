@@ -19,12 +19,14 @@ import { INVENTORY_LIMIT } from "features/game/lib/constants";
 import { makeBulkBuySeeds } from "./lib/makeBulkBuyAmount";
 import { getBumpkinLevel } from "features/game/lib/level";
 import { SEEDS, SeedName } from "features/game/types/seeds";
+import { Bumpkin } from "features/game/types/game";
 import {
   GREENHOUSE_FRUIT_SEEDS,
   PATCH_FRUIT,
   PATCH_FRUIT_SEEDS,
   PatchFruitSeedName,
 } from "features/game/types/fruits";
+import { Restock } from "features/island/buildings/components/building/market/Restock";
 import { getFruitHarvests } from "features/game/events/landExpansion/utils";
 import { SplitScreenView } from "components/ui/SplitScreenView";
 import { CraftingRequirements } from "components/ui/layouts/CraftingRequirements";
@@ -49,7 +51,6 @@ import {
   isBasicCrop,
   isMediumCrop,
 } from "features/game/events/landExpansion/harvest";
-import { Restock } from "./restock/Restock";
 
 export const Seeds: React.FC = () => {
   const [selectedName, setSelectedName] = useState<SeedName>("Sunflower Seed");
@@ -66,7 +67,7 @@ export const Seeds: React.FC = () => {
 
   const { inventory } = state;
 
-  const price = getBuyPrice(selectedName, selected, state);
+  const price = getBuyPrice(selectedName, selected, inventory, state);
 
   const onSeedClick = (seedName: SeedName) => {
     setSelectedName(seedName);
@@ -129,7 +130,7 @@ export const Seeds: React.FC = () => {
 
     // return delayed sync when no stock
     if (stock.lessThanOrEqualTo(0)) {
-      return <Restock npc={"betty"} />;
+      return <Restock />;
     }
 
     // return message if inventory is full
@@ -218,7 +219,11 @@ export const Seeds: React.FC = () => {
     }
 
     if (yields && yields in PATCH_FRUIT())
-      return getFruitPatchTime(selectedName as PatchFruitSeedName, state);
+      return getFruitPatchTime(
+        selectedName as PatchFruitSeedName,
+        state,
+        (state.bumpkin as Bumpkin)?.equipped ?? {},
+      );
 
     if (
       selectedName in GREENHOUSE_SEEDS ||

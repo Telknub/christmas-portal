@@ -156,15 +156,7 @@ function getEggYieldBoosts(game: GameState) {
   }
 
   if (isCollectibleBuilt({ name: "Bale", game })) {
-    if (game.bumpkin.skills["Double Bale"]) {
-      boost += 0.2;
-    } else {
-      boost += 0.1;
-    }
-  }
-
-  if (game.bumpkin.skills["Abundant Harvest"]) {
-    boost += 0.2;
+    boost += 0.1;
   }
 
   return boost;
@@ -181,10 +173,6 @@ function getFeatherYieldBoosts(game: GameState) {
     boost += 0.1;
   }
 
-  if (game.bumpkin.skills["Fine Fibers"]) {
-    boost += 0.1;
-  }
-
   return boost;
 }
 
@@ -197,11 +185,6 @@ function getWoolYieldBoosts(game: GameState) {
   if (isWearableActive({ name: "White Sheep Onesie", game })) {
     boost += 0.25;
   }
-
-  if (game.bumpkin.skills["Abundant Harvest"]) {
-    boost += 0.2;
-  }
-
   return boost;
 }
 
@@ -213,10 +196,6 @@ function getMerinoWoolYieldBoosts(game: GameState) {
   }
 
   if (isCollectibleBuilt({ name: "Toxic Tuft", game })) {
-    boost += 0.1;
-  }
-
-  if (game.bumpkin.skills["Fine Fibers"]) {
     boost += 0.1;
   }
 
@@ -234,14 +213,6 @@ function getMilkYieldBoosts(game: GameState) {
     boost += 2;
   }
 
-  if (isCollectibleBuilt({ name: "Longhorn Cowfish", game })) {
-    boost += 0.2;
-  }
-
-  if (game.bumpkin.skills["Abundant Harvest"]) {
-    boost += 0.2;
-  }
-
   return boost;
 }
 
@@ -253,10 +224,6 @@ function getLeatherYieldBoosts(game: GameState) {
   }
 
   if (isCollectibleBuilt({ name: "Mootant", game })) {
-    boost += 0.1;
-  }
-
-  if (game.bumpkin.skills["Fine Fibers"]) {
     boost += 0.1;
   }
 
@@ -364,34 +331,6 @@ export function getBoostedFoodQuantity({
     foodQuantity *= 0.9;
   }
 
-  if (game.bumpkin.skills["Efficient Feeding"]) {
-    foodQuantity *= 0.95;
-  }
-
-  if (game.bumpkin.skills["Clucky Grazing"]) {
-    if (animalType === "Chicken") {
-      foodQuantity *= 0.75;
-    } else {
-      foodQuantity *= 1.5;
-    }
-  }
-
-  if (game.bumpkin.skills["Sheepwise Diet"]) {
-    if (animalType === "Sheep") {
-      foodQuantity *= 0.75;
-    } else {
-      foodQuantity *= 1.5;
-    }
-  }
-
-  if (game.bumpkin.skills["Cow-Smart Nutrition"]) {
-    if (animalType === "Cow") {
-      foodQuantity *= 0.75;
-    } else {
-      foodQuantity *= 1.5;
-    }
-  }
-
   return foodQuantity;
 }
 
@@ -441,10 +380,6 @@ export function getBoostedAwakeAt({
 
   if (bumpkin.skills["Stable Hand"]) {
     totalDuration *= 0.9;
-  }
-
-  if (bumpkin.skills["Restless Animals"]) {
-    totalDuration *= 0.95;
   }
 
   // Add the boosted duration to the created time

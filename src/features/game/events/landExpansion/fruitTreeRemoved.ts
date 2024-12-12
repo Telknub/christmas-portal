@@ -45,31 +45,7 @@ export function getRequiredAxeAmount(
     }
   }
 
-  if (
-    (patchFruitName === "Tomato" ||
-      patchFruitName === "Blueberry" ||
-      patchFruitName === "Banana") &&
-    game.bumpkin.skills["No Axe No Worries"]
-  ) {
-    return new Decimal(0);
-  }
-
   return new Decimal(1);
-}
-
-export function getWoodReward({ state }: { state: GameState }) {
-  let woodReward = 1;
-  // Fruity Woody: +1 Wood when removing a fruit tree
-  if (state.bumpkin.skills["Fruity Woody"]) {
-    woodReward += 1;
-  }
-
-  // Get -1 wood reward with No Axe No Worries Skill
-  if (state.bumpkin.skills["No Axe No Worries"]) {
-    woodReward -= 1;
-  }
-
-  return { woodReward };
 }
 
 export function removeFruitTree({
@@ -78,7 +54,8 @@ export function removeFruitTree({
   createdAt = Date.now(),
 }: Options): GameState {
   return produce(state, (stateCopy) => {
-    const { fruitPatches, bumpkin, inventory } = stateCopy;
+    const { fruitPatches, bumpkin, inventory, collectibles } = stateCopy;
+    let woodReward = 1;
 
     if (!bumpkin) {
       throw new Error("You do not have a Bumpkin!");
@@ -116,13 +93,17 @@ export function removeFruitTree({
       throw new Error("Fruit is still available");
     }
 
+    // Fruity Woody: +1 Wood when removing a fruit tree
+    if (bumpkin.skills["Fruity Woody"]) {
+      woodReward += 1;
+    }
+
     delete patch.fruit;
     delete patch.fertiliser;
 
-    const { woodReward } = getWoodReward({ state: stateCopy });
-
     inventory.Axe = axeAmount.sub(requiredAxes);
-    inventory.Wood = inventory.Wood?.add(woodReward) || new Decimal(1);
+    stateCopy.inventory.Wood =
+      stateCopy.inventory.Wood?.add(woodReward) || new Decimal(1);
 
     return stateCopy;
   });

@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useState } from "react";
 
 import { GRID_WIDTH_PX, PIXEL_SCALE } from "features/game/lib/constants";
-import { NPCPlaceable } from "features/island/bumpkin/components/NPC";
+import { NPC } from "features/island/bumpkin/components/NPC";
 import { NPC_WEARABLES } from "lib/npcs";
 import { Modal } from "components/ui/Modal";
 import { CloseButtonPanel } from "features/game/components/CloseablePanel";
@@ -373,7 +373,7 @@ export const IslandUpgrader: React.FC<Props> = ({ gameState, offset }) => {
                 transform: "scaleX(-1)",
               }}
             >
-              <NPCPlaceable parts={NPC_WEARABLES["grubnuk"]} />
+              <NPC parts={NPC_WEARABLES["grubnuk"]} />
             </div>
           </div>
         </MapPlacement>

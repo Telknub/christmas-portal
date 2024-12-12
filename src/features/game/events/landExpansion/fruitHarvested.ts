@@ -15,7 +15,7 @@ import {
   PatchFruit,
   PatchFruitName,
 } from "features/game/types/fruits";
-import { GameState, PlantedFruit } from "features/game/types/game";
+import { Bumpkin, GameState, PlantedFruit } from "features/game/types/game";
 import { getTimeLeft } from "lib/utils/time";
 import { FruitPatch } from "features/game/types/game";
 import { FruitCompostName } from "features/game/types/composters";
@@ -64,7 +64,7 @@ export function isFruitGrowing(patch: FruitPatch) {
   const fruit = patch.fruit;
   if (!fruit) return false;
 
-  const { name, harvestsLeft, harvestedAt, plantedAt } = fruit;
+  const { name, amount, harvestsLeft, harvestedAt, plantedAt } = fruit;
   if (!harvestsLeft) return false;
 
   const { seed } = PATCH_FRUIT()[name];
@@ -110,11 +110,7 @@ export function getFruitYield({ name, game, fertiliser }: FruitYield) {
   }
 
   if (isFruit(name) && isCollectibleBuilt({ name: "Macaw", game })) {
-    if (game.bumpkin.skills["Loyal Macaw"]) {
-      amount += 0.2;
-    } else {
-      amount += 0.1;
-    }
+    amount += 0.1;
   }
 
   if (isFruit(name) && isWearableActive({ name: "Camel Onesie", game })) {
@@ -131,7 +127,15 @@ export function getFruitYield({ name, game, fertiliser }: FruitYield) {
     amount += 0.1;
   }
 
-  if (bumpkin.skills["Fruitful Fumble"]) {
+  if (bumpkin.skills["Red Sour"] && (name === "Tomato" || name === "Lemon")) {
+    amount += 0.1;
+  }
+
+  if (bumpkin.skills["Fruitful Fumble"] && isBasicFruit(name)) {
+    amount += 0.1;
+  }
+
+  if (bumpkin.skills["Tropical Orchard"] && isAdvancedFruit(name)) {
     amount += 0.1;
   }
 
@@ -210,14 +214,6 @@ export function getFruitYield({ name, game, fertiliser }: FruitYield) {
     amount += 2;
   }
 
-  if (game.bumpkin.skills["Zesty Vibes"] && !isGreenhouseFruit(name)) {
-    if (name === "Tomato" || name === "Lemon") {
-      amount += 1;
-    } else {
-      amount -= 0.5;
-    }
-  }
-
   // Greenhouse Gamble 5% chance of +1 yield
   if (isGreenhouseFruit(name) && bumpkin.skills["Greenhouse Gamble"]) {
     if (randomInt(0, 20) === 1) {
@@ -236,7 +232,7 @@ export function harvestFruit({
   createdAt = Date.now(),
 }: Options): GameState {
   return produce(state, (stateCopy) => {
-    const { fruitPatches, bumpkin } = stateCopy;
+    const { fruitPatches, bumpkin, collectibles } = stateCopy;
 
     if (!bumpkin) {
       throw new Error("You do not have a Bumpkin!");
@@ -273,7 +269,12 @@ export function harvestFruit({
       stateCopy.inventory[name]?.add(amount) ?? new Decimal(amount);
 
     patch.fruit.harvestsLeft = patch.fruit.harvestsLeft - 1;
-    patch.fruit.harvestedAt = getPlantedAt(seed, stateCopy, createdAt);
+    patch.fruit.harvestedAt = getPlantedAt(
+      seed,
+      (stateCopy.bumpkin as Bumpkin).equipped,
+      stateCopy,
+      createdAt,
+    );
 
     patch.fruit.amount = getFruitYield({
       game: stateCopy,

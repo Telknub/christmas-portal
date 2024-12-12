@@ -314,7 +314,6 @@ export const KNOWN_IDS: Record<InventoryItemName, number> = {
   "Sour Shake": 583,
   "Spaghetti al Limone": 584,
   "Lemon Cheesecake": 585,
-  "Trade Cake": 586,
 
   Wood: 601,
   Stone: 602,
@@ -430,7 +429,6 @@ export const KNOWN_IDS: Record<InventoryItemName, number> = {
   "Bull Run Banner": 749,
   "Cow Skull": 750,
   Horseshoe: 751,
-  "Trade Point": 752,
 
   "Australian Flag": 801,
   "Belgian Flag": 802,
@@ -901,16 +899,6 @@ export const KNOWN_IDS: Record<InventoryItemName, number> = {
   "Halloween Scarecrow": 2166,
   "Vampire Bear": 2167,
   "Super Totem": 2168,
-  //Christmas 2024
-  "Christmas Stocking": 2169,
-  "Golden Christmas Stocking": 2170,
-  "Cozy Fireplace": 2171,
-  "Christmas Rug": 2172,
-  "Christmas Candle": 2173,
-  "Santa Penguin": 2174,
-  "Penguin Pool": 2175,
-  Snowman: 2176,
-  "Festive Toy Train": 2177,
 };
 
 // The reverse of above

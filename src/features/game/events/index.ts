@@ -415,13 +415,6 @@ import {
 } from "./landExpansion/sacrificeBear";
 import { buyMoreReels, BuyMoreReelsAction } from "./landExpansion/buyMoreReels";
 import { ClaimPurchaseAction, claimPurchase } from "./claimPurchase";
-import { npcRestock, NPCRestockAction } from "./landExpansion/npcRestock";
-import {
-  redeemTradeReward,
-  RedeemTradeRewardsAction,
-} from "./landExpansion/redeemTradeReward";
-import { collectCandy, CollectCandyAction } from "./landExpansion/collectCandy";
-import { skillUse, SkillUseAction } from "./landExpansion/skillUsed";
 
 export type PlayingEvent =
   | SellAnimalAction
@@ -472,7 +465,6 @@ export type PlayingEvent =
   | CraftCollectibleAction
   | SellTreasureAction
   | RestockAction
-  | NPCRestockAction
   | SellGarbageAction
   // Chores
   | CompleteChoreAction
@@ -524,7 +516,6 @@ export type PlayingEvent =
   | PurchaseMinigameAction
   | StartMinigameAttemptAction
   | SubmitMinigameScoreAction
-  | SkillUseAction
   | SupplyCropMachineAction
   | HarvestCropMachineAction
   | SupplyCookingOilAction
@@ -550,10 +541,7 @@ export type PlayingEvent =
   | BuySeasonalItemAction
   | DiscoverRecipeAction
   | UnlockFarmhandAction
-  | ClaimPurchaseAction
-  | RedeemTradeRewardsAction
-  // To remove once December is finished
-  | CollectCandyAction;
+  | ClaimPurchaseAction;
 
 export type PlacementEvent =
   | ConstructBuildingAction
@@ -673,7 +661,6 @@ export const PLAYING_EVENTS: Handlers<PlayingEvent> = {
   "collectible.crafted": craftCollectible,
   "treasure.sold": sellTreasure,
   "shops.restocked": restock,
-  "npc.restocked": npcRestock,
   "garbage.sold": sellGarbage,
   "chore.completed": completeChore,
   "chore.skipped": skipChore,
@@ -736,7 +723,6 @@ export const PLAYING_EVENTS: Handlers<PlayingEvent> = {
   "animal.fed": feedAnimal,
   "animal.loved": loveAnimal,
   "feed.mixed": feedMixed,
-  "skill.used": skillUse,
   "building.upgraded": upgradeBuilding,
   "crafting.started": startCrafting,
   "crafting.collected": collectCrafting,
@@ -747,8 +733,6 @@ export const PLAYING_EVENTS: Handlers<PlayingEvent> = {
   "farmHand.unlocked": unlockFarmhand,
   "fishing.reelsBought": buyMoreReels,
   "purchase.claimed": claimPurchase,
-  "reward.redeemed": redeemTradeReward,
-  "candy.collected": collectCandy,
 };
 
 export const PLACEMENT_EVENTS: Handlers<PlacementEvent> = {
