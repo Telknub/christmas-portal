@@ -20,6 +20,8 @@ import { GritContainer } from "./containers/GritContainer";
 import { NewSnowStormContainer } from "./containers/SnowStormContainer";
 import { CoalsContainer } from "./containers/CoalsContainer";
 import { isArray } from "xstate/lib/utils";
+import { EventObject } from "xstate";
+import { SPAWNS } from "features/world/lib/spawn";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -203,35 +205,26 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
     this.createEvents();
     this.snowStorm.normalSnowStorm();
 
-    // To test each event, comment out the other event duration samples
-
-    // Grit event duration sample
-    // setTimeout(() => {
-    //   if(this.gritContainer) {
-    //     this.gritContainer.deactivateGrit()
-    //   }
-    // }, 15000)
-
-    // Coals event duration sample
-    // setTimeout(() => {
-    //   if (this.coal) {
-    //     COALS_CONFIGURATION.forEach((_, index) => {
-    //       const coal = this.coal[index];
-    //       coal.deactivateCoal();
-    //     });
-    //   }
-    // }, 50000);
-
-    // Snowstorm event duration sample
-    // setTimeout(() => {
-    //   if(this.snowStorm) {
-    //     this.snowStorm.deactivateSnowstorm()
-    //   }
-    // }, 20000)
-
     this.physics.world.drawDebug = false;
 
-    // this.initialiseNPCs(NPCS);
+    // reload scene when player hit retry
+    const onRetry = (event: EventObject) => {
+      if (event.type === "RETRY") {
+        this.isCameraFading = true;
+        this.cameras.main.fadeOut(500);
+        this.reset();
+        this.cameras.main.on(
+          "camerafadeoutcomplete",
+          () => {
+            this.cameras.main.fadeIn(500);
+            this.velocity = WALKING_SPEED;
+            this.isCameraFading = false;
+          },
+          this,
+        );
+      }
+    };
+    this.portalService?.onEvent(onRetry);
   }
 
   private get isGameReady() {
@@ -249,9 +242,6 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   update() {
     super.update();
 
-    // Player current position
-    // console.log({y: this.currentPlayer?.y, x: this.currentPlayer?.x})
-
     const lives = this.portalService?.state.context.lives || 0;
     if (lives <= 0) {
       // Game over
@@ -259,9 +249,6 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       this.velocity = 0;
       this.time.delayedCall(1000, () => {
         this.portalService?.send("GAME_OVER");
-        // this.gritContainer.desactivate();
-        // this.snowStorm.desactivate();
-        // this.coal.forEach((e) => e.desactivate());
       });
     } else {
       if (this.isGamePlaying) {
@@ -317,7 +304,21 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
   }
 
   private initializeRequests() {
-    this.elves.forEach((elf) => elf.createRequest());
+    this.elves.forEach((elf) => {
+      elf.destroyInfo();
+      elf.createRequest();
+    });
+  }
+
+  private reset() {
+    this.currentPlayer?.setPosition(
+      SPAWNS()[this.sceneId].default.x,
+      SPAWNS()[this.sceneId].default.y,
+    );
+    this.gritContainer.desactivate();
+    this.snowStorm.desactivate();
+    this.coal.forEach((e) => e.desactivate());
+    this.initializeRequests();
   }
 
   private secondsLeftInEvent() {

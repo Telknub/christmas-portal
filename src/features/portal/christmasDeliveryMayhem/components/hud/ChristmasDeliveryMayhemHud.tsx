@@ -57,9 +57,9 @@ export const ChristmasDeliveryMayhemHud: React.FC = () => {
           }}
         >
           {/* <ChristmasDeliveryMayhemTarget /> */}
+          <ChristmasDeliveryMayhemTimer />
           {isPlaying && (
             <>
-              <ChristmasDeliveryMayhemTimer />
               <ChristmasDeliveryMayhemLives />
               <ChristmasDeliveryMayhemScore />
             </>

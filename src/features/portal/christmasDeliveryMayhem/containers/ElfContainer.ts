@@ -195,6 +195,12 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     });
   }
 
+  destroyInfo() {
+    this.requestBubble?.destroy();
+    this.requestBubble = null;
+    this.progressBar.delete();
+  }
+
   private generateRandomRequest() {
     const request: Gifts[] = [];
     const gifts = [...GIFTS_NAMES];

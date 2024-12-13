@@ -428,7 +428,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
               return context.score;
             },
             state: (context: Context) => {
-              submitScore({ score: Math.round(context.score) });
+              submitScore({ score: context.score });
               return submitMinigameScore({
                 state: context.state as any,
                 action: {

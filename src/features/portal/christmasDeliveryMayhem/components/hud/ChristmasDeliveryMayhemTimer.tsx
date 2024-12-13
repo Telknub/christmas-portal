@@ -23,6 +23,7 @@ import { useAppTranslation } from "lib/i18n/useAppTranslations";
 
 const _endAt = (state: PortalMachineState) => state.context.endAt;
 const _event = (state: PortalMachineState) => state.context.event;
+const _isPlaying = (state: PortalMachineState) => state.matches("playing");
 
 let nextGoal = 1;
 let placeholderEvent: Events = "";
@@ -47,6 +48,7 @@ export const ChristmasDeliveryMayhemTimer: React.FC = () => {
   const { portalService } = useContext(PortalContext);
   const endAt = useSelector(portalService, _endAt);
   const event = useSelector(portalService, _event);
+  const isPlaying = useSelector(portalService, _isPlaying);
 
   const secondsLeft = !endAt
     ? GAME_SECONDS
@@ -57,61 +59,73 @@ export const ChristmasDeliveryMayhemTimer: React.FC = () => {
     return <></>;
   }
 
-  const millisecondsPassed =
-    (GAME_SECONDS - secondsLeft) * 1000 +
-    (EVENT_INTERVAL - INITIAL_EVENT_START_TIME);
-  const completedEvents = Math.floor(millisecondsPassed / EVENT_INTERVAL);
-
-  // console.log(millisecondsPassed / EVENT_INTERVAL, nextGoal);
-
-  // Selecting Event
-  if (
-    millisecondsPassed >= EVENT_INTERVAL * nextGoal - EVENT_SELECTION_TIME &&
-    millisecondsPassed <= EVENT_INTERVAL * nextGoal
-  ) {
-    placeholderEvent = EVENTS_NAMES[indexEvent];
-    iconName = placeholderEvent;
-
-    if (indexEvent === EVENTS_NAMES.length - 1) {
-      indexEvent = 0;
-    } else {
-      indexEvent += 1;
-    }
-  }
-
-  // Select Event
-  if (completedEvents === nextGoal) {
-    const currentEvent = getRandomEvent();
-    iconName = currentEvent;
+  // Reset
+  if (!isPlaying) {
+    nextGoal = 1;
     placeholderEvent = "";
-    portalService.send("UPDATE_EVENT", { event: currentEvent });
-    nextGoal += 1;
+    iconName = "";
+    indexEvent = 0;
+  } else {
+    const millisecondsPassed =
+      (GAME_SECONDS - secondsLeft) * 1000 +
+      (EVENT_INTERVAL - INITIAL_EVENT_START_TIME);
+    const completedEvents = Math.floor(millisecondsPassed / EVENT_INTERVAL);
+
+    // console.log(millisecondsPassed / EVENT_INTERVAL, nextGoal);
+
+    // Selecting Event
+    if (
+      millisecondsPassed >= EVENT_INTERVAL * nextGoal - EVENT_SELECTION_TIME &&
+      millisecondsPassed <= EVENT_INTERVAL * nextGoal
+    ) {
+      placeholderEvent = EVENTS_NAMES[indexEvent];
+      iconName = placeholderEvent;
+
+      if (indexEvent === EVENTS_NAMES.length - 1) {
+        indexEvent = 0;
+      } else {
+        indexEvent += 1;
+      }
+    }
+
+    // Select Event
+    if (completedEvents === nextGoal) {
+      const currentEvent = getRandomEvent();
+      iconName = currentEvent;
+      placeholderEvent = "";
+      portalService.send("UPDATE_EVENT", { event: currentEvent });
+      nextGoal += 1;
+    }
   }
 
   return (
     <>
-      <Label icon={SUNNYSIDE.icons.stopwatch} type={"info"}>
-        {secondsToString(secondsLeft, { length: "full" })}
-      </Label>
-
-      <div
-        className="absolute flex flex-col items-center w-screen mb-3"
-        style={{
-          bottom: `${PIXEL_SCALE * 3}px`,
-        }}
-      >
-        {(event !== "" || placeholderEvent !== "") && (
-          <Label
-            className="space-x-2 text-xs"
-            icon={eventIcon[iconName]}
-            type={"info"}
-          >
-            {event !== "" && placeholderEvent === ""
-              ? t("christmas-delivery-mayhem.event")
-              : t("christmas-delivery-mayhem.choosingEvent")}
+      {isPlaying && (
+        <>
+          <Label icon={SUNNYSIDE.icons.stopwatch} type={"info"}>
+            {secondsToString(secondsLeft, { length: "full" })}
           </Label>
-        )}
-      </div>
+
+          <div
+            className="absolute flex flex-col items-center w-screen mb-3"
+            style={{
+              bottom: `${PIXEL_SCALE * 3}px`,
+            }}
+          >
+            {(event !== "" || placeholderEvent !== "") && (
+              <Label
+                className="space-x-2 text-xs"
+                icon={eventIcon[iconName]}
+                type={"info"}
+              >
+                {event !== "" && placeholderEvent === ""
+                  ? t("christmas-delivery-mayhem.event")
+                  : t("christmas-delivery-mayhem.choosingEvent")}
+              </Label>
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 };
