@@ -133,6 +133,7 @@ export class ElfContainer extends Phaser.GameObjects.Container {
       this.scene.sound.play("bad-sound", { volume: 0.1 });
       emotionName = "sad";
     }
+    this.request = [];
     const points = this.portalService?.state.context.streak || 0;
     const emoticon = this.createEmoticon(points, emotionName);
 
@@ -184,6 +185,7 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     this.requestBubble = null;
     if (!this.isGamePlaying) return;
 
+    this.request = [];
     this.portalService?.send("STREAK", { streak: -1 });
     const points = this.portalService?.state.context.streak || 0;
     const emoticon = this.createEmoticon(points, "sad");
