@@ -298,9 +298,9 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
       }
 
       if (this.isGameReady) {
-        this.initializeRequests();
         this.portalService?.send("START");
         this.velocity = WALKING_SPEED;
+        this.initializeRequests();
         this.sound.play("bg-music", { loop: true, volume: 0.1 });
       }
     }
@@ -411,6 +411,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
           y: config.y,
           scene: this,
           direction: config.direction,
+          position: config.position,
           player: this.currentPlayer,
         }),
     );

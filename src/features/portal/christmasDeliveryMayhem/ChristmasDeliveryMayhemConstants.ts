@@ -90,11 +90,32 @@ export const ELVES_CONFIGURATION: {
   x: number;
   y: number;
   direction: "left" | "right";
+  position: number;
 }[] = [
-  { x: SQUARE_WIDTH * 3, y: SQUARE_WIDTH * 13, direction: "right" },
-  { x: SQUARE_WIDTH * 3, y: SQUARE_WIDTH * 17, direction: "right" },
-  { x: SQUARE_WIDTH * 30, y: SQUARE_WIDTH * 13, direction: "left" },
-  { x: SQUARE_WIDTH * 30, y: SQUARE_WIDTH * 17, direction: "left" },
+  {
+    x: SQUARE_WIDTH * 3,
+    y: SQUARE_WIDTH * 13,
+    direction: "right",
+    position: 0,
+  },
+  {
+    x: SQUARE_WIDTH * 3,
+    y: SQUARE_WIDTH * 17,
+    direction: "right",
+    position: 1,
+  },
+  {
+    x: SQUARE_WIDTH * 30,
+    y: SQUARE_WIDTH * 13,
+    direction: "left",
+    position: 0,
+  },
+  {
+    x: SQUARE_WIDTH * 30,
+    y: SQUARE_WIDTH * 17,
+    direction: "left",
+    position: 1,
+  },
 ];
 
 // Grit initial coordinate

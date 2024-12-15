@@ -18,6 +18,7 @@ interface Props {
   y: number;
   scene: BaseScene;
   direction: "left" | "right";
+  position: number;
   player?: BumpkinContainer;
 }
 
@@ -28,15 +29,17 @@ export class ElfContainer extends Phaser.GameObjects.Container {
   private requestBubble: RequestBubbleContainer | null;
   private request!: Gifts[];
   private progressBar: ProgressBar;
+  private pos: number;
 
   scene: BaseScene;
 
-  constructor({ x, y, scene, direction, player }: Props) {
+  constructor({ x, y, scene, direction, position, player }: Props) {
     super(scene, x - 2, y - 6);
     this.scene = scene;
     this.direction = direction;
     this.player = player;
     this.requestBubble = null;
+    this.pos = position;
 
     // Elf Sprite
     const spriteName = "elf";
@@ -134,6 +137,12 @@ export class ElfContainer extends Phaser.GameObjects.Container {
       emotionName = "sad";
     }
     this.request = [];
+    const direction = this.direction === "left" ? "right" : "left";
+    this.portalService?.send("UPDATE_DELIVERIES", {
+      delivery: this.request,
+      direction: direction,
+      position: this.pos,
+    });
     const points = this.portalService?.state.context.streak || 0;
     const emoticon = this.createEmoticon(points, emotionName);
 
@@ -186,6 +195,12 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     if (!this.isGamePlaying) return;
 
     this.request = [];
+    const direction = this.direction === "left" ? "right" : "left";
+    this.portalService?.send("UPDATE_DELIVERIES", {
+      delivery: this.request,
+      direction: direction,
+      position: this.pos,
+    });
     this.portalService?.send("STREAK", { streak: -1 });
     const points = this.portalService?.state.context.streak || 0;
     const emoticon = this.createEmoticon(points, "sad");
@@ -221,6 +236,13 @@ export class ElfContainer extends Phaser.GameObjects.Container {
     if (this.requestBubble) return;
 
     this.request = this.generateRandomRequest();
+
+    const direction = this.direction === "left" ? "right" : "left";
+    this.portalService?.send("UPDATE_DELIVERIES", {
+      delivery: this.request,
+      direction: direction,
+      position: this.pos,
+    });
 
     this.requestBubble = new RequestBubbleContainer({
       x: 9,

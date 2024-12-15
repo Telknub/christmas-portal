@@ -13,6 +13,7 @@ import { ChristmasDeliveryMayhemTimer } from "./ChristmasDeliveryMayhemTimer";
 import { ChristmasDeliveryMayhemLives } from "./ChristmasDeliveryMayhemLives";
 import { useAchievementToast } from "../../providers/AchievementToastProvider";
 import { ChristmasDeliveryMayhemSelectingEvent } from "./ChristmasDeliveryMayhemSelectingEvent";
+import { ChristmasDeliveryMayhemDeliveries } from "./ChristmasDeliveryMayhemDeliveries";
 
 const _isJoystickActive = (state: PortalMachineState) =>
   state.context.isJoystickActive;
@@ -63,6 +64,7 @@ export const ChristmasDeliveryMayhemHud: React.FC = () => {
               <ChristmasDeliveryMayhemTimer />
               <ChristmasDeliveryMayhemLives />
               <ChristmasDeliveryMayhemScore />
+              {isJoystickActive && <ChristmasDeliveryMayhemDeliveries />}
             </>
           )}
           {isJoystickActive && <ChristmasDeliveryMayhemSelectingEvent />}

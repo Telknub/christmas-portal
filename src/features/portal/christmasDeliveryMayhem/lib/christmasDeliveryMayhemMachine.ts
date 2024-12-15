@@ -40,7 +40,7 @@ export interface Context {
   gifts: Gifts[];
   streak: number;
   event: Events;
-  placeholderEvent: Events;
+  deliveries: Record<string, Gifts[][]>;
   lives: number;
   endAt: number;
   attemptsLeft: number;
@@ -93,9 +93,11 @@ type UpdateEventEvent = {
   event: Events;
 };
 
-type UpdatePlaceholderEventEvent = {
-  type: "UPDATE_PLACEHOLDER_EVENT";
-  event: Events;
+type UpdateDeliveriesEvent = {
+  type: "UPDATE_DELIVERIES";
+  delivery: Gifts[];
+  position: number;
+  direction: string;
 };
 
 export type PortalEvent =
@@ -112,7 +114,7 @@ export type PortalEvent =
   | GainPointsEvent
   | StreakEvent
   | UpdateEventEvent
-  | UpdatePlaceholderEventEvent
+  | UpdateDeliveriesEvent
   | CollectGiftEvent
   | ClearInventoryEvent
   | RemoveLastGiftInventoryEvent
@@ -154,7 +156,7 @@ const resetGameTransition = {
       gifts: () => [],
       streak: () => 0,
       event: () => "",
-      placeholderEvent: () => "",
+      deliveries: () => ({ left: [[], []], right: [[], []] }),
       lives: () => GAME_LIVES,
       endAt: () => 0,
     }) as any,
@@ -177,7 +179,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
     gifts: [],
     streak: 0,
     event: "",
-    placeholderEvent: "",
+    deliveries: { left: [[], []], right: [[], []] },
     lives: GAME_LIVES,
     attemptsLeft: 0,
     endAt: 0,
@@ -329,7 +331,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
             gifts: [],
             streak: 0,
             event: "",
-            placeholderEvent: "",
+            deliveries: { left: [[], []], right: [[], []] },
             lives: GAME_LIVES,
             state: (context: any) => {
               startAttempt();
@@ -380,13 +382,13 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
             },
           }),
         },
-        UPDATE_PLACEHOLDER_EVENT: {
+        UPDATE_DELIVERIES: {
           actions: assign<Context, any>({
-            placeholderEvent: (
-              context: Context,
-              event: UpdatePlaceholderEventEvent,
-            ) => {
-              return event.event;
+            deliveries: (context: Context, event: UpdateDeliveriesEvent) => {
+              const deliveries = { ...context.deliveries };
+              const { direction, position, delivery } = event;
+              deliveries[direction][position] = delivery;
+              return deliveries;
             },
           }),
         },
