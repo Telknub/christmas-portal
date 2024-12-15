@@ -120,8 +120,8 @@ export const ChristmasDeliveryMayhemTimer: React.FC = () => {
                 type={"info"}
               >
                 {event !== "" && placeholderEvent === ""
-                  ? t("christmas-delivery-mayhem.event")
-                  : t("christmas-delivery-mayhem.choosingEvent")}
+                  ? t("christmas-delivery.event")
+                  : t("christmas-delivery.choosingEvent")}
               </Label>
             )}
           </div>

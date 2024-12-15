@@ -16,8 +16,8 @@ import { Label } from "components/ui/Label";
 import { useSound } from "lib/utils/hooks/useSound";
 
 const _achievements = (state: PortalMachineState) =>
-  state.context.state?.minigames.games["christmas-delivery-mayhem"]
-    ?.achievements ?? {};
+  state.context.state?.minigames.games["christmas-delivery"]?.achievements ??
+  {};
 
 type Props = {
   onBack: () => void;
@@ -136,7 +136,7 @@ export const ChristmasDeliveryMayhemAchievementsList: React.FC<Props> = ({
                       </div>
                     </div>
                     <Label type="success" className="text-xs">
-                      {t("christmas-delivery-mayhem.achievementUnlockedAt", {
+                      {t("christmas-delivery.achievementUnlockedAt", {
                         time: new Date(unlockedAt).toLocaleString(),
                       })}
                     </Label>

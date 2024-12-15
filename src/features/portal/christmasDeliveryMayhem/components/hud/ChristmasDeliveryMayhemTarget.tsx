@@ -7,8 +7,7 @@ import { useAppTranslation } from "lib/i18n/useAppTranslations";
 import { PortalMachineState } from "../../lib/christmasDeliveryMayhemMachine";
 
 const _target = (state: PortalMachineState) =>
-  state.context.state?.minigames.prizes["christmas-delivery-mayhem"]?.score ??
-  0;
+  state.context.state?.minigames.prizes["christmas-delivery"]?.score ?? 0;
 const _score = (state: PortalMachineState) => state.context.score;
 
 export const ChristmasDeliveryMayhemTarget: React.FC = () => {
@@ -26,7 +25,7 @@ export const ChristmasDeliveryMayhemTarget: React.FC = () => {
       secondaryIcon={isTargetReached ? SUNNYSIDE.icons.confirm : undefined}
       type={isTargetReached ? "success" : "vibrant"}
     >
-      {t("christmas-delivery-mayhem.targetScore", {
+      {t("christmas-delivery.targetScore", {
         target: target,
       })}
     </Label>

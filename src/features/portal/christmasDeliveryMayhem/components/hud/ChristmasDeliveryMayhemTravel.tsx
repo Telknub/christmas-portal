@@ -86,13 +86,13 @@ export const ChristmasDeliveryMayhemTravel: React.FC = () => {
         bumpkinParts={CHRITSMAS_NPC_WEARABLES}
         show={showExitConfirmation}
         onHide={() => setShowExitConfirmation(false)}
-        messages={[t("christmas-delivery-mayhem.endGameConfirmation")]}
+        messages={[t("christmas-delivery.endGameConfirmation")]}
         onCancel={() => setShowExitConfirmation(false)}
         onConfirm={() => {
           portalService.send("END_GAME_EARLY");
           setShowExitConfirmation(false);
         }}
-        confirmButtonLabel={t("christmas-delivery-mayhem.endGame")}
+        confirmButtonLabel={t("christmas-delivery.endGame")}
       />
     </>
   );

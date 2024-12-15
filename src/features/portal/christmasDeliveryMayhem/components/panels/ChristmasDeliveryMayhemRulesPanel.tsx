@@ -32,7 +32,7 @@ export const ChristmasDeliveryMayhemRulesPanel: React.FC<Props> = ({
       tabs={[
         {
           icon: SUNNYSIDE.icons.plant,
-          name: t("christmas-delivery-mayhem.mission"),
+          name: t("christmas-delivery.mission"),
         },
       ]}
     >

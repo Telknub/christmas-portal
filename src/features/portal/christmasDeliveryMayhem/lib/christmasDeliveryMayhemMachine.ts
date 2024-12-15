@@ -198,7 +198,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
             state: context.state!,
             action: {
               type: "minigame.achievementsUnlocked",
-              id: "christmas-delivery-mayhem",
+              id: "christmas-delivery",
               achievementNames: event.achievementNames,
             },
           });
@@ -235,7 +235,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
             token: context.jwt as string,
           });
 
-          const minigame = game.minigames.games["christmas-delivery-mayhem"];
+          const minigame = game.minigames.games["christmas-delivery"];
           const attemptsLeft = getAttemptsLeft(minigame);
 
           return { game, farmId, attemptsLeft };
@@ -268,7 +268,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
               purchaseMinigameItem({
                 state: context.state!,
                 action: {
-                  id: "christmas-delivery-mayhem",
+                  id: "christmas-delivery",
                   sfl: event.sfl,
                   type: "minigame.itemPurchased",
                   items: {},
@@ -283,7 +283,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
         //       purchaseMinigameItem({
         //         state: context.state!,
         //         action: {
-        //           id: "christmas-delivery-mayhem",
+        //           id: "christmas-delivery",
         //           sfl: UNLIMITED_ATTEMPTS_SFL,
         //           type: "minigame.itemPurchased",
         //           items: {},
@@ -300,7 +300,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
           target: "noAttempts",
           cond: (context) => {
             const minigame =
-              context.state?.minigames.games["christmas-delivery-mayhem"];
+              context.state?.minigames.games["christmas-delivery"];
             const attemptsLeft = getAttemptsLeft(minigame);
             return attemptsLeft <= 0;
           },
@@ -337,7 +337,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
                 state: context.state,
                 action: {
                   type: "minigame.attemptStarted",
-                  id: "christmas-delivery-mayhem",
+                  id: "christmas-delivery",
                 },
               });
             },
@@ -434,7 +434,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
                 action: {
                   type: "minigame.scoreSubmitted",
                   score: Math.round(context.score),
-                  id: "christmas-delivery-mayhem",
+                  id: "christmas-delivery",
                 },
               });
             },
@@ -454,7 +454,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
                 action: {
                   type: "minigame.scoreSubmitted",
                   score: Math.round(context.score),
-                  id: "christmas-delivery-mayhem",
+                  id: "christmas-delivery",
                 },
               });
             },
@@ -472,7 +472,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
             const dateKey = new Date().toISOString().slice(0, 10);
 
             const minigame =
-              context.state?.minigames.games["christmas-delivery-mayhem"];
+              context.state?.minigames.games["christmas-delivery"];
             const history = minigame?.history ?? {};
 
             return !!history[dateKey]?.prizeClaimedAt;
@@ -482,8 +482,7 @@ export const portalMachine = createMachine<Context, PortalEvent, PortalState>({
         {
           target: "winner",
           cond: (context) => {
-            const prize =
-              context.state?.minigames.prizes["christmas-delivery-mayhem"];
+            const prize = context.state?.minigames.prizes["christmas-delivery"];
             if (!prize) {
               return false;
             }

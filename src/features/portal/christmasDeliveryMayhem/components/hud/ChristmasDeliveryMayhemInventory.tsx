@@ -41,7 +41,7 @@ export const ChristmasDeliveryMayhemInventory: React.FC = () => {
         right: `${PIXEL_SCALE * 3}px`,
       }}
     >
-      <Label type={"default"}>{t("christmas-delivery-mayhem.inventory")}</Label>
+      <Label type={"default"}>{t("christmas-delivery.inventory")}</Label>
 
       <div className="relative flex flex-col items-center">
         {gifts.map((gift: Gifts, index) => (

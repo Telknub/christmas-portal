@@ -52,7 +52,7 @@ export const ChristmasDeliveryMayhemGuide: React.FC<Props> = ({ onBack }) => {
             />
           </div>
           <div className="grow mb-3 text-lg">
-            {t("christmas-delivery-mayhem.guide")}
+            {t("christmas-delivery.guide")}
           </div>
           <div className="flex-none">
             <div
@@ -68,9 +68,7 @@ export const ChristmasDeliveryMayhemGuide: React.FC<Props> = ({ onBack }) => {
       {/* content */}
       <div className="flex flex-col gap-1 overflow-y-auto scrollable pr-1">
         {/* instructions */}
-        <Label type="default">
-          {t("christmas-delivery-mayhem.instructions")}
-        </Label>
+        <Label type="default">{t("christmas-delivery.instructions")}</Label>
         <div>
           <div className="flex items-center mb-3 mx-2">
             <SquareIcon icon={Elf} width={10} />
@@ -161,7 +159,7 @@ export const ChristmasDeliveryMayhemGuide: React.FC<Props> = ({ onBack }) => {
                   style={{ border: "1px solid #b96f50" }}
                   className="p-1.5 w-5/6"
                 >
-                  {t("christmas-delivery-mayhem.scoreDescription", {
+                  {t("christmas-delivery.scoreDescription", {
                     description: description,
                   })}
                 </td>

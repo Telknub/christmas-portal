@@ -97,7 +97,7 @@ export class GiftContainer extends Phaser.GameObjects.Container {
   private collectGift() {
     const collectedGifts = this.portalService?.state?.context.gifts as string[];
     if (collectedGifts.length === MAX_PLAYER_GIFTS) {
-      this.player?.speak(translate("christmas-delivery-mayhem.noMoreSpace"));
+      this.player?.speak(translate("christmas-delivery.noMoreSpace"));
       return;
     }
     this.scene.sound.play("gift-pickup");

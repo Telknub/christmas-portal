@@ -12,14 +12,13 @@ import { secondsToString } from "lib/utils/time";
 
 const _dailyHighscore = (state: PortalMachineState) => {
   const dateKey = new Date().toISOString().slice(0, 10);
-  const minigame =
-    state.context.state?.minigames.games["christmas-delivery-mayhem"];
+  const minigame = state.context.state?.minigames.games["christmas-delivery"];
   const history = minigame?.history ?? {};
 
   return history[dateKey]?.highscore ?? 0;
 };
 const _prize = (state: PortalMachineState) => {
-  return state.context.state?.minigames.prizes["christmas-delivery-mayhem"];
+  return state.context.state?.minigames.prizes["christmas-delivery"];
 };
 
 export const ChristmasDeliveryMayhemPrize: React.FC = () => {
@@ -38,7 +37,7 @@ export const ChristmasDeliveryMayhemPrize: React.FC = () => {
       <OuterPanel>
         <div className="px-1">
           <Label type="danger" icon={SUNNYSIDE.icons.sad}>
-            {t("christmas-delivery-mayhem.noPrizesAvailable")}
+            {t("christmas-delivery.noPrizesAvailable")}
           </Label>
         </div>
       </OuterPanel>
@@ -52,14 +51,14 @@ export const ChristmasDeliveryMayhemPrize: React.FC = () => {
     <OuterPanel>
       <div className="px-1">
         <span className="text-xs mb-2">
-          {t("christmas-delivery-mayhem.portal.missionObjectives", {
+          {t("christmas-delivery.portal.missionObjectives", {
             targetScore: prize.score,
           })}
         </span>
         <div className="flex justify-between mt-2 flex-wrap">
           {isComplete ? (
             <Label type="success" icon={SUNNYSIDE.icons.confirm}>
-              {t("christmas-delivery-mayhem.completed")}
+              {t("christmas-delivery.completed")}
             </Label>
           ) : (
             <Label type="info" icon={SUNNYSIDE.icons.stopwatch}>

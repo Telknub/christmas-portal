@@ -43,7 +43,7 @@ export const ChristmasDeliveryMayhemDonations: React.FC = () => {
   return (
     <div className="flex flex-col mb-1 p-2 text-sm">
       <p className="mb-2 text-center">
-        {t("christmas-delivery-mayhem.donationDescription")}
+        {t("christmas-delivery.donationDescription")}
       </p>
 
       <div className="flex flex-wrap mt-1 mb-4 gap-x-3 gap-y-1 justify-center">

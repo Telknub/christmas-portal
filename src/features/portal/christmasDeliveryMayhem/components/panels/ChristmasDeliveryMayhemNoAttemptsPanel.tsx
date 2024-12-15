@@ -34,21 +34,21 @@ export const ChristmasDeliveryMayhemNoAttemptsPanel: React.FC = () => {
       <div className="p-2">
         <div className="flex gap-1 justify-between items-center mb-2">
           <Label icon={SUNNYSIDE.icons.lock} type="danger">
-            {t("christmas-delivery-mayhem.noAttemptsRemaining")}
+            {t("christmas-delivery.noAttemptsRemaining")}
           </Label>
           <Label
             icon={sfl}
             type={sflBalance.lt(RESTOCK_ATTEMPTS[0].sfl) ? "danger" : "default"}
           >
-            {t("christmas-delivery-mayhem.sflRequired")}
+            {t("christmas-delivery.sflRequired")}
           </Label>
         </div>
 
         <p className="text-sm mb-2">
-          {t("christmas-delivery-mayhem.youHaveRunOutOfAttempts")}
+          {t("christmas-delivery.youHaveRunOutOfAttempts")}
         </p>
         <p className="text-sm mb-2">
-          {t("christmas-delivery-mayhem.wouldYouLikeToUnlock")}
+          {t("christmas-delivery.wouldYouLikeToUnlock")}
         </p>
 
         <div className="flex items-center space-x-1 relative">
@@ -77,7 +77,7 @@ export const ChristmasDeliveryMayhemNoAttemptsPanel: React.FC = () => {
               })
             }
           >
-            {t("christmas-delivery-mayhem.buyAttempts", {
+            {t("christmas-delivery.buyAttempts", {
               attempts: option.attempts,
               sfl: option.sfl,
             })}
@@ -92,7 +92,7 @@ export const ChristmasDeliveryMayhemNoAttemptsPanel: React.FC = () => {
             })
           }
         >
-          {t("christmas-delivery-mayhem.unlockAttempts", {
+          {t("christmas-delivery.unlockAttempts", {
             sfl: UNLIMITED_ATTEMPTS_SFL,
           })}
         </Button> */}

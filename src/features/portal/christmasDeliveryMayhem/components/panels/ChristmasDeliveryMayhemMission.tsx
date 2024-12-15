@@ -27,7 +27,7 @@ interface Props {
 }
 
 const _minigame = (state: PortalMachineState) =>
-  state.context.state?.minigames.games["christmas-delivery-mayhem"];
+  state.context.state?.minigames.games["christmas-delivery"];
 const _lastScore = (state: PortalMachineState) => state.context.lastScore;
 const _state = (state: PortalMachineState) => state.context.state;
 
@@ -64,7 +64,7 @@ export const ChristmasDeliveryMayhemMission: React.FC<Props> = ({
           <div>
             <div className="w-full relative flex justify-between gap-1 items-center mb-1 py-1 pl-2">
               <Label type="default" icon={factions}>
-                {t("christmas-delivery-mayhem.portal.title")}
+                {t("christmas-delivery.portal.title")}
               </Label>
               <ChristmasDeliveryMayhemAttempts attemptsLeft={attemptsLeft} />
             </div>
@@ -78,18 +78,18 @@ export const ChristmasDeliveryMayhemMission: React.FC<Props> = ({
               <div className="flex justify-between flex-col space-y-1 px-1 mb-3 text-sm flex-grow">
                 {showScore && (
                   <span>
-                    {t("christmas-delivery-mayhem.score", {
+                    {t("christmas-delivery.score", {
                       score: lastScore,
                     })}
                   </span>
                 )}
                 <span>
-                  {t("christmas-delivery-mayhem.bestToday", {
+                  {t("christmas-delivery.bestToday", {
                     score: minigame?.history[dateKey]?.highscore || 0,
                   })}
                 </span>
                 <span>
-                  {t("christmas-delivery-mayhem.bestAllTime", {
+                  {t("christmas-delivery.bestAllTime", {
                     score: Object.values(minigame?.history ?? {}).reduce(
                       (acc, { highscore }) => Math.max(acc, highscore),
                       0,

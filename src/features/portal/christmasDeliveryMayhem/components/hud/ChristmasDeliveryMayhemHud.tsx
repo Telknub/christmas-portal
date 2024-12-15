@@ -16,8 +16,8 @@ import { useAchievementToast } from "../../providers/AchievementToastProvider";
 // const _isJoystickActive = (state: PortalMachineState) =>
 //   state.context.isJoystickActive;
 const _achievements = (state: PortalMachineState) =>
-  state.context.state?.minigames.games["christmas-delivery-mayhem"]
-    ?.achievements ?? {};
+  state.context.state?.minigames.games["christmas-delivery"]?.achievements ??
+  {};
 const _isPlaying = (state: PortalMachineState) => state.matches("playing");
 
 export const ChristmasDeliveryMayhemHud: React.FC = () => {

@@ -14,16 +14,14 @@ export const ChristmasDeliveryMayhemAttempts: React.FC<Props> = ({
 
   if (attemptsLeft === Infinity) {
     return (
-      <Label type="success">
-        {t("christmas-delivery-mayhem.unlimitedAttempts")}
-      </Label>
+      <Label type="success">{t("christmas-delivery.unlimitedAttempts")}</Label>
     );
   }
 
   if (attemptsLeft > 0 && attemptsLeft !== 1) {
     return (
       <Label type="vibrant">
-        {t("christmas-delivery-mayhem.attemptsRemainingPlural", {
+        {t("christmas-delivery.attemptsRemainingPlural", {
           attempts: attemptsLeft,
         })}
       </Label>
@@ -33,7 +31,7 @@ export const ChristmasDeliveryMayhemAttempts: React.FC<Props> = ({
   if (attemptsLeft === 1) {
     return (
       <Label type="vibrant">
-        {t("christmas-delivery-mayhem.attemptsRemainingSingular", {
+        {t("christmas-delivery.attemptsRemainingSingular", {
           attempts: attemptsLeft,
         })}
       </Label>
@@ -41,8 +39,6 @@ export const ChristmasDeliveryMayhemAttempts: React.FC<Props> = ({
   }
 
   return (
-    <Label type="danger">
-      {t("christmas-delivery-mayhem.noAttemptsRemaining")}
-    </Label>
+    <Label type="danger">{t("christmas-delivery.noAttemptsRemaining")}</Label>
   );
 };
