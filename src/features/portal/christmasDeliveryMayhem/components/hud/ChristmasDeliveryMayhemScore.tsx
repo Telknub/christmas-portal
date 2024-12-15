@@ -29,7 +29,7 @@ export const ChristmasDeliveryMayhemScore: React.FC = () => {
   return (
     <>
       <div className="bg-blue-800 bg-opacity-80 text-white flex flex-col text-shadow border-t-4 rounded-md min-w-[90px] w-fit p-2">
-        <span className="text-xs">{t("christmas-delivery.score")}</span>
+        <span className="text-xs">{t("christmas-delivery.scoreTitle")}</span>
         <div className="flex gap-5 items-center">
           <span className="text-lg">{Math.round(score)}</span>
           {isStreakVisible && (
