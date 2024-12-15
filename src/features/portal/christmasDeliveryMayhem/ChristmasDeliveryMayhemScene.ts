@@ -22,6 +22,7 @@ import { CoalsContainer } from "./containers/CoalsContainer";
 import { isArray } from "xstate/lib/utils";
 import { EventObject } from "xstate";
 import { SPAWNS } from "features/world/lib/spawn";
+import { isTouchDevice } from "features/world/lib/device";
 
 // export const NPCS: NPCBumpkin[] = [
 //   {
@@ -197,6 +198,7 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
 
     this.velocity = 0;
 
+    this.initializeControls();
     this.createBonfires();
     this.createElves();
     this.createCoals();
@@ -301,6 +303,14 @@ export class ChristmasDeliveryMayhemScene extends BaseScene {
         this.velocity = WALKING_SPEED;
         this.sound.play("bg-music", { loop: true, volume: 0.1 });
       }
+    }
+  }
+
+  private initializeControls() {
+    if (isTouchDevice()) {
+      this.portalService?.send("SET_JOYSTICK_ACTIVE", {
+        isJoystickActive: true,
+      });
     }
   }
 

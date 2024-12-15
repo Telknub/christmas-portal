@@ -12,9 +12,10 @@ import { ChristmasDeliveryMayhemTimer } from "./ChristmasDeliveryMayhemTimer";
 // import { ChristmasDeliveryMayhemTarget } from "./ChristmasDeliveryMayhemTarget";
 import { ChristmasDeliveryMayhemLives } from "./ChristmasDeliveryMayhemLives";
 import { useAchievementToast } from "../../providers/AchievementToastProvider";
+import { ChristmasDeliveryMayhemSelectingEvent } from "./ChristmasDeliveryMayhemSelectingEvent";
 
-// const _isJoystickActive = (state: PortalMachineState) =>
-//   state.context.isJoystickActive;
+const _isJoystickActive = (state: PortalMachineState) =>
+  state.context.isJoystickActive;
 const _achievements = (state: PortalMachineState) =>
   state.context.state?.minigames.games["christmas-delivery"]?.achievements ??
   {};
@@ -23,7 +24,7 @@ const _isPlaying = (state: PortalMachineState) => state.matches("playing");
 export const ChristmasDeliveryMayhemHud: React.FC = () => {
   const { portalService } = useContext(PortalContext);
 
-  // const isJoystickActive = useSelector(portalService, _isJoystickActive);
+  const isJoystickActive = useSelector(portalService, _isJoystickActive);
   const achievements = useSelector(portalService, _achievements);
   const isPlaying = useSelector(portalService, _isPlaying);
 
@@ -50,29 +51,27 @@ export const ChristmasDeliveryMayhemHud: React.FC = () => {
     <HudContainer>
       <div>
         <div
-          className="absolute flex flex-col gap-2 h-full"
+          className="absolute flex flex-col gap-2"
           style={{
             top: `${PIXEL_SCALE * 4}px`,
             left: `${PIXEL_SCALE * 6}px`,
           }}
         >
           {/* <ChristmasDeliveryMayhemTarget /> */}
-          <ChristmasDeliveryMayhemTimer />
           {isPlaying && (
             <>
+              <ChristmasDeliveryMayhemTimer />
               <ChristmasDeliveryMayhemLives />
               <ChristmasDeliveryMayhemScore />
             </>
           )}
+          {isJoystickActive && <ChristmasDeliveryMayhemSelectingEvent />}
         </div>
 
         <ChristmasDeliveryMayhemTravel />
         <ChristmasDeliveryMayhemSettings />
-        {isPlaying && (
-          <>
-            <ChristmasDeliveryMayhemInventory />
-          </>
-        )}
+        {!isJoystickActive && <ChristmasDeliveryMayhemSelectingEvent />}
+        {isPlaying && <ChristmasDeliveryMayhemInventory />}
       </div>
     </HudContainer>
   );
